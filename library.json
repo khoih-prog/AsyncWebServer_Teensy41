@@ -1,37 +1,84 @@
 {
-  "name":"AsyncWebServer_Teensy41",
-  "version": "1.4.1",
-  "description":"Asynchronous HTTP and WebSocket Server Library for Teensy 4.1 using QNEthernet. This library is one of the current or future Async libraries to support Teensy 4.1 using QNEthernet, such as AsyncHTTPRequest_Generic, AsyncHTTPSRequest_Generic, AsyncMQTT_Generic, Teensy41_AsyncWebServer, Teensy41_AsyncUDP, Teensy41_AsyncDNSServer, AsyncWebServer_Teensy41_SSL, etc.",
-  "keywords":"async, tcp, http, websocket, webserver, async-tcp, async-http, async-webserver, async-websocket, teensy, teensy41, teensy-41, qnethernet, lwip",
+  "name": "AsyncMQTT_Generic",
+  "version": "1.4.0",
+  "keywords": "communication, iot, automation, async, async-tcp, async-tcp-ssl, async-mqtt, mqtt, async-mqtt-client, esp8266, esp32, stm32, portenta-h7, wt32-eth01, tls, teensy-41, qn-ethernet, lwip, lan8742a, lan8720",
+  "description": "Arduino Library for ESP8266, ESP32, Portenta_H7 and STM32 asynchronous MQTT client implementation. This library, ported to support ESP32, WT32_ETH01 (ESP32 + LAN8720), ESP8266, Portenta_H7 (Ethernet or WiFi) and STM32 (LAN8742A or LAN8720 Ethernet), Teensy 4.1 using QNEthernet. Currently supporting TLS/SSL for ESP32 only",
   "authors": 
   [
     {
-      "name": "Hristo Gochkov",
-      "url":   "https://github.com/me-no-dev"
+      "name": "Marvin ROGER",
+    	"url": "https://www.marvinroger.fr"
     },
     {
       "name":  "Khoi Hoang",
       "url":   "https://github.com/khoih-prog",
-      "email": "khoih-dot-prog@gmail.com",
+      "email": "khoih.prog@gmail.com",
       "maintainer": true
-    }
+    }  
   ],
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/khoih-prog/AsyncWebServer_Teensy41.git"
+    "url": "https://github.com/khoih-prog/AsyncMQTT_Generic.git"
   },
-  "homepage": "https://github.com/khoih-prog/AsyncWebServer_Teensy41",
-  "export": {
-    "exclude": [
-      "linux",
-      "extras",
-      "tests"
-    ]
-  },
-  "license": "LGPL-3.0",
+  "dependencies": 
+  [
+    {
+      "owner": "me-no-dev",
+      "name": "AsyncTCP",
+      "version": ">=1.1.1",
+      "platforms": ["espressif32"]
+    },
+    {
+      "owner": "me-no-dev",
+      "name": "ESPAsyncTCP",
+      "version": ">=1.2.2",
+      "platforms": "espressif8266"
+    },
+    {
+      "owner": "khoih-prog",
+      "name": "AsyncTCP_SSL",
+      "version": ">=1.2.0",
+      "platforms": "espressif32"
+    },
+    {
+      "owner": "khoih-prog",
+      "name": "Portenta_H7_AsyncTCP",
+      "version": ">=1.3.0",
+      "platforms": "ststm32"
+    },
+    {
+      "owner": "khoih-prog",
+      "name": "Teensy41_AsyncTCP",
+      "version": ">=1.0.0",
+      "platforms": ["teensy", "avr"]
+    },
+    {
+      "owner": "khoih-prog",
+      "name": "WebServer_WT32_ETH01",
+      "version": ">=1.4.1",
+      "platforms": ["espressif32"]
+    },
+    {
+      "owner": "stm32duino",
+      "name": "STM32duino LwIP",
+      "version": "^2.1.2",
+      "platforms": "ststm32"
+    },
+    {
+      "owner": "stm32duino",
+      "name": "STM32Ethernet",
+      "version": "^1.2.0",
+      "platforms": "ststm32"
+    },
+    {
+      "name": "STM32AsyncTCP",
+      "version": "https://github.com/khoih-prog/STM32AsyncTCP"
+    }
+  ],
+  "license": "MIT",
   "frameworks": "*",
-  "platforms": ["teensy", "avr"],
+  "platforms": ["espressif8266", "espressif32", "ststm32"],
   "examples": "examples/*/*/*.ino",
-  "headers": ["AsyncWebServer_Teensy41.h", "AsyncWebServer_Teensy41.hpp"]
+  "headers": ["AsyncMQTT_Generic.h"]
 }

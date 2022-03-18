@@ -1,10 +1,9 @@
-# AsyncWebServer_Teensy41
+# AsyncMQTT_Generic client for ESP8266, ESP32, etc.
 
-[![arduino-library-badge](https://www.ardu-badge.com/badge/AsyncWebServer_Teensy41.svg?)](https://www.ardu-badge.com/AsyncWebServer_Teensy41)
-[![GitHub release](https://img.shields.io/github/release/khoih-prog/AsyncWebServer_Teensy41.svg)](https://github.com/khoih-prog/AsyncWebServer_Teensy41/releases)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/main/LICENSE)
+[![arduino-library-badge](https://www.ardu-badge.com/badge/AsyncMQTT_Generic.svg?)](https://www.ardu-badge.com/AsyncMQTT_Generic)
+[![GitHub release](https://img.shields.io/github/release/khoih-prog/AsyncMQTT_Generic.svg)](https://github.com/khoih-prog/AsyncMQTT_Generic/releases)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
-[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/AsyncWebServer_Teensy41.svg)](http://github.com/khoih-prog/AsyncWebServer_Teensy41/issues)
+[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/AsyncMQTT_Generic.svg)](http://github.com/khoih-prog/AsyncMQTT_Generic/issues)
 
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
@@ -12,13 +11,13 @@
 ---
 ---
 
-## Table of contents
+## Table of Contents
 
-* [Table of contents](#table-of-contents)
-* [Why do we need this AsyncWebServer_Teensy41 library](#why-do-we-need-this-AsyncWebServer_Teensy41-library)
+* [Why do we need this AsyncMQTT_Generic library](#why-do-we-need-this-AsyncMQTT_Generic-library)
   * [Features](#features)
   * [Why Async is better](#why-async-is-better)
   * [Currently supported Boards](#currently-supported-boards)
+  * [To-be-supported Boards](#To-be-supported-Boards)
 * [Changelog](changelog.md)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
@@ -26,78 +25,54 @@
   * [Manual Install](#manual-install)
   * [VS Code & PlatformIO](#vs-code--platformio)
 * [Packages' Patches](#packages-patches)
-  * [1. For Teensy boards](#1-for-teensy-boards) 
-* [Important things to remember](#important-things-to-remember)
-* [Principles of operation](#principles-of-operation)
-  * [The Async Web server](#the-async-web-server)
-  * [Request Life Cycle](#request-life-cycle)
-  * [Rewrites and how do they work](#rewrites-and-how-do-they-work)
-  * [Handlers and how do they work](#handlers-and-how-do-they-work)
-  * [Responses and how do they work](#responses-and-how-do-they-work)
-  * [Template processing](#template-processing)
-* [Request Variables](#request-variables)
-  * [Common Variables](#common-variables)
-  * [Headers](#headers)
-  * [GET, POST and FILE parameters](#get-post-and-file-parameters)
-  * [JSON body handling with ArduinoJson](#json-body-handling-with-arduinojson)
-* [Responses](#responses)
-  * [Redirect to another URL](#redirect-to-another-url)
-  * [Basic response with HTTP Code](#basic-response-with-http-code)
-  * [Basic response with HTTP Code and extra headers](#basic-response-with-http-code-and-extra-headers)
-  * [Basic response with string content](#basic-response-with-string-content)
-  * [Basic response with string content and extra headers](#basic-response-with-string-content-and-extra-headers)
-  * [Respond with content coming from a Stream](#respond-with-content-coming-from-a-stream)
-  * [Respond with content coming from a Stream and extra headers](#respond-with-content-coming-from-a-stream-and-extra-headers)
-  * [Respond with content coming from a Stream containing templates](#respond-with-content-coming-from-a-stream-containing-templates)
-  * [Respond with content coming from a Stream containing templates and extra headers](#respond-with-content-coming-from-a-stream-containing-templates-and-extra-headers)
-  * [Respond with content using a callback](#respond-with-content-using-a-callback)
-  * [Respond with content using a callback and extra headers](#respond-with-content-using-a-callback-and-extra-headers)
-  * [Respond with content using a callback containing templates](#respond-with-content-using-a-callback-containing-templates)
-  * [Respond with content using a callback containing templates and extra headers](#respond-with-content-using-a-callback-containing-templates-and-extra-headers)
-  * [Chunked Response](#chunked-response)
-  * [Chunked Response containing templates](#chunked-response-containing-templates)
-  * [Print to response](#print-to-response)
-  * [ArduinoJson Basic Response](#arduinojson-basic-response)
-  * [ArduinoJson Advanced Response](#arduinojson-advanced-response)
-* [Param Rewrite With Matching](#param-rewrite-with-matching)
-* [Using filters](#using-filters)
-* [Bad Responses](#bad-responses)
-  * [Respond with content using a callback without content length to HTTP/1.0 clients](#respond-with-content-using-a-callback-without-content-length-to-http10-clients)
-* [Async WebSocket Plugin](#async-websocket-plugin)
-  * [Async WebSocket Event](#async-websocket-event)
-  * [Methods for sending data to a socket client](#methods-for-sending-data-to-a-socket-client)
-  * [Direct access to web socket message buffer](#direct-access-to-web-socket-message-buffer)
-  * [Limiting the number of web socket clients](#limiting-the-number-of-web-socket-clients)
-* [Async Event Source Plugin](#async-event-source-plugin)
-  * [Setup Event Source on the server](#setup-event-source-on-the-server)
-  * [Setup Event Source in the browser](#setup-event-source-in-the-browser)
-* [Remove handlers and rewrites](#remove-handlers-and-rewrites)
-* [Setting up the server](#setting-up-the-server)
-  * [Setup global and class functions as request handlers](#setup-global-and-class-functions-as-request-handlers)
-  * [Methods for controlling websocket connections](#methods-for-controlling-websocket-connections)
-  * [Adding Default Headers](#adding-default-headers)
-  * [Path variable](#path-variable)
+  * [1. For STM32 boards](#1-for-stm32-boards) 
+    * [1.1. For STM32 boards to use LAN8720](#11-for-stm32-boards-to-use-lan8720)
+    * [1.2. For STM32 boards to use Serial1](#12-for-stm32-boards-to-use-serial1)
+  * [2. For Teensy boards](#2-for-teensy-boards) 
+  * [3. For Portenta_H7 boards using Arduino IDE in Linux](#3-for-portenta_h7-boards-using-arduino-ide-in-linux)
+* [HOWTO Use analogRead() with ESP32 running WiFi and/or BlueTooth (BT/BLE)](#howto-use-analogread-with-esp32-running-wifi-andor-bluetooth-btble)
+  * [1. ESP32 has 2 ADCs, named ADC1 and ADC2](#1--esp32-has-2-adcs-named-adc1-and-adc2)
+  * [2. ESP32 ADCs functions](#2-esp32-adcs-functions)
+  * [3. ESP32 WiFi uses ADC2 for WiFi functions](#3-esp32-wifi-uses-adc2-for-wifi-functions)
+* [Basic Usage](#Basic-Usage)
+* [HOWTO use STM32F4 with LAN8720](#howto-use-stm32f4-with-lan8720)
+  * [1. Wiring](#1-wiring)
+  * [2. HOWTO program using STLink V-2 or V-3](#2-howto-program-using-stlink-v-2-or-v-3)
+  * [3. HOWTO use Serial Port for Debugging](#3-howto-use-serial-port-for-debugging)
 * [Examples](#examples)
-  * [ 1. Async_AdvancedWebServer](examples/Async_AdvancedWebServer)
-  * [ 2. Async_HelloServer](examples/Async_HelloServer)
-  * [ 3. Async_HelloServer2](examples/Async_HelloServer2)
-  * [ 4. Async_HttpBasicAuth](examples/Async_HttpBasicAuth)
-  * [ 5. AsyncMultiWebServer](examples/AsyncMultiWebServer)
-  * [ 6. Async_PostServer](examples/Async_PostServer)
-  * [ 7. Async_RegexPatterns](examples/Async_RegexPatterns)
-  * [ 8. Async_SimpleWebServer](examples/Async_SimpleWebServer)
-  * [ 9. **MQTTClient_Auth**](examples/MQTTClient_Auth)
-  * [10. **MQTTClient_Basic**](examples/MQTTClient_Basic)
-  * [11. **MQTT_ThingStream**](examples/MQTT_ThingStream)
-  * [12. WebClient](examples/WebClient) 
-  * [13. WebClientRepeating](examples/WebClientRepeating)
-* [Example Async_AdvancedWebServer](#example-Async_AdvancedWebServer)
-* [Debug Terminal Output Samples](#debug-termimal-output-samples)
-  * [1. Async_AdvancedWebServer on Teensy4.1 QNEthernet](#1-Async_AdvancedWebServer-on-Teensy41-QNEthernet)
-  * [2. WebClient on Teensy4.1 QNEthernet](#2-WebClient-on-Teensy41-QNEthernet)
-  * [3. MQTTClient_Auth on Teensy4.1 QNEthernet](#3-MQTTClient_Auth-on-Teensy41-QNEthernet)
-  * [4. MQTTClient_Basic on Teensy4.1 QNEthernet](#4-MQTTClient_Basic-on-Teensy41-QNEthernet)
-  * [5. MQTT_ThingStream on Teensy4.1 QNEthernet](#5-MQTT_ThingStream-on-Teensy41-QNEthernet)
+  * [1. For ESP32](#1-for-ESP32)
+    * [1. FullyFeatured_ESP32](examples/ESP32/FullyFeatured_ESP32)
+    * [2. FullyFeaturedSSL_ESP32](examples/ESP32/FullyFeaturedSSL_ESP32)
+  * [2. For ESP8266](#2-for-ESP8266)
+    * [1. FullyFeatured_ESP8266](examples/ESP8266/FullyFeatured_ESP8266)
+  * [3. For WT32_ETH01](#3-for-WT32_ETH01)
+    * [1. FullyFeatured_WT32_ETH01](examples/WT32_ETH01/FullyFeatured_WT32_ETH01)
+    * [2. FullyFeaturedSSL_WT32_ETH01](examples/WT32_ETH01/FullyFeaturedSSL_WT32_ETH01)
+  * [4. For STM32 using LAN8742A](#4-For-STM32-using-LAN8742A)
+    * [1. FullyFeatured_STM32](examples/STM32/FullyFeatured_STM32) **New**
+  * [5. For STM32 using LAN8720](#5-For-STM32-using-LAN8720)
+    * [1. FullyFeatured_STM32_LAN8720](examples/STM32_LAN8720/FullyFeatured_STM32_LAN8720) **New**
+  * [6. For Portenta_H7 using Murata WiFi](#6-For-Portenta_H7-using-Murata-WiFi)
+    * [1. FullyFeatured_PortentaH7_WiFi](examples/PortentaH7_WiFi/FullyFeatured_PortentaH7_WiFi) **New** 
+  * [7. For Portenta_H7 using built-in Ethernet](#7-For-Portenta_H7-using-built-in-Ethernet)
+    * [1. FullyFeatured_PortentaH7_Ethernet](examples/PortentaH7_Ethernet/FullyFeatured_PortentaH7_Ethernet) **New**
+  * [8. For Teensy 4.1 using QNEthernet Library](#8-For-Teensy-41-using-QNEthernet-Library)
+    * [1. FullyFeatured_QNEthernet](examples/QNEthernet/FullyFeatured_QNEthernet) **New**
+* [Example FullyFeaturedSSL_ESP32](#example-FullyFeaturedSSL_ESP32)
+  * [1. File FullyFeaturedSSL_ESP32.ino](#1-file-FullyFeaturedSSL_ESP32ino)
+  * [2. File defines.h](#2-file-definesh)
+* [Debug Terminal Output Samples](#debug-terminal-output-samples)
+  * [ 1. FullyFeature_ESP8266 on ESP8266_NODEMCU_ESP12E](#1-FullyFeature_ESP8266-on-ESP8266_NODEMCU_ESP12E) 
+  * [ 2. FullyFeature_ESP32 on ESP32_DEV](#2-FullyFeature_ESP32-on-ESP32_DEV)
+  * [ 3. FullyFeatureSSL_ESP32 on ESP32_DEV](#3-FullyFeatureSSL_ESP32-on-ESP32_DEV) 
+  * [ 4. FullyFeatureSSL_ESP32 on ESP32_DEV with _ASYNC_MQTT_LOGLEVEL_](#4-fullyfeaturessl_esp32-on-esp32_dev-with-async_mqtt_loglevel)
+  * [ 5. FullyFeatureSSL_WT32_ETH01 on WT32-ETH01 with ETH_PHY_LAN8720](#5-FullyFeatureSSL_WT32_ETH01-on-WT32-ETH01-with-ETH_PHY_LAN8720)
+  * [ 6. FullyFeature_STM32 on NUCLEO_F767ZI](#6-FullyFeature_STM32-on-NUCLEO_F767ZI)
+  * [ 7. FullyFeature_STM32 on NUCLEO_F767ZI with _ASYNC_MQTT_LOGLEVEL_](#7-fullyfeature_stm32-on-nucleo_f767zi-with-async_mqtt_loglevel)
+  * [ 8. FullyFeatured_STM32_LAN8720 on BLACK_F407VE](#8-FullyFeatured_STM32_LAN8720-on-BLACK_F407VE)
+  * [ 9. FullyFeatured_PortentaH7_WiFi on PORTENTA_H7_M7](#9-FullyFeatured_PortentaH7_WiFi-on-PORTENTA_H7_M7)
+  * [10. FullyFeatured_Portenta_H7_Ethernet on PORTENTA_H7_M7](#10-FullyFeatured_Portenta_H7_Ethernet-on-PORTENTA_H7_M7)
+  * [11. FullyFeatured_QNEthernet on TEENSY 4.1 using QNEthernet](#11-FullyFeatured_QNEthernet-on-TEENSY-41-using-QNEthernet)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Issues](#issues)
@@ -111,16 +86,11 @@
 ---
 ---
 
-### Why do we need this [AsyncWebServer_Teensy41 library](https://github.com/khoih-prog/AsyncWebServer_Teensy41)
+### Why do we need this [AsyncMQTT_Generic library](https://github.com/khoih-prog/AsyncMQTT_Generic)
 
 #### Features
 
-This library is based on, modified from:
-
-1. [Hristo Gochkov's ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
-
-to apply the better and faster **asynchronous** feature of the **powerful** [ESPAsyncWebServer Library](https://github.com/me-no-dev/ESPAsyncWebServer) into **Teensy 4.1 using built-in QNEthernet**
-
+This [**AsyncMQTT_Generic library**](https://github.com/khoih-prog/AsyncMQTT_Generic) is based on and modified from [**Marvin Roger's async-mqtt-client Library**](https://github.com/marvinroger/async-mqtt-client), to provide support to many more boards besides ESP32/ESP8266, such as **STM32F, Portenta_H7, Teensy 4.1, etc. boards**. Those supported boards can be used with **ESP8266/ESP32’s WiFi, LAN8742A Ethernet, Portenta_H7 WiFi/Ethernet, Teensy 4.1 QNEthernet.**
 
 #### Why Async is better
 
@@ -142,45 +112,122 @@ to apply the better and faster **asynchronous** feature of the **powerful** [ESP
 
 #### Currently supported Boards
 
-1. **Teensy 4.1 using QNEthernet Library**
+This [**AsyncMQTT_Generic** library](https://github.com/khoih-prog/AsyncMQTT_Generic) currently supports these following boards:
+
+ 1. **ESP32**
+ 2. **ESP8266**
+ 3. **WT32_ETH01 (ESP32 + LAN8720A)**
+ 4. **STM32F/L/H/G/WB/MP1 boards with built-in Ethernet LAN8742A** such as :
+
+  - **Nucleo-144 (F429ZI, F767ZI)**
+  - **Discovery (STM32F746G-DISCOVERY)**
+  - **All STM32 boards (STM32F/L/H/G/WB/MP1) with 32K+ Flash, with Built-in Ethernet**
+ 5. **STM32F4/F7 boards using Ethernet LAN8720** such as :
+
+  - **Nucleo-144 (F429ZI, NUCLEO_F746NG, NUCLEO_F746ZG, NUCLEO_F756ZG)**
+  - **Discovery (DISCO_F746NG)**
+  - **STM32F4 boards (BLACK_F407VE, BLACK_F407VG, BLACK_F407ZE, BLACK_F407ZG, BLACK_F407VE_Mini, DIYMORE_F407VGT, FK407M1)** 
+  
+ 6. **Portenta_H7** using either `Murata WiFi` or `Vision-shield Ethernet`
+ 
+ 7. **Teensy 4.1 using QNEthernet Library**
+ 
+  
+--- 
+ 
+#### To-be-supported Boards
+  
+ 1. Any future board with supporting AsyncTCP library
+
 
 ---
 ---
 
+ 
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
- 2. [`Teensy core v1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1
- 3. [`QNEthernet Library version v0.13.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet.
+ 2. [`ESP32 Core 2.0.2+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
+ 3. [`ESP8266 Core 3.0.2+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. [![Latest release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/).
+ 4. [`Arduino Core for STM32 v2.2.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32F/L/H/G/WB/MP1 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest). **Ready from v1.2.0**
+ 5. [`Arduino mbed_portenta core 2.8.0+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) Portenta_H7-based boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest). **Ready from v1.3.0**
+ 6. [`Teensy core v1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1
+ 
+ 7. [`WebServer_WT32_ETH01 library v1.4.1+`](https://github.com/khoih-prog/WebServer_WT32_ETH01) to use WT32_ETH01 (ESP32 + LAN8720). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WebServer_WT32_ETH01.svg?)](https://www.ardu-badge.com/WebServer_WT32_ETH01). **Ready from v1.1.0**
+ 8. [`Teensy41_AsyncTCP library v1.0.0+`](https://github.com/khoih-prog/Teensy41_AsyncTCP) to use **Teensy 4.1 using QNEthernet Library**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Teensy41_AsyncTCP.svg?)](https://www.ardu-badge.com/Teensy41_AsyncTCP). **Ready from v1.4.0**
 
+---
 ---
 
 ## Installation
 
 ### Use Arduino Library Manager
-
-The best and easiest way is to use `Arduino Library Manager`. Search for `AsyncWebServer_Teensy41`, then select / install the latest version. You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/AsyncWebServer_Teensy41.svg?)](https://www.ardu-badge.com/AsyncWebServer_Teensy41) for more detailed instructions.
+The best and easiest way is to use `Arduino Library Manager`. Search for `AsyncMQTT_Generic`, then select / install the latest version.
+You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/AsyncMQTT_Generic.svg?)](https://www.ardu-badge.com/AsyncMQTT_Generic) for more detailed instructions.
 
 ### Manual Install
 
-1. Navigate to [AsyncWebServer_Teensy41](https://github.com/khoih-prog/AsyncWebServer_Teensy41) page.
-2. Download the latest release `AsyncWebServer_Teensy41-master.zip`.
-3. Extract the zip file to `AsyncWebServer_Teensy41-master` directory 
-4. Copy the whole `AsyncWebServer_Teensy41-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+Another way to install is to:
+
+1. Navigate to [**AsyncMQTT_Generic**](https://github.com/khoih-prog/AsyncMQTT_Generic) page.
+2. Download the latest release `AsyncMQTT_Generic-master.zip`.
+3. Extract the zip file to `AsyncMQTT_Generic-master` directory 
+4. Copy whole `AsyncMQTT_Generic-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
 ### VS Code & PlatformIO:
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**AsyncWebServer_Teensy41** library](https://registry.platformio.org/libraries/khoih-prog/AsyncWebServer_Teensy41) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/AsyncWebServer_Teensy41/installation). Search for **AsyncWebServer_Teensy41** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**AsyncMQTT_Generic** library](https://registry.platformio.org/libraries/khoih-prog/AsyncMQTT_Generic) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/AsyncMQTT_Generic/installation). Search for **AsyncMQTT_Generic** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
+
 
 ---
 ---
 
 ### Packages' Patches
 
-#### 1. For Teensy boards
+#### 1. For STM32 boards
+
+#### 1.1 For STM32 boards to use LAN8720
+
+To use LAN8720 on some STM32 boards 
+
+- **Nucleo-144 (F429ZI, NUCLEO_F746NG, NUCLEO_F746ZG, NUCLEO_F756ZG)**
+- **Discovery (DISCO_F746NG)**
+- **STM32F4 boards (BLACK_F407VE, BLACK_F407VG, BLACK_F407ZE, BLACK_F407ZG, BLACK_F407VE_Mini, DIYMORE_F407VGT, FK407M1)**
+
+you have to copy the files [stm32f4xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/2.2.0/system/STM32F4xx) and [stm32f7xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/2.2.0/system/STM32F7xx) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/2.2.0/system) to overwrite the old files.
+
+Supposing the STM32 stm32 core version is 2.2.0. These files must be copied into the directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/2.2.0/system/STM32F4xx/stm32f4xx_hal_conf_default.h` for STM32F4.
+- `~/.arduino15/packages/STM32/hardware/stm32/2.2.0/system/STM32F7xx/stm32f7xx_hal_conf_default.h` for Nucleo-144 STM32F7.
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
+theses files must be copied into the corresponding directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F4xx/stm32f4xx_hal_conf_default.h`
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F7xx/stm32f7xx_hal_conf_default.h
+
+
+#### 1.2 For STM32 boards to use Serial1
+
+**To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/2.2.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/2.2.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+
+Supposing the STM32 stm32 core version is 2.2.0. These files must be copied into the directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/2.2.0/variants/STM32F7xx/F765Z(G-I)T_F767Z(G-I)T_F777ZIT/NUCLEO_F767ZI/variant.h` for Nucleo-144 NUCLEO_F767ZI.
+- `~/.arduino15/packages/STM32/hardware/stm32/2.2.0/variants/STM32L0xx/L052R(6-8)T_L053R(6-8)T_L063R8T/NUCLEO_L053R8/variant.h` for Nucleo-64 NUCLEO_L053R8.
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
+theses files must be copied into the corresponding directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/STM32F7xx/F765Z(G-I)T_F767Z(G-I)T_F777ZIT/NUCLEO_F767ZI/variant.h`
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/STM32L0xx/L052R(6-8)T_L053R(6-8)T_L063R8T/NUCLEO_L053R8/variant.h`
+
+
+#### 2. For Teensy boards
  
  **To be able to compile and run on Teensy boards**, you have to copy the files in [**Packages_Patches for Teensy directory**](Packages_Patches/hardware/teensy/avr) into Teensy hardware directory (./arduino-1.8.19/hardware/teensy/avr/boards.txt). 
 
@@ -200,1058 +247,159 @@ These files must be copied into the directory:
 - `./arduino-x.yy.zz/hardware/teensy/avr/cores/teensy4/Stream.h`
 
 
----
----
+#### 3. For Portenta_H7 boards using Arduino IDE in Linux
 
-## Important things to remember
-
-- This is fully asynchronous server and as such does not run on the loop thread.
-- You can not use yield() or delay() or any function that uses them inside the callbacks
-- The server is smart enough to know when to close the connection and free resources
-- You can not send more than one response to a single request
-
----
-
-## Principles of operation
-
-### The Async Web server
-
-- Listens for connections
-- Wraps the new clients into ```Request```
-- Keeps track of clients and cleans memory
-- Manages ```Rewrites``` and apply them on the request url
-- Manages ```Handlers``` and attaches them to Requests
-
-### Request Life Cycle
-
-- TCP connection is received by the server
-- The connection is wrapped inside ```Request``` object
-- When the request head is received (type, url, get params, http version and host),
-  the server goes through all ```Rewrites``` (in the order they were added) to rewrite the url and inject query parameters,
-  next, it goes through all attached ```Handlers```(in the order they were added) trying to find one
-  that ```canHandle``` the given request. If none are found, the default(catch-all) handler is attached.
-- The rest of the request is received, calling the ```handleUpload``` or ```handleBody``` methods of the ```Handler``` if they are needed (POST+File/Body)
-- When the whole request is parsed, the result is given to the ```handleRequest``` method of the ```Handler``` and is ready to be responded to
-- In the ```handleRequest``` method, to the ```Request``` is attached a ```Response``` object (see below) that will serve the response data back to the client
-- When the ```Response``` is sent, the client is closed and freed from the memory
-
-### Rewrites and how do they work
-
-- The ```Rewrites``` are used to rewrite the request url and/or inject get parameters for a specific request url path.
-- All ```Rewrites``` are evaluated on the request in the order they have been added to the server.
-- The ```Rewrite``` will change the request url only if the request url (excluding get parameters) is fully match
-  the rewrite url, and when the optional ```Filter``` callback return true.
-- Setting a ```Filter``` to the ```Rewrite``` enables to control when to apply the rewrite, decision can be based on
-  request url, http version, request host/port/target host, get parameters or the request client's localIP or remoteIP.
-- The ```Rewrite``` can specify a target url with optional get parameters, e.g. ```/to-url?with=params```
-
-### Handlers and how do they work
-
-- The ```Handlers``` are used for executing specific actions to particular requests
-- One ```Handler``` instance can be attached to any request and lives together with the server
-- Setting a ```Filter``` to the ```Handler``` enables to control when to apply the handler, decision can be based on
-  request url, http version, request host/port/target host, get parameters or the request client's localIP or remoteIP.
-- The ```canHandle``` method is used for handler specific control on whether the requests can be handled
-  and for declaring any interesting headers that the ```Request``` should parse. Decision can be based on request
-  method, request url, http version, request host/port/target host and get parameters
-- Once a ```Handler``` is attached to given ```Request``` (```canHandle``` returned true)
-  that ```Handler``` takes care to receive any file/data upload and attach a ```Response```
-  once the ```Request``` has been fully parsed
-- ```Handlers``` are evaluated in the order they are attached to the server. The ```canHandle``` is called only
-  if the ```Filter``` that was set to the ```Handler``` return true.
-- The first ```Handler``` that can handle the request is selected, not further ```Filter``` and ```canHandle``` are called.
-
-### Responses and how do they work
-
-- The ```Response``` objects are used to send the response data back to the client
-- The ```Response``` object lives with the ```Request``` and is freed on end or disconnect
-- Different techniques are used depending on the response type to send the data in packets
-  returning back almost immediately and sending the next packet when this one is received.
-  Any time in between is spent to run the user loop and handle other network packets
-- Responding asynchronously is probably the most difficult thing for most to understand
-- Many different options exist for the user to make responding a background task
-
-### Template processing
-
-- AsyncWebServer_Teensy41 contains simple template processing engine.
-- Template processing can be added to most response types.
-- Currently it supports only replacing template placeholders with actual values. No conditional processing, cycles, etc.
-- Placeholders are delimited with ```%``` symbols. Like this: ```%TEMPLATE_PLACEHOLDER%```.
-- It works by extracting placeholder name from response text and passing it to user provided function which should return actual value to be used instead of placeholder.
-- Since it's user provided function, it is possible for library users to implement conditional processing and cycles themselves.
-- Since it's impossible to know the actual response size after template processing step in advance (and, therefore, to include it in response headers), the response becomes [chunked](#chunked-response).
-
----
-
-## Request Variables
-
-### Common Variables
-
-```cpp
-request->version();       // uint8_t: 0 = HTTP/1.0, 1 = HTTP/1.1
-request->method();        // enum:    HTTP_GET, HTTP_POST, HTTP_DELETE, HTTP_PUT, HTTP_PATCH, HTTP_HEAD, HTTP_OPTIONS
-request->url();           // String:  URL of the request (not including host, port or GET parameters)
-request->host();          // String:  The requested host (can be used for virtual hosting)
-request->contentType();   // String:  ContentType of the request (not avaiable in Handler::canHandle)
-request->contentLength(); // size_t:  ContentLength of the request (not avaiable in Handler::canHandle)
-request->multipart();     // bool:    True if the request has content type "multipart"
-```
-
-### Headers
-
-```cpp
-//List all collected headers
-int headers = request->headers();
-int i;
-
-for(i=0;i<headers;i++)
-{
-  AsyncWebHeader* h = request->getHeader(i);
-  Serial.printf("HEADER[%s]: %s\n", h->name().c_str(), h->value().c_str());
-}
-
-//get specific header by name
-if(request->hasHeader("MyHeader"))
-{
-  AsyncWebHeader* h = request->getHeader("MyHeader");
-  Serial.printf("MyHeader: %s\n", h->value().c_str());
-}
-
-//List all collected headers (Compatibility)
-int headers = request->headers();
-int i;
-
-for(i=0;i<headers;i++)
-{
-  Serial.printf("HEADER[%s]: %s\n", request->headerName(i).c_str(), request->header(i).c_str());
-}
-
-//get specific header by name (Compatibility)
-if(request->hasHeader("MyHeader"))
-{
-  Serial.printf("MyHeader: %s\n", request->header("MyHeader").c_str());
-}
-```
-
-### GET, POST and FILE parameters
-
-```cpp
-//List all parameters
-int params = request->params();
-
-for(int i=0;i<params;i++)
-{
-  AsyncWebParameter* p = request->getParam(i);
+  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.8.0/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.8.0/portenta_post_install.sh). 
   
-  if(p->isFile())
-  { 
-    //p->isPost() is also true
-    Serial.printf("FILE[%s]: %s, size: %u\n", p->name().c_str(), p->value().c_str(), p->size());
-  } 
-  else if(p->isPost())
-  {
-    Serial.printf("POST[%s]: %s\n", p->name().c_str(), p->value().c_str());
-  } 
-  else 
-  {
-    Serial.printf("GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
-  }
-}
-
-//Check if GET parameter exists
-if(request->hasParam("download"))
-  AsyncWebParameter* p = request->getParam("download");
-
-//Check if POST (but not File) parameter exists
-if(request->hasParam("download", true))
-  AsyncWebParameter* p = request->getParam("download", true);
-
-//Check if FILE was uploaded
-if(request->hasParam("download", true, true))
-  AsyncWebParameter* p = request->getParam("download", true, true);
-
-//List all parameters (Compatibility)
-int args = request->args();
-
-for(int i=0;i<args;i++)
-{
-  Serial.printf("ARG[%s]: %s\n", request->argName(i).c_str(), request->arg(i).c_str());
-}
-
-//Check if parameter exists (Compatibility)
-if(request->hasArg("download"))
-  String arg = request->arg("download");
-```
-
-### JSON body handling with ArduinoJson
-
-Endpoints which consume JSON can use a special handler to get ready to use JSON data in the request callback:
-
-```cpp
-#include "AsyncJson.h"
-#include "ArduinoJson.h"
-
-AsyncCallbackJsonWebHandler* handler = new AsyncCallbackJsonWebHandler("/rest/endpoint", [](AsyncWebServerRequest *request, JsonVariant &json) 
-{
-  JsonObject& jsonObj = json.as<JsonObject>();
-  // ...
-});
-
-server.addHandler(handler);
-```
----
-
-## Responses
-
-### Redirect to another URL
-
-```cpp
-//to local url
-request->redirect("/login");
-
-//to external url
-request->redirect("http://esp8266.com");
-```
-
-### Basic response with HTTP Code
-
-```cpp
-request->send(404); //Sends 404 File Not Found
-```
-
-### Basic response with HTTP Code and extra headers
-
-```cpp
-AsyncWebServerResponse *response = request->beginResponse(404); //Sends 404 File Not Found
-response->addHeader("Server","AsyncWebServer_Teensy41");
-request->send(response);
-```
-
-### Basic response with string content
-
-```cpp
-request->send(200, "text/plain", "Hello World!");
-```
-
-### Basic response with string content and extra headers
-
-```cpp
-AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Hello World!");
-response->addHeader("Server","AsyncWebServer");
-request->send(response);
-```
-
-### Respond with content coming from a Stream
-
-```cpp
-//read 12 bytes from Serial and send them as Content Type text/plain
-request->send(Serial, "text/plain", 12);
-```
-
-### Respond with content coming from a Stream and extra headers
-
-```cpp
-//read 12 bytes from Serial and send them as Content Type text/plain
-AsyncWebServerResponse *response = request->beginResponse(Serial, "text/plain", 12);
-response->addHeader("Server","AsyncWebServer_Teensy41");
-request->send(response);
-```
-
-### Respond with content coming from a Stream containing templates
-
-```cpp
-String processor(const String& var)
-{
-  if(var == "HELLO_FROM_TEMPLATE")
-    return F("Hello world!");
-    
-  return String();
-}
-
-// ...
-
-//read 12 bytes from Serial and send them as Content Type text/plain
-request->send(Serial, "text/plain", 12, processor);
-```
-
-### Respond with content coming from a Stream containing templates and extra headers
-
-```cpp
-String processor(const String& var)
-{
-  if(var == "HELLO_FROM_TEMPLATE")
-    return F("Hello world!");
-  return String();
-}
-
-// ...
-
-//read 12 bytes from Serial and send them as Content Type text/plain
-AsyncWebServerResponse *response = request->beginResponse(Serial, "text/plain", 12, processor);
-response->addHeader("Server","AsyncWebServer_Teensy41");
-request->send(response);
-```
-
-### Respond with content using a callback
-
-```cpp
-//send 128 bytes as plain text
-request->send("text/plain", 128, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t 
-{
-  //Write up to "maxLen" bytes into "buffer" and return the amount written.
-  //index equals the amount of bytes that have been already sent
-  //You will not be asked for more bytes once the content length has been reached.
-  //Keep in mind that you can not delay or yield waiting for more data!
-  //Send what you currently have and you will be asked for more again
-  return mySource.read(buffer, maxLen);
-});
-```
-
-### Respond with content using a callback and extra headers
-
-```cpp
-//send 128 bytes as plain text
-AsyncWebServerResponse *response = request->beginResponse("text/plain", 128, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t 
-{
-  //Write up to "maxLen" bytes into "buffer" and return the amount written.
-  //index equals the amount of bytes that have been already sent
-  //You will not be asked for more bytes once the content length has been reached.
-  //Keep in mind that you can not delay or yield waiting for more data!
-  //Send what you currently have and you will be asked for more again
-  return mySource.read(buffer, maxLen);
-});
-
-response->addHeader("Server","AsyncWebServer_Teensy41");
-request->send(response);
-```
-
-### Respond with content using a callback containing templates
-
-```cpp
-String processor(const String& var)
-{
-  if(var == "HELLO_FROM_TEMPLATE")
-    return F("Hello world!");
-    
-  return String();
-}
-
-// ...
-
-//send 128 bytes as plain text
-request->send("text/plain", 128, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t 
-{
-  //Write up to "maxLen" bytes into "buffer" and return the amount written.
-  //index equals the amount of bytes that have been already sent
-  //You will not be asked for more bytes once the content length has been reached.
-  //Keep in mind that you can not delay or yield waiting for more data!
-  //Send what you currently have and you will be asked for more again
-  return mySource.read(buffer, maxLen);
-}, processor);
-```
-
-### Respond with content using a callback containing templates and extra headers
-
-```cpp
-String processor(const String& var)
-{
-  if(var == "HELLO_FROM_TEMPLATE")
-    return F("Hello world!");
-  return String();
-}
-
-// ...
-
-//send 128 bytes as plain text
-AsyncWebServerResponse *response = request->beginResponse("text/plain", 128, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t 
-{
-  //Write up to "maxLen" bytes into "buffer" and return the amount written.
-  //index equals the amount of bytes that have been already sent
-  //You will not be asked for more bytes once the content length has been reached.
-  //Keep in mind that you can not delay or yield waiting for more data!
-  //Send what you currently have and you will be asked for more again
-  return mySource.read(buffer, maxLen);
-}, processor);
-
-response->addHeader("Server","AsyncWebServer_Teensy41");
-request->send(response);
-```
-
-### Chunked Response
-
-Used when content length is unknown. Works best if the client supports HTTP/1.1
-
-```cpp
-AsyncWebServerResponse *response = request->beginChunkedResponse("text/plain", [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t 
-{
-  //Write up to "maxLen" bytes into "buffer" and return the amount written.
-  //index equals the amount of bytes that have been already sent
-  //You will be asked for more data until 0 is returned
-  //Keep in mind that you can not delay or yield waiting for more data!
-  return mySource.read(buffer, maxLen);
-});
-
-response->addHeader("Server","AsyncWebServer_Teensy41");
-request->send(response);
-```
-
-### Chunked Response containing templates
-
-Used when content length is unknown. Works best if the client supports HTTP/1.1
-
-```cpp
-String processor(const String& var)
-{
-  if(var == "HELLO_FROM_TEMPLATE")
-    return F("Hello world!");
-    
-  return String();
-}
-
-// ...
-
-AsyncWebServerResponse *response = request->beginChunkedResponse("text/plain", [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t 
-{
-  //Write up to "maxLen" bytes into "buffer" and return the amount written.
-  //index equals the amount of bytes that have been already sent
-  //You will be asked for more data until 0 is returned
-  //Keep in mind that you can not delay or yield waiting for more data!
-  return mySource.read(buffer, maxLen);
-}, processor);
-
-response->addHeader("Server","AsyncWebServer_Teensy41");
-request->send(response);
-```
-
-### Print to response
-
-```cpp
-AsyncResponseStream *response = request->beginResponseStream("text/html");
-response->addHeader("Server","AsyncWebServer_Teensy41");
-response->printf("<!DOCTYPE html><html><head><title>Webpage at %s</title></head><body>", request->url().c_str());
-
-response->print("<h2>Hello ");
-response->print(request->client()->remoteIP());
-response->print("</h2>");
-
-response->print("<h3>General</h3>");
-response->print("<ul>");
-response->printf("<li>Version: HTTP/1.%u</li>", request->version());
-response->printf("<li>Method: %s</li>", request->methodToString());
-response->printf("<li>URL: %s</li>", request->url().c_str());
-response->printf("<li>Host: %s</li>", request->host().c_str());
-response->printf("<li>ContentType: %s</li>", request->contentType().c_str());
-response->printf("<li>ContentLength: %u</li>", request->contentLength());
-response->printf("<li>Multipart: %s</li>", request->multipart()?"true":"false");
-response->print("</ul>");
-
-response->print("<h3>Headers</h3>");
-response->print("<ul>");
-int headers = request->headers();
-
-for(int i=0;i<headers;i++)
-{
-  AsyncWebHeader* h = request->getHeader(i);
-  response->printf("<li>%s: %s</li>", h->name().c_str(), h->value().c_str());
-}
-
-response->print("</ul>");
-
-response->print("<h3>Parameters</h3>");
-response->print("<ul>");
-
-int params = request->params();
-
-for(int i=0;i<params;i++)
-{
-  AsyncWebParameter* p = request->getParam(i);
+  Then run the following command using `sudo`
   
-  if(p->isFile())
-  {
-    response->printf("<li>FILE[%s]: %s, size: %u</li>", p->name().c_str(), p->value().c_str(), p->size());
-  } 
-  else if(p->isPost())
-  {
-    response->printf("<li>POST[%s]: %s</li>", p->name().c_str(), p->value().c_str());
-  } 
-  else 
-  {
-    response->printf("<li>GET[%s]: %s</li>", p->name().c_str(), p->value().c_str());
-  }
-}
-
-response->print("</ul>");
-
-response->print("</body></html>");
-//send the response last
-request->send(response);
+```
+$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.8.0
+$ chmod 755 portenta_post_install.sh
+$ sudo ./portenta_post_install.sh
 ```
 
-### ArduinoJson Basic Response
+This will create the file `/etc/udev/rules.d/49-portenta_h7.rules` as follows:
 
-This way of sending Json is great for when the result is **below 4KB**
+```
+# Portenta H7 bootloader mode UDEV rules
 
-```cpp
-#include "AsyncJson.h"
-#include "ArduinoJson.h"
-
-
-AsyncResponseStream *response = request->beginResponseStream("application/json");
-DynamicJsonBuffer jsonBuffer;
-JsonObject &root = jsonBuffer.createObject();
-root["heap"] = ESP.getFreeHeap();
-root["ssid"] = WiFi.SSID();
-root.printTo(*response);
-
-request->send(response);
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="035b", GROUP="plugdev", MODE="0666"
 ```
 
-### ArduinoJson Advanced Response
+Supposing the ArduinoCore-mbed core version is 2.8.0. Now only one file must be copied into the directory:
 
-This response can handle really **large Json objects (tested to 40KB)**
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.8.0/portenta_post_install.sh`
 
-There isn't any noticeable speed decrease for small results with the method above
+Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
-Since ArduinoJson does not allow reading parts of the string, the whole Json has to be passed every time a 
-chunks needs to be sent, which shows speed decrease proportional to the resulting json packets
+This file must be copied into the directory:
 
-```cpp
-#include "AsyncJson.h"
-#include "ArduinoJson.h"
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/x.yy.zz/portenta_post_install.sh`
 
-AsyncJsonResponse * response = new AsyncJsonResponse();
-response->addHeader("Server","AsyncWebServer");
-JsonObject& root = response->getRoot();
-root["IP"] = Ethernet.localIP();
-response->setLength();
-
-request->send(response);
-```
----
-
-## Param Rewrite With Matching
-It is possible to rewrite the request url with parameter matchg. Here is an example with one parameter:
-Rewrite for example "/radio/{frequence}" -> "/radio?f={frequence}"
-
-```cpp
-class OneParamRewrite : public AsyncWebRewrite
-{
-  protected:
-    String _urlPrefix;
-    int _paramIndex;
-    String _paramsBackup;
-
-  public:
-  OneParamRewrite(const char* from, const char* to)
-    : AsyncWebRewrite(from, to) 
-    {
-
-      _paramIndex = _from.indexOf('{');
-
-      if( _paramIndex >=0 && _from.endsWith("}")) 
-      {
-        _urlPrefix = _from.substring(0, _paramIndex);
-        int index = _params.indexOf('{');
-        
-        if(index >= 0) 
-        {
-          _params = _params.substring(0, index);
-        }
-      } 
-      else 
-      {
-        _urlPrefix = _from;
-      }
-      
-      _paramsBackup = _params;
-  }
-
-  bool match(AsyncWebServerRequest *request) override 
-  {
-    if(request->url().startsWith(_urlPrefix)) 
-    {
-      if(_paramIndex >= 0) 
-      {
-        _params = _paramsBackup + request->url().substring(_paramIndex);
-      } 
-      else 
-      {
-        _params = _paramsBackup;
-      }
-      
-      return true;
-
-    } 
-    else 
-    {
-      return false;
-    }
-  }
-};
-```
-
-Usage:
-
-```cpp
-  server.addRewrite( new OneParamRewrite("/radio/{frequence}", "/radio?f={frequence}") );
-```
----
-
-## Using filters
-
-Filters can be set to `Rewrite` or `Handler` in order to control when to apply the rewrite and consider the handler.
-A filter is a callback function that evaluates the request and return a boolean `true` to include the item
-or `false` to exclude it.
 
 ---
-
-## Bad Responses
-
-Some responses are implemented, but you should not use them, because they do not conform to HTTP.
-The following example will lead to unclean close of the connection and more time wasted
-than providing the length of the content
-
-### Respond with content using a callback without content length to HTTP/1.0 clients
-
-```cpp
-//This is used as fallback for chunked responses to HTTP/1.0 Clients
-request->send("text/plain", 0, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t 
-{
-  //Write up to "maxLen" bytes into "buffer" and return the amount written.
-  //You will be asked for more data until 0 is returned
-  //Keep in mind that you can not delay or yield waiting for more data!
-  return mySource.read(buffer, maxLen);
-});
-```
 ---
 
-## Async WebSocket Plugin
 
-The server includes a web socket plugin which lets you define different WebSocket locations to connect to
-without starting another listening service or using different port
+### HOWTO Use analogRead() with ESP32 running WiFi and/or BlueTooth (BT/BLE)
 
-### Async WebSocket Event
+Please have a look at [**ESP_WiFiManager Issue 39: Not able to read analog port when using the autoconnect example**](https://github.com/khoih-prog/ESP_WiFiManager/issues/39) to have more detailed description and solution of the issue.
 
-```cpp
+#### 1.  ESP32 has 2 ADCs, named ADC1 and ADC2
 
-void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len)
-{
-  if(type == WS_EVT_CONNECT)
-  {
-    //client connected
-    Serial.printf("ws[%s][%u] connect\n", server->url(), client->id());
-    client->printf("Hello Client %u :)", client->id());
-    client->ping();
-  } 
-  else if(type == WS_EVT_DISCONNECT)
-  {
-    //client disconnected
-    Serial.printf("ws[%s][%u] disconnect: %u\n", server->url(), client->id());
-  } 
-  else if(type == WS_EVT_ERROR)
-  {
-    //error was received from the other end
-    Serial.printf("ws[%s][%u] error(%u): %s\n", server->url(), client->id(), *((uint16_t*)arg), (char*)data);
-  } 
-  else if(type == WS_EVT_PONG)
-  {
-    //pong message was received (in response to a ping request maybe)
-    Serial.printf("ws[%s][%u] pong[%u]: %s\n", server->url(), client->id(), len, (len)?(char*)data:"");
-  } 
-  else if(type == WS_EVT_DATA)
-  {
-    //data packet
-    AwsFrameInfo * info = (AwsFrameInfo*)arg;
+#### 2. ESP32 ADCs functions
+
+- ADC1 controls ADC function for pins **GPIO32-GPIO39**
+- ADC2 controls ADC function for pins **GPIO0, 2, 4, 12-15, 25-27**
+
+#### 3.. ESP32 WiFi uses ADC2 for WiFi functions
+
+Look in file [**adc_common.c**](https://github.com/espressif/esp-idf/blob/master/components/driver/adc_common.c#L61)
+
+> In ADC2, there're two locks used for different cases:
+> 1. lock shared with app and Wi-Fi:
+>    ESP32:
+>         When Wi-Fi using the ADC2, we assume it will never stop, so app checks the lock and returns immediately if failed.
+>    ESP32S2:
+>         The controller's control over the ADC is determined by the arbiter. There is no need to control by lock.
+> 
+> 2. lock shared between tasks:
+>    when several tasks sharing the ADC2, we want to guarantee
+>    all the requests will be handled.
+>    Since conversions are short (about 31us), app returns the lock very soon,
+>    we use a spinlock to stand there waiting to do conversions one by one.
+> 
+> adc2_spinlock should be acquired first, then adc2_wifi_lock or rtc_spinlock.
+
+
+- In order to use ADC2 for other functions, we have to **acquire complicated firmware locks and very difficult to do**
+- So, it's not advisable to use ADC2 with WiFi/BlueTooth (BT/BLE).
+- Use ADC1, and pins GPIO32-GPIO39
+- If somehow it's a must to use those pins serviced by ADC2 (**GPIO0, 2, 4, 12, 13, 14, 15, 25, 26 and 27**), use the **fix mentioned at the end** of [**ESP_WiFiManager Issue 39: Not able to read analog port when using the autoconnect example**](https://github.com/khoih-prog/ESP_WiFiManager/issues/39) to work with ESP32 WiFi/BlueTooth (BT/BLE).
+
     
-    if(info->final && info->index == 0 && info->len == len)
-    {
-      //the whole message is in a single frame and we got all of it's data
-      Serial.printf("ws[%s][%u] %s-message[%llu]: ", server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
-      
-      if(info->opcode == WS_TEXT)
-      {
-        data[len] = 0;
-        Serial.printf("%s\n", (char*)data);
-      } 
-      else 
-      {
-        for(size_t i=0; i < info->len; i++)
-        {
-          Serial.printf("%02x ", data[i]);
-        }
-        
-        Serial.printf("\n");
-      }
-      
-      if(info->opcode == WS_TEXT)
-        client->text("I got your text message");
-      else
-        client->binary("I got your binary message");
-    } 
-    else 
-    {
-      //message is comprised of multiple frames or the frame is split into multiple packets
-      if(info->index == 0)
-      {
-        if(info->num == 0)
-          Serial.printf("ws[%s][%u] %s-message start\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
-          
-        Serial.printf("ws[%s][%u] frame[%u] start[%llu]\n", server->url(), client->id(), info->num, info->len);
-      }
-
-      Serial.printf("ws[%s][%u] frame[%u] %s[%llu - %llu]: ", server->url(), client->id(), info->num, (info->message_opcode == WS_TEXT)?"text":"binary", info->index, info->index + len);
-      
-      if(info->message_opcode == WS_TEXT)
-      {
-        data[len] = 0;
-        Serial.printf("%s\n", (char*)data);
-      } 
-      else 
-      {
-        for(size_t i=0; i < len; i++){
-          Serial.printf("%02x ", data[i]);
-        }
-        Serial.printf("\n");
-      }
-
-      if((info->index + len) == info->len)
-      {
-        Serial.printf("ws[%s][%u] frame[%u] end[%llu]\n", server->url(), client->id(), info->num, info->len);
-        
-        if(info->final)
-        {
-          Serial.printf("ws[%s][%u] %s-message end\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
-          
-          if(info->message_opcode == WS_TEXT)
-            client->text("I got your text message");
-          else
-            client->binary("I got your binary message");
-        }
-      }
-    }
-  }
-}
-```
-
-### Methods for sending data to a socket client
-
-```cpp
-//Server methods
-AsyncWebSocket ws("/ws");
-//printf to a client
-ws.printf((uint32_t)client_id, arguments...);
-//printf to all clients
-ws.printfAll(arguments...);
-//send text to a client
-ws.text((uint32_t)client_id, (char*)text);
-ws.text((uint32_t)client_id, (uint8_t*)text, (size_t)len);
-//send text to all clients
-ws.textAll((char*)text);
-ws.textAll((uint8_t*)text, (size_t)len);
-//send binary to a client
-ws.binary((uint32_t)client_id, (char*)binary);
-ws.binary((uint32_t)client_id, (uint8_t*)binary, (size_t)len);
-ws.binary((uint32_t)client_id, flash_binary, 4);
-//send binary to all clients
-ws.binaryAll((char*)binary);
-ws.binaryAll((uint8_t*)binary, (size_t)len);
-//HTTP Authenticate before switch to Websocket protocol
-ws.setAuthentication("user", "pass");
-
-//client methods
-AsyncWebSocketClient * client;
-//printf
-client->printf(arguments...);
-//send text
-client->text((char*)text);
-client->text((uint8_t*)text, (size_t)len);
-//send binary
-client->binary((char*)binary);
-client->binary((uint8_t*)binary, (size_t)len);
-```
-
-### Direct access to web socket message buffer
-
-When sending a web socket message using the above methods a buffer is created.  Under certain circumstances you might want to manipulate or populate this buffer directly from your application, for example to prevent unnecessary duplications of the data.  This example below shows how to create a buffer and print data to it from an ArduinoJson object then send it.
-
-```cpp
-void sendDataWs(AsyncWebSocketClient * client)
-{
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& root = jsonBuffer.createObject();
-    root["a"] = "abc";
-    root["b"] = "abcd";
-    root["c"] = "abcde";
-    root["d"] = "abcdef";
-    root["e"] = "abcdefg";
-    size_t len = root.measureLength();
-    AsyncWebSocketMessageBuffer * buffer = ws.makeBuffer(len); //  creates a buffer (len + 1) for you.
-    
-    if (buffer) 
-    {
-        root.printTo((char *)buffer->get(), len + 1);
-        
-        if (client) 
-        {
-            client->text(buffer);
-        } 
-        else 
-        {
-            ws.textAll(buffer);
-        }
-    }
-}
-```
-
-### Limiting the number of web socket clients
-
-Browsers sometimes do not correctly close the websocket connection, even when the close() function is called in javascript.  This will eventually exhaust the web server's resources and will cause the server to crash.  Periodically calling the cleanClients() function from the main loop() function limits the number of clients by closing the oldest client when the maximum number of clients has been exceeded.  This can called be every cycle, however, if you wish to use less power, then calling as infrequently as once per second is sufficient.
-
-```cpp
-void loop(){
-  ws.cleanupClients();
-}
-```
-
+---
 ---
 
-## Async Event Source Plugin
+## Basic Usage
 
-The server includes EventSource (Server-Sent Events) plugin which can be used to send short text events to the browser.
-Difference between EventSource and WebSockets is that EventSource is single direction, text-only protocol.
+Please check [API documentation](https://github.com/khoih-prog/AsyncMQTT_Generic/blob/main/docs/2.-API-reference.md).
 
-### Setup Event Source on the server
-
-```cpp
-AsyncWebServer server(80);
-AsyncEventSource events("/events");
-
-void setup()
-{
-  // setup ......
-  events.onConnect([](AsyncEventSourceClient *client)
-  {
-    if(client->lastId())
-    {
-      Serial.printf("Client reconnected! Last message ID that it got is: %u\n", client->lastId());
-    }
-    
-    //send event with message "hello!", id current millis
-    // and set reconnect delay to 1 second
-    client->send("hello!",NULL,millis(),1000);
-  });
-  
-  //HTTP Basic authentication
-  events.setAuthentication("user", "pass");
-  server.addHandler(&events);
-  // setup ......
-}
-
-void loop()
-{
-  if(eventTriggered){ // your logic here
-    //send event "myevent"
-    events.send("my event content","myevent",millis());
-  }
-}
-```
-
-### Setup Event Source in the browser
-
-```javascript
-if (!!window.EventSource) 
-{
-  var source = new EventSource('/events');
-
-  source.addEventListener('open', function(e) 
-  {
-    console.log("Events Connected");
-  }, false);
-
-  source.addEventListener('error', function(e) 
-  {
-    if (e.target.readyState != EventSource.OPEN) 
-    {
-      console.log("Events Disconnected");
-    }
-  }, false);
-
-  source.addEventListener('message', function(e) 
-  {
-    console.log("message", e.data);
-  }, false);
-
-  source.addEventListener('myevent', function(e) 
-  {
-    console.log("myevent", e.data);
-  }, false);
-}
-```
----
-
-## Remove handlers and rewrites
-
-Server goes through handlers in same order as they were added. You can't simple add handler with same path to override them.
-To remove handler:
-
-```arduino
-// save callback for particular URL path
-auto handler = server.on("/some/path", [](AsyncWebServerRequest *request){
-  //do something useful
-});
-
-// when you don't need handler anymore remove it
-server.removeHandler(&handler);
-
-// same with rewrites
-server.removeRewrite(&someRewrite);
-
-server.onNotFound([](AsyncWebServerRequest *request){
-  request->send(404);
-});
-
-// remove server.onNotFound handler
-server.onNotFound(NULL);
-
-// remove all rewrites, handlers and onNotFound/onFileUpload/onRequestBody callbacks
-server.reset();
-```
----
-
-## Setting up the server
-
-https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/d09281ae572db571fa5e53e624ca19f16462f892/examples/Async_HelloServer/Async_HelloServer.ino#L13-L150
 
 
 ---
+---
 
-### Setup global and class functions as request handlers
+### HOWTO use STM32F4 with LAN8720
 
-```cpp
-#include "QNEthernet.h"       // https://github.com/ssilverman/QNEthernet
-using namespace qindesign::network;
+#### 1. Wiring
 
-#include <AsyncWebServer_Teensy41.h>
-
-AsyncWebServer    server(80);
-
-...
-
-void handleRequest(AsyncWebServerRequest *request){}
-
-class WebClass 
-{
-public :
-  AsyncWebServer classWebServer = AsyncWebServer(81);
-
-  WebClass(){};
-
-  void classRequest (AsyncWebServerRequest *request){}
-
-  void begin()
-  {
-    // attach global request handler
-    classWebServer.on("/example", HTTP_ANY, handleRequest);
-
-    // attach class request handler
-    classWebServer.on("/example", HTTP_ANY, std::bind(&WebClass::classRequest, this, std::placeholders::_1));
-  }
-};
-
-AsyncWebServer globalWebServer(80);
-WebClass webClassInstance;
-
-void setup() 
-{
-  // attach global request handler
-  globalWebServer.on("/example", HTTP_ANY, handleRequest);
-
-  // attach class request handler
-  globalWebServer.on("/example", HTTP_ANY, std::bind(&WebClass::classRequest, webClassInstance, std::placeholders::_1));
-}
-
-void loop() 
-{
-
-}
-```
-
-### Methods for controlling websocket connections
-
-```cpp
-  // Disable client connections if it was activated
-  if ( ws.enabled() )
-    ws.enable(false);
-
-  // enable client connections if it was disabled
-  if ( !ws.enabled() )
-    ws.enable(true);
-```
+This is the Wiring for STM32F4 (BLACK_F407VE, etc.) using LAN8720
 
 
-### Adding Default Headers
+|LAN8720 PHY|<--->|STM32F4|
+|:-:|:-:|:-:|
+|TX1|<--->|PB_13|
+|TX_EN|<--->|PB_11|
+|TX0|<--->|PB_12|
+|RX0|<--->|PC_4|
+|RX1|<--->|PC_5|
+|nINT/RETCLK|<--->|PA_1|
+|CRS|<--->|PA_7|
+|MDIO|<--->|PA_2|
+|MDC|<--->|PC_1|
+|GND|<--->|GND|
+|VCC|<--->|+3.3V|
 
-In some cases, such as when working with CORS, or with some sort of custom authentication system, 
-you might need to define a header that should get added to all responses (including static, websocket and EventSource).
-The DefaultHeaders singleton allows you to do this.
+---
 
-Example:
+#### 2. HOWTO program using STLink V-2 or V-3
 
-```cpp
-DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
-webServer.begin();
-```
+Connect as follows. To program, use **STM32CubeProgrammer** or Arduino IDE with 
 
-*NOTE*: You will still need to respond to the OPTIONS method for CORS pre-flight in most cases. (unless you are only using GET)
+- **U(S)ART Support: "Enabled (generic Serial)"**
+- **Upload Method : "STM32CubeProgrammer (SWD)"**
 
-This is one option:
+- Jumper settings to program via STLInk
 
-```cpp
-webServer.onNotFound([](AsyncWebServerRequest *request) 
-{
-  if (request->method() == HTTP_OPTIONS) {
-    request->send(200);
-  } else {
-    request->send(404);
-  }
-});
-```
+|From|<--->|To|
+|:-:|:-:|:-:|
+|BOOT0|<--->|3.3V|
 
-### Path variable
+- Jumper settings when running normally to avoid accidentally reprogram
 
-With path variable you can create a custom regex rule for a specific parameter in a route. 
-For example we want a `sensorId` parameter in a route rule to match only a integer.
+|From|<--->|To|
+|:-:|:-:|:-:|
+|BOOT0|<--->|GND|
 
-```cpp
-  server.on("^\\/sensor\\/([0-9]+)$", HTTP_GET, [] (AsyncWebServerRequest *request) 
-  {
-      String sensorId = request->pathArg(0);
-  });
-```
-*NOTE*: All regex patterns starts with `^` and ends with `$`
+---
 
-To enable the `Path variable` support, you have to define the buildflag `-DASYNCWEBSERVER_REGEX`.
+|STLink|<--->|STM32F4|
+|:-:|:-:|:-:|
+|SWCLK|<--->|SWCLK|
+|SWDIO|<--->|SWDIO|
+|RST|<--->|NRST|
+|GND|<--->|GND|
+|5v|<--->|5V|
 
 
-For Arduino IDE create/update `platform.local.txt`:
+<p align="center">
+    <img src="https://github.com/khoih-prog/AsyncMQTT_Generic/blob/main/pics/STM32F407VET6.png">
+</p>
 
-`Windows`: C:\Users\(username)\AppData\Local\Arduino15\packages\\`{espxxxx}`\hardware\\`espxxxx`\\`{version}`\platform.local.txt
+---
 
-`Linux`: ~/.arduino15/packages/`{espxxxx}`/hardware/`{espxxxx}`/`{version}`/platform.local.txt
+#### 3. HOWTO use Serial Port for Debugging
 
-Add/Update the following line:
-```
-  compiler.cpp.extra_flags=-DDASYNCWEBSERVER_REGEX
-```
+Connect FDTI (USB to Serial) as follows:
 
-For platformio modify `platformio.ini`:
-```ini
-[env:myboard]
-build_flags = 
-  -DASYNCWEBSERVER_REGEX
-```
+|FDTI|<--->|STM32F4|
+|:-:|:-:|:-:|
+|RX|<--->|TX=PA_9|
+|TX|<--->|RX=PA_10|
+|GND|<--->|GND|
 
-*NOTE*: By enabling `ASYNCWEBSERVER_REGEX`, `<regex>` will be included. This will add an 100k to your binary.
 
 
 ---
@@ -1259,264 +407,1170 @@ build_flags =
 
 ### Examples
 
- 1. [Async_AdvancedWebServer](examples/Async_AdvancedWebServer)
- 2. [Async_HelloServer](examples/Async_HelloServer) 
- 3. [Async_HelloServer2](examples/Async_HelloServer2)
- 4. [Async_HttpBasicAuth](examples/Async_HttpBasicAuth)
- 5. [**AsyncMultiWebServer**](examples/AsyncMultiWebServer)
- 6. [Async_PostServer](examples/Async_PostServer) 
- 7. [Async_RegexPatterns](examples/Async_RegexPatterns)
- 8. [Async_SimpleWebServer](examples/Async_SimpleWebServer)
- 9. [**MQTTClient_Auth**](examples/MQTTClient_Auth)
-10. [**MQTTClient_Basic**](examples/MQTTClient_Basic)
-11. [**MQTT_ThingStream**](examples/MQTT_ThingStream)
-12. [WebClient](examples/WebClient)
-13. [WebClientRepeating](examples/WebClientRepeating)
+#### 1. For ESP32
+
+ 1. [FullyFeatured_ESP32](examples/ESP32/FullyFeatured_ESP32)
+ 2. [FullyFeaturedSSL_ESP32](examples/ESP32/FullyFeaturedSSL_ESP32)
+
+#### 2. For ESP8266
+
+ 1. [FullyFeatured_ESP8266](examples/ESP8266/FullyFeatured_ESP8266)
+
+#### 3. For WT32_ETH01
+
+ 1. [FullyFeatured_WT32_ETH01](examples/WT32_ETH01/FullyFeatured_WT32_ETH01)
+ 2. [FullyFeaturedSSL_WT32_ETH01](examples/WT32_ETH01/FullyFeaturedSSL_WT32_ETH01)
+ 
+#### 4. For STM32 using LAN8742A
+
+ 1. [FullyFeatured_STM32](examples/STM32/FullyFeatured_STM32) **New**
+ 
+#### 5. For STM32 using LAN8720
+
+ 1. [FullyFeatured_STM32_LAN8720](examples/STM32_LAN8720/FullyFeatured_STM32_LAN8720) **New** 
+
+#### 6. For Portenta_H7 using Murata WiFi
+
+ 1. [FullyFeatured_PortentaH7_WiFi](examples/PortentaH7_WiFi/FullyFeatured_PortentaH7_WiFi) **New** 
+ 
+#### 7. For Portenta_H7 using built-in Ethernet
+
+ 1. [FullyFeatured_PortentaH7_Ethernet](examples/PortentaH7_Ethernet/FullyFeatured_PortentaH7_Ethernet) **New** 
+ 
+#### 8. For Teensy 4.1 using QNEthernet Library
+
+ 1. [FullyFeatured_QNEthernet](examples/QNEthernet/FullyFeatured_QNEthernet) **New** 
+ 
+---
+---
+
+### Example [FullyFeaturedSSL_ESP32](examples/ESP32/FullyFeaturedSSL_ESP32)
+
+#### 1. File [FullyFeaturedSSL_ESP32.ino](examples/ESP32/FullyFeaturedSSL_ESP32/FullyFeaturedSSL_ESP32.ino)
+
+https://github.com/khoih-prog/AsyncMQTT_Generic/blob/a2db21ca2e68487560c0718529e5e83dee4d6b3f/examples/ESP32/FullyFeaturedSSL_ESP32/FullyFeaturedSSL_ESP32.ino#L13-L225
+
+
+
+#### 2. File [defines.h](examples/ESP32/FullyFeaturedSSL_ESP32/defines.h)
+
+https://github.com/khoih-prog/AsyncMQTT_Generic/blob/a2db21ca2e68487560c0718529e5e83dee4d6b3f/examples/ESP32/FullyFeaturedSSL_ESP32/defines.h#L12-L20
+
 
 ---
 ---
 
-### Example [Async_AdvancedWebServer](examples/Async_AdvancedWebServer)
+### Debug Terminal Output Samples
 
-https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/d09281ae572db571fa5e53e624ca19f16462f892/examples/Async_AdvancedWebServer/Async_AdvancedWebServer.ino#L41-L237
+#### 1. FullyFeature_ESP8266 on ESP8266_NODEMCU_ESP12E
 
-
-You can access the Async Advanced WebServer @ the server IP
-
-<p align="center">
-    <img src="https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/main/pics/Async_AdvancedWebServer.png">
-</p>
-
----
----
-
-### Debug Termimal Output Samples
-
-#### 1. Async_AdvancedWebServer on Teensy4.1 QNEthernet
-
-Following are debug terminal output and screen shots when running example [Async_AdvancedWebServer](examples/Async_AdvancedWebServer) on Teensy4.1 using Built-in Ethernet and QNEthernet Library demonstrate the operation of AsyncWebServer.
-
+This is terminal debug output when running [FullyFeatured_ESP8266](examples/ESP8266/FullyFeatured_ESP8266) on **ESP8266_NODEMCU_ESP12E** connecting to `broker.emqx.io` MQTT server.
 
 ```
-Start Async_AdvancedWebServer on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
-Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
-HTTP EthernetWebServer is @ IP : 192.168.2.107
-```
-
-<p align="center">
-    <img src="https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/main/pics/Async_AdvancedWebServer.png">
-</p>
-
----
-
-#### 2. WebClient on Teensy4.1 QNEthernet
-
-Following is debug terminal output when running example [WebClient](examples/WebClient) on Teensy4.1 using Built-in Ethernet and QNEthernet Library.
-
-
-```
-Start WebClient on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
-Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
-
-Starting connection to server...
-Connected to server
-HTTP/1.1 200 OK
-Server: nginx/1.4.2
-Date: Fri, 18 Mar 2022 14:44:27 GMT
-Content-Type: text/plain
-Content-Length: 2317
-Last-Modified: Thu, 24 Feb 2022 11:33:32 GMT
-Connection: close
-Vary: Accept-Encoding
-ETag: "62176d0c-90d"
-Accept-Ranges: bytes
-
-Please use http://arduino.tips/asciilogo.txt via HTTP
-
-           `:;;;,`                      .:;;:.           
-        .;;;;;;;;;;;`                :;;;;;;;;;;:     TM 
-      `;;;;;;;;;;;;;;;`            :;;;;;;;;;;;;;;;      
-     :;;;;;;;;;;;;;;;;;;         `;;;;;;;;;;;;;;;;;;     
-    ;;;;;;;;;;;;;;;;;;;;;       .;;;;;;;;;;;;;;;;;;;;    
-   ;;;;;;;;:`   `;;;;;;;;;     ,;;;;;;;;.`   .;;;;;;;;   
-  .;;;;;;,         :;;;;;;;   .;;;;;;;          ;;;;;;;  
-  ;;;;;;             ;;;;;;;  ;;;;;;,            ;;;;;;. 
- ,;;;;;               ;;;;;;.;;;;;;`              ;;;;;; 
- ;;;;;.                ;;;;;;;;;;;`      ```       ;;;;;`
- ;;;;;                  ;;;;;;;;;,       ;;;       .;;;;;
-`;;;;:                  `;;;;;;;;        ;;;        ;;;;;
-,;;;;`    `,,,,,,,,      ;;;;;;;      .,,;;;,,,     ;;;;;
-:;;;;`    .;;;;;;;;       ;;;;;,      :;;;;;;;;     ;;;;;
-:;;;;`    .;;;;;;;;      `;;;;;;      :;;;;;;;;     ;;;;;
-.;;;;.                   ;;;;;;;.        ;;;        ;;;;;
- ;;;;;                  ;;;;;;;;;        ;;;        ;;;;;
- ;;;;;                 .;;;;;;;;;;       ;;;       ;;;;;,
- ;;;;;;               `;;;;;;;;;;;;                ;;;;; 
- `;;;;;,             .;;;;;; ;;;;;;;              ;;;;;; 
-  ;;;;;;:           :;;;;;;.  ;;;;;;;            ;;;;;;  
-   ;;;;;;;`       .;;;;;;;,    ;;;;;;;;        ;;;;;;;:  
-    ;;;;;;;;;:,:;;;;;;;;;:      ;;;;;;;;;;:,;;;;;;;;;;   
-    `;;;;;;;;;;;;;;;;;;;.        ;;;;;;;;;;;;;;;;;;;;    
-      ;;;;;;;;;;;;;;;;;           :;;;;;;;;;;;;;;;;:     
-       ,;;;;;;;;;;;;;,              ;;;;;;;;;;;;;;       
-         .;;;;;;;;;`                  ,;;;;;;;;:         
-                                                         
-                                                         
-                                                         
-                                                         
-    ;;;   ;;;;;`  ;;;;:  .;;  ;; ,;;;;;, ;;. `;,  ;;;;   
-    ;;;   ;;:;;;  ;;;;;; .;;  ;; ,;;;;;: ;;; `;, ;;;:;;  
-   ,;:;   ;;  ;;  ;;  ;; .;;  ;;   ,;,   ;;;,`;, ;;  ;;  
-   ;; ;:  ;;  ;;  ;;  ;; .;;  ;;   ,;,   ;;;;`;, ;;  ;;. 
-   ;: ;;  ;;;;;:  ;;  ;; .;;  ;;   ,;,   ;;`;;;, ;;  ;;` 
-  ,;;;;;  ;;`;;   ;;  ;; .;;  ;;   ,;,   ;; ;;;, ;;  ;;  
-  ;;  ,;, ;; .;;  ;;;;;:  ;;;;;: ,;;;;;: ;;  ;;, ;;;;;;  
-  ;;   ;; ;;  ;;` ;;;;.   `;;;:  ,;;;;;, ;;  ;;,  ;;;;   
-
-Disconnecting from server...
+Starting FullyFeature_ESP8266 on ESP8266_NODEMCU_ESP12E
+AsyncMQTT_Generic v1.4.0 for ESP8266
+Connecting to Wi-Fi...
+Connected to Wi-Fi. IP address: 192.168.2.82
+Connecting to MQTT...
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/ESP8266_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 1
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 2
+Publishing at QoS 2, packetId: 3
+************************************************
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+Publish received.
+  topic: async-mqtt/ESP8266_Pub
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 13
+  index: 0
+  total: 13
+Publish acknowledged.
+  packetId: 2
+Publish received.
+  topic: async-mqtt/ESP8266_Pub
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 13
+  index: 0
+  total: 13
+Publish received.
+  topic: async-mqtt/ESP8266_Pub
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 13
+  index: 0
+  total: 13
+Publish received.
+  topic: async-mqtt/ESP8266_Pub
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 13
+  index: 0
+  total: 13
+Publish acknowledged.
+  packetId: 3
 ```
 
 ---
 
+#### 2. FullyFeature_ESP32 on ESP32_DEV
 
-#### 3. MQTTClient_Auth on Teensy4.1 QNEthernet
+This is terminal debug output when running [FullyFeatured_ESP32](examples/ESP32/FullyFeatured_ESP32) on **ESP32_DEV** connecting to `broker.emqx.io` MQTT server.
 
-Following is debug terminal output when running example [MQTTClient_Auth](examples/MQTTClient_Auth) on Teensy4.1 using Built-in Ethernet and QNEthernet Library.
+```
+Starting FullyFeature_ESP32 on ESP32_DEV
+AsyncMQTT_Generic v1.4.0 for ESP32 core v2.0.0+
+Connecting to Wi-Fi...
+WiFi ready
+WiFi STA starting
+WiFi STA connected
+WiFi connected
+IP address: 192.168.2.81
+Connecting to MQTT...
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/ESP32_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 1
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 2
+Publishing at QoS 2, packetId: 3
+************************************************
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+Publish received.
+  topic: async-mqtt/ESP32_Pub
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 6
+  index: 0
+  total: 6
+Publish received.
+  topic: async-mqtt/ESP32_Pub
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 10
+  index: 0
+  total: 10
+Publish acknowledged.
+  packetId: 2
+Publish received.
+  topic: async-mqtt/ESP32_Pub
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 6
+  index: 0
+  total: 6
+Publish received.
+  topic: async-mqtt/ESP32_Pub
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 6
+  index: 0
+  total: 6
+Publish acknowledged.
+  packetId: 3
+```
+
+---
+
+#### 3. FullyFeatureSSL_ESP32 on ESP32_DEV
+
+This is terminal debug output when running [FullyFeaturedSSL_ESP32](examples/ESP32/FullyFeaturedSSL_ESP32) on **ESP32_DEV** connecting to `broker.emqx.io` secured MQTT server (port 8883).
+
+```
+Starting FullyFeatureSSL_ESP32 on ESP32_DEV
+AsyncMQTT_Generic v1.4.0 for ESP32 core v2.0.0+
+Connecting to Wi-Fi...
+WiFi ready
+WiFi STA starting
+WiFi STA connected
+WiFi connected
+IP address: 192.168.2.81
+Connecting to MQTT...
+Connected to MQTT broker: broker.emqx.io, port: 8883
+PubTopic: async-mqtt/ESP32_SSL_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 1
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 2
+Publishing at QoS 2, packetId: 3
+************************************************
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+Publish received.
+  topic: async-mqtt/ESP32_SSL_Pub
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 6
+  index: 0
+  total: 6
+Publish received.
+  topic: async-mqtt/ESP32_SSL_Pub
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 10
+  index: 0
+  total: 10
+Publish acknowledged
+  packetId: 2
+Publish received.
+  topic: async-mqtt/ESP32_SSL_Pub
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 6
+  index: 0
+  total: 6
+Publish received.
+  topic: async-mqtt/ESP32_SSL_Pub
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 6
+  index: 0
+  total: 6
+Publish acknowledged
+  packetId: 3
+```
+
+---
+
+#### 4. FullyFeatureSSL_ESP32 on ESP32_DEV with _ASYNC_MQTT_LOGLEVEL_
+
+This is terminal debug output when running [FullyFeaturedSSL_ESP32](examples/ESP32/FullyFeaturedSSL_ESP32) on **ESP32_DEV** connecting to `broker.emqx.io` secured MQTT server (port 8883). The _ASYNC_MQTT_LOGLEVEL_ is set at 4 to show all the debugging messages.
 
 
 ```
-Start MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
-Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
-Attempting MQTT connection to broker.emqx.io...connected
-Message Send : MQTT_Pub => Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message Send : MQTT_Pub => Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message Send : MQTT_Pub => Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
+Starting FullyFeatureSSL_ESP32 on ESP32_DEV
+AsyncMQTT_Generic v1.4.0 for ESP32 core v2.0.0+
+Connecting to Wi-Fi...
+WiFi ready
+WiFi STA starting
+WiFi STA connected
+WiFi connected
+IP address: 192.168.2.81
+Connecting to MQTT...
+[AMQTT] CONNECTING
+[AMQTT] _onAck: ack len = 303
+[AMQTT] _onAck: ack len = 75
+[AMQTT] _onAck: ack len = 51
+[AMQTT] TCP conn, MQTT CONNECT
+[AMQTT] _addFront: new front, packetType = CONNECT
+[AMQTT] _handleQueue: snd, packetType # CONNECT , tls: realSent = 61
+[AMQTT] _handleQueue: sent / _headsize = 32 / 32
+[AMQTT] _handleQueue: released packetType # CONNECT
+[AMQTT] _onAck: ack len = 61
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv CONNACK
+[AMQTT] CONNACK
+Connected to MQTT broker: broker.emqx.io, port: 8883
+PubTopic: async-mqtt/ESP32_SSL_Pub
+************************************************
+Session present: 0
+[AMQTT] SUBSCRIBE
+[AMQTT] _addBack: new back, packetType = SUBSCRIBE
+[AMQTT] _handleQueue: snd, packetType # SUBSCRIBE , tls: realSent = 60
+[AMQTT] _handleQueue: sent / _headsize = 31 / 31
+Subscribing at QoS 2, packetId: 1
+[AMQTT] PUBLISH
+[AMQTT] _addBack: new back, packetType = PUBLISH
+Publishing at QoS 0
+[AMQTT] PUBLISH
+[AMQTT] _addBack: new back, packetType = PUBLISH
+Publishing at QoS 1, packetId: 2
+[AMQTT] PUBLISH
+[AMQTT] _addBack: new back, packetType = PUBLISH
+Publishing at QoS 2, packetId: 3
+************************************************
+[AMQTT] _onAck: ack len = 60
+[AMQTT] _onData : data rcv len = 5
+[AMQTT] _onData: rcv SUBACK
+[AMQTT] SUBACK
+[AMQTT] SUB released
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+[AMQTT] _handleQueue: released packetType # SUBSCRIBE
+[AMQTT] _handleQueue: snd, packetType # PUBLISH , tls: realSent = 67
+[AMQTT] _handleQueue: sent / _headsize = 38 / 38
+[AMQTT] _handleQueue: released packetType # PUBLISH
+[AMQTT] _handleQueue: snd, packetType # PUBLISH , tls: realSent = 65
+[AMQTT] _handleQueue: sent / _headsize = 36 / 36
+[AMQTT] _onData : data rcv len = 36
+[AMQTT] _onData: rcv PUBLISH
+Publish received.
+  topic: async-mqtt/ESP32_SSL_Pub
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 6
+  index: 0
+  total: 6
+[AMQTT] _addBack: new back, packetType = PUBREC
+[AMQTT] _onAck: ack len = 67
+[AMQTT] _onData : data rcv len = 38
+[AMQTT] _onData: rcv PUBLISH
+Publish received.
+  topic: async-mqtt/ESP32_SSL_Pub
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 10
+  index: 0
+  total: 10
+[AMQTT] _onAck: ack len = 65
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBACK
+[AMQTT] PUB released
+Publish acknowledged
+  packetId: 2
+[AMQTT] _onData : data rcv len = 36
+[AMQTT] _onData: rcv PUBLISH
+Publish received.
+  topic: async-mqtt/ESP32_SSL_Pub
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 6
+  index: 0
+  total: 6
+[AMQTT] _addBack: new back, packetType = PUBACK
+[AMQTT] _handleQueue: released packetType # PUBLISH
+[AMQTT] _handleQueue: snd, packetType # PUBLISH , tls: realSent = 65
+[AMQTT] _handleQueue: sent / _headsize = 36 / 36
+[AMQTT] _onAck: ack len = 65
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBREC
+[AMQTT] snd PUBREL
+[AMQTT] PUB released
+[AMQTT] _insert: new insert, packetType = PUBREL
+[AMQTT] _handleQueue: released packetType # PUBLISH
+[AMQTT] _handleQueue: snd, packetType # PUBREL , tls: realSent = 33
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _onData : data rcv len = 36
+[AMQTT] _onData: rcv PUBLISH
+Publish received.
+  topic: async-mqtt/ESP32_SSL_Pub
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 6
+  index: 0
+  total: 6
+[AMQTT] _addBack: new back, packetType = PUBREC
+[AMQTT] _onAck: ack len = 33
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBCOMP
+[AMQTT] PUBREL released
+Publish acknowledged
+  packetId: 3
+[AMQTT] _handleQueue: released packetType # PUBREL
+[AMQTT] _handleQueue: snd, packetType # PUBREC , tls: realSent = 33
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _onAck: ack len = 33
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBREL
+[AMQTT] _insert: new insert, packetType = PUBCOMP
+[AMQTT] _handleQueue: released packetType # PUBREC
+[AMQTT] _handleQueue: snd, packetType # PUBCOMP , tls: realSent = 33
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _handleQueue: released packetType # PUBCOMP
+[AMQTT] _handleQueue: snd, packetType # PUBACK , tls: realSent = 33
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _handleQueue: released packetType # PUBACK
+[AMQTT] _handleQueue: snd, packetType # PUBREC , tls: realSent = 33
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] PUBREC released
+[AMQTT] _onAck: ack len = 33
+[AMQTT] _onAck: ack len = 66
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBREL
+[AMQTT] _insert: new insert, packetType = PUBCOMP
+[AMQTT] _handleQueue: released packetType # PUBREC
+[AMQTT] _handleQueue: snd, packetType # PUBCOMP , tls: realSent = 33
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _handleQueue: released packetType # PUBCOMP
+[AMQTT] PUBREC released
+[AMQTT] _onAck: ack len = 33
+[AMQTT] PING
+[AMQTT] _addBack: new back, packetType = PINGREQ
+[AMQTT] _handleQueue: snd, packetType # PINGREQ , tls: realSent = 31
+[AMQTT] _handleQueue: sent / _headsize = 2 / 2
+[AMQTT] _handleQueue: released packetType # PINGREQ
+[AMQTT] _onAck: ack len = 31
+[AMQTT] _onData : data rcv len = 2
+[AMQTT] _onData: rcv PINGRESP
+[AMQTT] PINGRESP
+```
+
+---
+
+#### 5. FullyFeatureSSL_WT32_ETH01 on WT32-ETH01 with ETH_PHY_LAN8720
+
+This is terminal debug output when running [FullyFeaturedSSL_WT32_ETH01](examples/WT32_ETH01/FullyFeaturedSSL_WT32_ETH01) on **WT32-ETH01** connecting to `broker.emqx.io` secured MQTT server (port 8883).
+
+
+```
+Starting FullyFeatureSSL_WT32_ETH01 on WT32-ETH01 with ETH_PHY_LAN8720
+WebServer_WT32_ETH01 v1.4.1 for core v2.0.0+
+AsyncMQTT_Generic v1.4.0 for ESP32 core v2.0.0+
+ETH starting
+ETH connected
+ETH got IP
+IP address: 192.168.2.97
+Connecting to MQTT...
+Connected to MQTT broker: broker.emqx.io, port: 8883
+PubTopic: async-mqtt/WT32_ETH01_SSL_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 1
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 2
+Publishing at QoS 2, packetId: 3
+************************************************
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+Publish received.
+  topic: async-mqtt/WT32_ETH01_SSL_Pub
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 15
+  index: 0
+  total: 15
+Publish acknowledged
+  packetId: 2
+Publish received.
+  topic: async-mqtt/WT32_ETH01_SSL_Pub
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 6
+  index: 0
+  total: 6
+Publish received.
+  topic: async-mqtt/WT32_ETH01_SSL_Pub
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 6
+  index: 0
+  total: 6
+Publish acknowledged
+  packetId: 3
+```
+
+---
+
+#### 6. FullyFeature_STM32 on NUCLEO_F767ZI
+
+
+This is terminal debug output when running [FullyFeature_STM32](examples/STM32/FullyFeature_STM32) on **STM32F7 NUCLEO_F767ZI** connecting to `broker.emqx.io` MQTT server. The Ethernet loss was tested by disconnecting, then reconnecting the Ethernet cable.
+
+```
+Starting FullyFeature_STM32 on NUCLEO_F767ZI
+AsyncMQTT_Generic v1.4.0 for STM32
+Connected to network. IP = 192.168.2.118
+Connecting to MQTT...
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/STM32_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 1
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 2
+Publishing at QoS 2, packetId: 3
+************************************************
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test3
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 11
+  index: 0
+  total: 11
+Publish acknowledged.
+  packetId: 2
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test1
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test2
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test3
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+Publish acknowledged.
+  packetId: 3
+Ethernet disconnected   <==== Test disconnect Ethernet very short time
+Ethernet reconnected.
+Ethernet disconnected   <==== Test disconnect Ethernet long enough time to force MQTT disconnection
+Ethernet reconnected.
+Disconnected from MQTT. <==== MQTT disconnected and reconnected
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/STM32_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 4
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 5
+Publishing at QoS 2, packetId: 6
+************************************************
+Subscribe acknowledged.
+  packetId: 4
+  qos: 2
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test3
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 11
+  index: 0
+  total: 11
+Publish acknowledged.
+  packetId: 5
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test1
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test2
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test3
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+Publish acknowledged.
+  packetId: 6
+```
+
+---
+
+
+#### 7. FullyFeature_STM32 on NUCLEO_F767ZI with _ASYNC_MQTT_LOGLEVEL_
+
+```
+Starting FullyFeature_STM32 on NUCLEO_F767ZI
+AsyncMQTT_Generic v1.4.0 for STM32
+Connected to network. IP = 192.168.2.126
+Connecting to MQTT...
+[AMQTT] CONNECTING
+[AMQTT] ClientID = stm32-DEADBEEF3201
+[AMQTT] TCP conn, MQTT CONNECT
+[AMQTT] _addFront: new front, packetType = CONNECT
+[AMQTT] _handleQueue: snd, packetType # CONNECT
+[AMQTT] _handleQueue: sent / _headsize = 32 / 32
+[AMQTT] _handleQueue: released packetType # CONNECT
+[AMQTT] _onAck: ack len = 32
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv CONNACK
+[AMQTT] CONNACK
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/STM32_Pub
+************************************************
+Session present: 0
+[AMQTT] SUBSCRIBE
+[AMQTT] _addBack: new back, packetType = SUBSCRIBE
+[AMQTT] _handleQueue: snd, packetType # SUBSCRIBE
+[AMQTT] _handleQueue: sent / _headsize = 27 / 27
+Subscribing at QoS 2, packetId: 1
+[AMQTT] PUBLISH
+[AMQTT] _addBack: new back, packetType = PUBLISH
+Publishing at QoS 0
+[AMQTT] PUBLISH
+[AMQTT] _addBack: new back, packetType = PUBLISH
+Publishing at QoS 1, packetId: 2
+[AMQTT] PUBLISH
+[AMQTT] _addBack: new back, packetType = PUBLISH
+Publishing at QoS 2, packetId: 3
+************************************************
+[AMQTT] _onAck: ack len = 27
+[AMQTT] _onData : data rcv len = 5
+[AMQTT] _onData: rcv SUBACK
+[AMQTT] SUBACK
+[AMQTT] SUB released
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+[AMQTT] _handleQueue: released packetType # SUBSCRIBE
+[AMQTT] _handleQueue: snd, packetType # PUBLISH
+[AMQTT] _handleQueue: sent / _headsize = 35 / 35
+[AMQTT] _handleQueue: released packetType # PUBLISH
+[AMQTT] _handleQueue: snd, packetType # PUBLISH
+[AMQTT] _handleQueue: sent / _headsize = 37 / 37
+[AMQTT] _onData : data rcv len = 37
+[AMQTT] _onData: rcv PUBLISH
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test3
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 11
+  index: 0
+  total: 11
+[AMQTT] _addBack: new back, packetType = PUBREC
+[AMQTT] _onAck: ack len = 72
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBACK
+[AMQTT] PUB released
+Publish acknowledged.
+  packetId: 2
+[AMQTT] _onData : data rcv len = 72
+[AMQTT] _onData: rcv PUBLISH
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test1
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+[AMQTT] _onData: rcv PUBLISH
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test2
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+[AMQTT] _addBack: new back, packetType = PUBACK
+[AMQTT] _handleQueue: released packetType # PUBLISH
+[AMQTT] _handleQueue: snd, packetType # PUBLISH
+[AMQTT] _handleQueue: sent / _headsize = 37 / 37
+[AMQTT] _onAck: ack len = 37
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBREC
+[AMQTT] snd PUBREL
+[AMQTT] PUB released
+[AMQTT] _insert: new insert, packetType = PUBREL
+[AMQTT] _handleQueue: released packetType # PUBLISH
+[AMQTT] _handleQueue: snd, packetType # PUBREL
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _onData : data rcv len = 37
+[AMQTT] _onData: rcv PUBLISH
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test3
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+[AMQTT] _addBack: new back, packetType = PUBREC
+[AMQTT] _onAck: ack len = 4
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBCOMP
+[AMQTT] PUBREL released
+Publish acknowledged.
+  packetId: 3
+[AMQTT] _handleQueue: released packetType # PUBREL
+[AMQTT] _handleQueue: snd, packetType # PUBREC
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _onAck: ack len = 4
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBREL
+[AMQTT] _insert: new insert, packetType = PUBCOMP
+[AMQTT] _handleQueue: released packetType # PUBREC
+[AMQTT] _handleQueue: snd, packetType # PUBCOMP
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _handleQueue: released packetType # PUBCOMP
+[AMQTT] _handleQueue: snd, packetType # PUBACK
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _handleQueue: released packetType # PUBACK
+[AMQTT] _handleQueue: snd, packetType # PUBREC
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] PUBREC released
+[AMQTT] _onAck: ack len = 12
+[AMQTT] _onData : data rcv len = 4
+[AMQTT] _onData: rcv PUBREL
+[AMQTT] _insert: new insert, packetType = PUBCOMP
+[AMQTT] _handleQueue: released packetType # PUBREC
+[AMQTT] _handleQueue: snd, packetType # PUBCOMP
+[AMQTT] _handleQueue: sent / _headsize = 4 / 4
+[AMQTT] _handleQueue: released packetType # PUBCOMP
+[AMQTT] PUBREC released
+[AMQTT] _onAck: ack len = 4
+[AMQTT] PING
+[AMQTT] _addBack: new back, packetType = PINGREQ
+[AMQTT] _handleQueue: snd, packetType # PINGREQ
+[AMQTT] _handleQueue: sent / _headsize = 2 / 2
+[AMQTT] _handleQueue: released packetType # PINGREQ
+[AMQTT] _onAck: ack len = 2
+[AMQTT] _onData : data rcv len = 2
+[AMQTT] _onData: rcv PINGRESP
+[AMQTT] PINGRESP
+[AMQTT] PING
+[AMQTT] _addBack: new back, packetType = PINGREQ
+[AMQTT] _handleQueue: snd, packetType # PINGREQ
+[AMQTT] _handleQueue: sent / _headsize = 2 / 2
+[AMQTT] _handleQueue: released packetType # PINGREQ
+[AMQTT] _onAck: ack len = 2
+[AMQTT] _onData : data rcv len = 2
+[AMQTT] _onData: rcv PINGRESP
+[AMQTT] PINGRESP
+```
+
+---
+
+
+#### 8. FullyFeatured_STM32_LAN8720 on BLACK_F407VE
+
+
+This is terminal debug output when running [FullyFeatured_STM32_LAN8720](examples/STM32_LAN8720/FullyFeatured_STM32_LAN8720) on **STM32F4 BLACK_F407VE** connecting to `broker.emqx.io` MQTT server.
+
+
+```
+Starting FullyFeatured_STM32_LAN8720 on BLACK_F407VE
+AsyncMQTT_Generic v1.4.0 for STM32
+Connected to network. IP = 192.168.2.132
+Connecting to MQTT...
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/STM32_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 1
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 2
+Publishing at QoS 2, packetId: 3
+************************************************
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test3
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 11
+  index: 0
+  total: 11
+Publish acknowledged.
+  packetId: 2
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test1
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test2
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+Publish received.
+  topic: async-mqtt/STM32_Pub
+  message: STM32 Test3
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 11
+  index: 0
+  total: 11
+Publish acknowledged.
+  packetId: 3
+```
+
+---
+
+#### 9. FullyFeatured_PortentaH7_WiFi on PORTENTA_H7_M7
+
+
+This is terminal debug output when running [FullyFeatured_PortentaH7_WiFi](examples/PortentaH7_WiFi/FullyFeatured_PortentaH7_WiFi) on **STM32H7 PORTENTA_H7_M7** using `Murata WiFi`, connecting to `broker.emqx.io` MQTT server.
+
+
+```
+Starting FullyFeatured_PortentaH7_WiFi on PORTENTA_H7_M7
+AsyncMQTT_Generic v1.4.0 for Portenta_H7_M7
+Connecting to SSID: HueNet1
+Connected to SSID: HueNet1
+Local IP Address: 192.168.2.134
+Signal strength (RSSI):-37 dBm
+Connecting to MQTT...
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/Portenta_H7_WiFi_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 1
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 2
+Publishing at QoS 2, packetId: 3
+************************************************
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+Publish received.
+  topic: async-mqtt/Portenta_H7_WiFi_Pub
+  message: Portenta_H7_WiFi Test 3
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 23
+  index: 0
+  total: 23
+Publish acknowledged.
+  packetId: 2
+Publish received.
+  topic: async-mqtt/Portenta_H7_WiFi_Pub
+  message: Portenta_H7_WiFi Test1
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 22
+  index: 0
+  total: 22
+Publish received.
+  topic: async-mqtt/Portenta_H7_WiFi_Pub
+  message: Portenta_H7_WiFi Test 2
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 23
+  index: 0
+  total: 23
+Publish received.
+  topic: async-mqtt/Portenta_H7_WiFi_Pub
+  message: Portenta_H7_WiFi Test 3
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 23
+  index: 0
+  total: 23
+Publish acknowledged.
+  packetId: 3
+```
+
+---
+
+#### 10. FullyFeatured_Portenta_H7_Ethernet on PORTENTA_H7_M7
+
+This is terminal debug output when running [FullyFeatured_PortentaH7_Ethernet](examples/PortentaH7_WiFi/FullyFeatured_PortentaH7_Ethernet) on **STM32H7 PORTENTA_H7_M7**, using `built-in Ethernet`, connecting to `broker.emqx.io` MQTT server.
+
+
+```
+Starting FullyFeatured_PortentaH7_Ethernet on PORTENTA_H7_M7
+AsyncMQTT_Generic v1.4.0 for Portenta_H7_M7
+Connected to network. IP = 192.168.2.133
+Connecting to MQTT...
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/Portenta_H7_Ethernet_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 1
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 2
+Publishing at QoS 2, packetId: 3
+************************************************
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+Publish received.
+  topic: async-mqtt/Portenta_H7_Ethernet_Pub
+  message: Portenta_H7_Ethernet Test3
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 26
+  index: 0
+  total: 26
+Publish acknowledged.
+  packetId: 2
+Publish received.
+  topic: async-mqtt/Portenta_H7_Ethernet_Pub
+  message: Portenta_H7_Ethernet Test1
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 26
+  index: 0
+  total: 26
+Publish received.
+  topic: async-mqtt/Portenta_H7_Ethernet_Pub
+  message: Portenta_H7_Ethernet Test2
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 26
+  index: 0
+  total: 26
+Publish received.
+  topic: async-mqtt/Portenta_H7_Ethernet_Pub
+  message: Portenta_H7_Ethernet Test3
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 26
+  index: 0
+  total: 26
+Publish acknowledged.
+  packetId: 3
+Ethernet disconnected   <==== Test disconnect Ethernet very short time
+Ethernet reconnected.
+Ethernet disconnected   <==== Test disconnect Ethernet long enough time to force MQTT disconnection
+Ethernet reconnected.
+[ATCP] setCloseError() to: Connection reset => -14
+Disconnected from MQTT. <==== MQTT disconnected and reconnected
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/Portenta_H7_Ethernet_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 4
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 5
+Publishing at QoS 2, packetId: 6
+************************************************
+Subscribe acknowledged.
+  packetId: 4
+  qos: 2
+Publish received.
+  topic: async-mqtt/Portenta_H7_Ethernet_Pub
+  message: Portenta_H7_Ethernet Test3
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 26
+  index: 0
+  total: 26
+Publish acknowledged.
+  packetId: 5
+Publish received.
+  topic: async-mqtt/Portenta_H7_Ethernet_Pub
+  message: Portenta_H7_Ethernet Test1
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 26
+  index: 0
+  total: 26
+Publish received.
+  topic: async-mqtt/Portenta_H7_Ethernet_Pub
+  message: Portenta_H7_Ethernet Test2
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 26
+  index: 0
+  total: 26
+Publish received.
+  topic: async-mqtt/Portenta_H7_Ethernet_Pub
+  message: Portenta_H7_Ethernet Test3
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 26
+  index: 0
+  total: 26
+Publish acknowledged.
+  packetId: 6
 ```
 
 
 ---
 
-#### 4. MQTTClient_Basic on Teensy4.1 QNEthernet
 
-Following is debug terminal output when running example [MQTTClient_Basic](examples/MQTTClient_Basic) on Teensy4.1 using Built-in Ethernet and QNEthernet Library.
+#### 11. FullyFeatured_QNEthernet on TEENSY 4.1 using QNEthernet
 
-```
-Start MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
-Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
-Attempting MQTT connection to broker.emqx.io...connected
-Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-Message arrived [MQTT_Pub] Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-```
+This is terminal debug output when running [FullyFeatured_QNEthernet](examples/QNEthernet/FullyFeatured_QNEthernet) on **TEENSY 4.1**, using `built-in Ethernet with QNEthernet Library`, connecting to `broker.emqx.io` MQTT server.
 
----
-
-#### 5. MQTT_ThingStream on Teensy4.1 QNEthernet
-
-Following is debug terminal output when running example [MQTT_ThingStream](examples/MQTT_ThingStream) on Teensy4.1 using Built-in Ethernet and QNEthernet Library.
 
 ```
-Start MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
-Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
-***************************************
-Teensy41_Pub
-***************************************
-Attempting MQTT connection to broker.emqx.io
-...connected
-Published connection message successfully!
-Subcribed to: Teensy41_Sub
-MQTT Message Send : Teensy41_Pub => Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-MQTT Message receive [Teensy41_Pub] Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-MQTT Message Send : Teensy41_Pub => Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-MQTT Message receive [Teensy41_Pub] Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-MQTT Message Send : Teensy41_Pub => Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-MQTT Message receive [Teensy41_Pub] Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-MQTT Message Send : Teensy41_Pub => Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-MQTT Message receive [Teensy41_Pub] Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-MQTT Message Send : Teensy41_Pub => Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-MQTT Message receive [Teensy41_Pub] Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
+Starting FullyFeatured_QNEthernet on TEENSY 4.1
+AsyncMQTT_Generic v1.4.0 for Teensy 4.1 QNEthernet
+Initialize Ethernet using static IP => Connected! IP address:192.168.2.222
+Connecting to MQTT...
+Connected to MQTT broker: broker.emqx.io, port: 1883
+PubTopic: async-mqtt/Teensy41_QNEthernet_Pub
+************************************************
+Session present: 0
+Subscribing at QoS 2, packetId: 1
+Publishing at QoS 0
+Publishing at QoS 1, packetId: 2
+Publishing at QoS 2, packetId: 3
+************************************************
+Subscribe acknowledged.
+  packetId: 1
+  qos: 2
+Publish received.
+  topic: async-mqtt/Teensy41_QNEthernet_Pub
+  message: Teensy41_QNEthernet_Pub Test3
+  qos: 2
+  dup: 0
+  retain: 1
+  len: 29
+  index: 0
+  total: 29
+Publish acknowledged.
+  packetId: 2
+Publish received.
+  topic: async-mqtt/Teensy41_QNEthernet_Pub
+  message: Teensy41_QNEthernet_Pub Test1
+  qos: 0
+  dup: 0
+  retain: 0
+  len: 29
+  index: 0
+  total: 29
+Publish received.
+  topic: async-mqtt/Teensy41_QNEthernet_Pub
+  message: Teensy41_QNEthernet_Pub Test2
+  qos: 1
+  dup: 0
+  retain: 0
+  len: 29
+  index: 0
+  total: 29
+Publish received.
+  topic: async-mqtt/Teensy41_QNEthernet_Pub
+  message: Teensy41_QNEthernet_Pub Test3
+  qos: 2
+  dup: 0
+  retain: 0
+  len: 29
+  index: 0
+  total: 29
+Publish acknowledged.
+  packetId: 3
 ```
+
 
 ---
 ---
 
 ### Debug
 
-Debug is enabled by default on Serial. Debug Level from 0 to 4. To disable, change the _AWS_TEENSY41_LOGLEVEL_ to 0
+Debug is enabled by default on Serial. Debug Level from 0 to 4. To disable, change the _MYSQL_LOGLEVEL_ to 0
 
 ```cpp
-// Use this to output debug msgs to Serial
-#define ASYNCWEBSERVER_TEENSY41_DEBUG_PORT       Serial
+#define ASYNC_MQTT_DEBUG_PORT               Serial
 
 // Debug Level from 0 to 4
-#define _TEENSY41_ASYNC_TCP_LOGLEVEL_            1
-#define _AWS_TEENSY41_LOGLEVEL_                  1
+#define _TEENSY41_ASYNC_TCP_LOGLEVEL_       1
+#define _ASYNC_MQTT_LOGLEVEL_               1
 ```
 
 ---
 
 ### Troubleshooting
 
-If you get compilation errors, more often than not, you may need to install a newer version of Arduino IDE, the Arduino `Teensyduino` core or depending libraries.
+If you get compilation errors, more often than not, you may need to install a newer version of the core for Arduino boards.
 
-Sometimes, the library will only work if you update the `Teensyduino` core to the latest version because I'm always using the latest cores /libraries.
+Sometimes, the library will only work if you update the board core to the latest version because I am using newly added functions.
 
 
 ---
+---
+
 
 ### Issues ###
 
-Submit issues to: [AsyncWebServer_Teensy41 issues](https://github.com/khoih-prog/AsyncWebServer_Teensy41/issues)
+Submit issues to: [AsyncMQTT_Generic issues](https://github.com/khoih-prog/AsyncMQTT_Generic/issues)
 
 ---
 ---
 
-## TO DO
+### TO DO
 
- 1. Fix bug. Add enhancement
+ 1. Support ESP8266, STM32, Portenta_H7, Teensy 4.1 using `SSL/TLS`
+ 2. Bug fixing.
 
+---
 
-## DONE
+### DONE
 
- 1. Initial porting and coding for **Teensy 4.1 using built-in QNEthernet**
- 2. Add more examples.
- 3. Add debugging features.
- 4. Add Authentication support (MD5, SHA1).
- 5. Add Table-of-Contents and Version String
- 
+ 1. Add support to **ESP32 (SSL and non-SSL)**
+ 2. Add support to **ESP8266 (non-SSL)**
+ 3. Add support to **WT32_ETH01 (SSL and non-SSL)**
+ 4. Add support to **Ethernet LAN8742A (non-SSL)**, using [`STM32Ethernet library`](https://github.com/stm32duino/STM32Ethernet) and [`STM32duino_LwIP library`](https://github.com/stm32duino/LwIP).
+ 5. Add support to many **STM32F4 and STM32F7 (without TLS/SSL)** using `LAN8720` Ethernet, such as F407xx, NUCLEO_F429ZI, DISCO_F746NG, NUCLEO_F746ZG, NUCLEO_F756ZG, etc.
+ 6. Add support to **Portenta_H7**, using either `Murata WiFi` or `Vision-shield Ethernet`
+ 7. Add support to **Teensy 4.1 using QNEthernet Library**
 
 ---
 ---
-
 
 ### Contributions and Thanks
 
-1. Based on and modified from [Hristo Gochkov's ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer). Many thanks to [Hristo Gochkov](https://github.com/me-no-dev) for great [ESPAsyncWebServer Library](https://github.com/me-no-dev/ESPAsyncWebServer)
+1. Based on and modified from [**Marvin Roger's async-mqtt-client Library**](https://github.com/marvinroger/async-mqtt-client)
 
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/me-no-dev"><img src="https://github.com/me-no-dev.png" width="100px;" alt="me-no-dev"/><br /><sub><b>⭐️⭐️ Hristo Gochkov</b></sub></a><br /></td>
-  </tr>
+    <td align="center"><a href="https://github.com/marvinroger"><img src="https://github.com/marvinroger.png" width="100px;" alt="marvinroger"/><br /><sub><b>⭐️ Marvin Roger</b></sub></a><br /></td>
+  </tr> 
 </table>
 
 ---
@@ -1524,7 +1578,6 @@ Submit issues to: [AsyncWebServer_Teensy41 issues](https://github.com/khoih-prog
 ### Contributing
 
 If you want to contribute to this project:
-
 - Report bugs and errors
 - Ask for enhancements
 - Create issues and pull requests
@@ -1534,14 +1587,14 @@ If you want to contribute to this project:
 
 ### License
 
-- The library is licensed under [GPLv3](https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/main/LICENSE)
+- Most of the credits go to original author [Marvin Roger](https://github.com/marvinroger)
+
+- The library is licensed under [MIT](https://github.com/khoih-prog/AsyncMQTT_Generic/blob/main/LICENSE)
 
 ---
 
 ## Copyright
 
-- Copyright 2016- Hristo Gochkov
-- Copyright 2022- Khoi Hoang
-
-
+1. Copyright (c) 2017- Marvin Roger
+2. Copyright (c) 2022- Khoi Hoang
 
