@@ -1,0 +1,37 @@
+{
+  "name":"AsyncWebServer_Teensy41",
+  "version": "1.4.1",
+  "description":"Asynchronous HTTP and WebSocket Server Library for Teensy 4.1 using QNEthernet. This library is one of the current or future Async libraries to support Teensy 4.1 using QNEthernet, such as AsyncHTTPRequest_Generic, AsyncHTTPSRequest_Generic, AsyncMQTT_Generic, Teensy41_AsyncWebServer, Teensy41_AsyncUDP, Teensy41_AsyncDNSServer, AsyncWebServer_Teensy41_SSL, etc.",
+  "keywords":"async, tcp, http, websocket, webserver, async-tcp, async-http, async-webserver, async-websocket, teensy, teensy41, teensy-41, qnethernet, lwip",
+  "authors": 
+  [
+    {
+      "name": "Hristo Gochkov",
+      "url":   "https://github.com/me-no-dev"
+    },
+    {
+      "name":  "Khoi Hoang",
+      "url":   "https://github.com/khoih-prog",
+      "email": "khoih-dot-prog@gmail.com",
+      "maintainer": true
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/khoih-prog/AsyncWebServer_Teensy41.git"
+  },
+  "homepage": "https://github.com/khoih-prog/AsyncWebServer_Teensy41",
+  "export": {
+    "exclude": [
+      "linux",
+      "extras",
+      "tests"
+    ]
+  },
+  "license": "LGPL-3.0",
+  "frameworks": "*",
+  "platforms": ["teensy", "avr"],
+  "examples": "examples/*/*/*.ino",
+  "headers": ["AsyncWebServer_Teensy41.h", "AsyncWebServer_Teensy41.hpp"]
+}
