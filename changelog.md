@@ -22,7 +22,7 @@
 
 ### Releases v1.4.1
 
-1. Initial coding for **Teensy 4.1 using built-in QNEthernet**
+1. Initial porting and coding for **Teensy 4.1 using built-in QNEthernet**
 2. Bump up version to v1.4.1 to sync with [AsyncWebServer_STM32](https://github.com/khoih-prog/AsyncWebServer_STM32) v1.4.1
 
 
