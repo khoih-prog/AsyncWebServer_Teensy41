@@ -35,24 +35,28 @@ If applicable, add screenshots to help explain your problem.
 
 Please ensure to specify the following:
 
-* Arduino IDE version (e.g. 1.8.13) or Platform.io version
-* `ESP8266`,`ESP32` or `STM32` Core Version (e.g. ESP8266 core v2.7.4, ESP32 v1.0.5 or STM32 v1.9.0)
+* Arduino IDE version (e.g. 1.8.19) or Platform.io version
+* `Teensyduino` Core Version (e.g. `Teensyduino core v1.57`)
+* `QNEthernet` library version (e.g. `QNEthernet v0.15.0`)
+* Board type and relevant info
 * Contextual information (e.g. what you were trying to achieve)
 * Simplest possible steps to reproduce
 * Anything that might be relevant in your opinion, such as:
   * Operating system (Windows, Ubuntu, etc.) and the output of `uname -a`
   * Network configuration
-  
+
+
 ### Example
 
 ```
-Arduino IDE version: 1.8.13
-ESP32 Core Version 1.0.5
+Arduino IDE version: 1.8.19
+Teensyduino core v1.57
+Teensy 4.1 using QNEthernet v0.15.0
 OS: Ubuntu 20.04 LTS
-Linux xy-Inspiron-3593 5.4.0-66-generic #74-Ubuntu SMP Wed Jan 27 22:54:38 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+Linux xy-Inspiron-3593 5.15.0-48-generic #54~20.04.1-Ubuntu SMP Thu Sep 1 16:17:26 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 
 Context:
-I encountered an endless loop while trying to connect to Local WiFi.
+I encountered an endless loop while using this library
 
 Steps to reproduce:
 1. ...
