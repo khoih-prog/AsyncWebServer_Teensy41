@@ -175,7 +175,7 @@ void setup()
 
   delay(200);
 
-  Serial.print("\nStart Async_AdvancedWebServer on "); Serial.print(BOARD_NAME);
+  Serial.print("\nStart Async_AdvancedWebServer_favicon on "); Serial.print(BOARD_NAME);
   Serial.print(" with "); Serial.println(SHIELD_TYPE);
   Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
 
