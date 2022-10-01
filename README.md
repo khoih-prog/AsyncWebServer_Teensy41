@@ -2,7 +2,6 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/AsyncWebServer_Teensy41.svg?)](https://www.ardu-badge.com/AsyncWebServer_Teensy41)
 [![GitHub release](https://img.shields.io/github/release/khoih-prog/AsyncWebServer_Teensy41.svg)](https://github.com/khoih-prog/AsyncWebServer_Teensy41/releases)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/main/LICENSE)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/AsyncWebServer_Teensy41.svg)](http://github.com/khoih-prog/AsyncWebServer_Teensy41/issues)
 
@@ -92,7 +91,7 @@
   * [12. WebClient](examples/WebClient) 
   * [13. WebClientRepeating](examples/WebClientRepeating)
 * [Example Async_AdvancedWebServer](#example-Async_AdvancedWebServer)
-* [Debug Terminal Output Samples](#debug-termimal-output-samples)
+* [Debug Terminal Output Samples](#debug-Terminal-output-samples)
   * [1. Async_AdvancedWebServer on Teensy4.1 QNEthernet](#1-Async_AdvancedWebServer-on-Teensy41-QNEthernet)
   * [2. WebClient on Teensy4.1 QNEthernet](#2-WebClient-on-Teensy41-QNEthernet)
   * [3. MQTTClient_Auth on Teensy4.1 QNEthernet](#3-MQTTClient_Auth-on-Teensy41-QNEthernet)
@@ -150,9 +149,9 @@ to apply the better and faster **asynchronous** feature of the **powerful** [ESP
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
- 2. [`Teensy core v1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1
- 3. [`QNEthernet Library version v0.13.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet.
- 4. [`Teensy41_AsyncTCP library v1.0.0+`](https://github.com/khoih-prog/Teensy41_AsyncTCP) to use **Teensy 4.1 using QNEthernet Library**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Teensy41_AsyncTCP.svg?)](https://www.ardu-badge.com/Teensy41_AsyncTCP).
+ 2. [`Teensy core v1.57+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1.  [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/cores.svg)](https://github.com/PaulStoffregen/cores/releases/latest)
+ 3. [`QNEthernet Library version v0.15.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet. [![GitHub release](https://img.shields.io/github/release/ssilverman/QNEthernet.svg)](https://github.com/ssilverman/QNEthernet/releases/latest)
+ 4. [`Teensy41_AsyncTCP library v1.0.0+`](https://github.com/khoih-prog/Teensy41_AsyncTCP) to use **Teensy 4.1 using QNEthernet Library**. [![GitHub release](https://img.shields.io/github/release/khoih-prog/Teensy41_AsyncTCP.svg)](https://github.com/khoih-prog/Teensy41_AsyncTCP/releases/latest)
 
 ---
 
@@ -165,9 +164,9 @@ The best and easiest way is to use `Arduino Library Manager`. Search for `AsyncW
 ### Manual Install
 
 1. Navigate to [AsyncWebServer_Teensy41](https://github.com/khoih-prog/AsyncWebServer_Teensy41) page.
-2. Download the latest release `AsyncWebServer_Teensy41-master.zip`.
-3. Extract the zip file to `AsyncWebServer_Teensy41-master` directory 
-4. Copy the whole `AsyncWebServer_Teensy41-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+2. Download the latest release `AsyncWebServer_Teensy41-main.zip`.
+3. Extract the zip file to `AsyncWebServer_Teensy41-main` directory 
+4. Copy the whole `AsyncWebServer_Teensy41-main` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
 ### VS Code & PlatformIO:
 
@@ -218,54 +217,54 @@ These files must be copied into the directory:
 ### The Async Web server
 
 - Listens for connections
-- Wraps the new clients into ```Request```
+- Wraps the new clients into `Request`
 - Keeps track of clients and cleans memory
-- Manages ```Rewrites``` and apply them on the request url
-- Manages ```Handlers``` and attaches them to Requests
+- Manages `Rewrites` and apply them on the request url
+- Manages `Handlers` and attaches them to Requests
 
 ### Request Life Cycle
 
 - TCP connection is received by the server
-- The connection is wrapped inside ```Request``` object
+- The connection is wrapped inside `Request` object
 - When the request head is received (type, url, get params, http version and host),
-  the server goes through all ```Rewrites``` (in the order they were added) to rewrite the url and inject query parameters,
-  next, it goes through all attached ```Handlers```(in the order they were added) trying to find one
-  that ```canHandle``` the given request. If none are found, the default(catch-all) handler is attached.
-- The rest of the request is received, calling the ```handleUpload``` or ```handleBody``` methods of the ```Handler``` if they are needed (POST+File/Body)
-- When the whole request is parsed, the result is given to the ```handleRequest``` method of the ```Handler``` and is ready to be responded to
-- In the ```handleRequest``` method, to the ```Request``` is attached a ```Response``` object (see below) that will serve the response data back to the client
-- When the ```Response``` is sent, the client is closed and freed from the memory
+  the server goes through all `Rewrites` (in the order they were added) to rewrite the url and inject query parameters,
+  next, it goes through all attached `Handlers`(in the order they were added) trying to find one
+  that `canHandle` the given request. If none are found, the default(catch-all) handler is attached.
+- The rest of the request is received, calling the `handleUpload` or `handleBody` methods of the `Handler` if they are needed (POST+File/Body)
+- When the whole request is parsed, the result is given to the `handleRequest` method of the `Handler` and is ready to be responded to
+- In the `handleRequest` method, to the `Request` is attached a `Response` object (see below) that will serve the response data back to the client
+- When the `Response` is sent, the client is closed and freed from the memory
 
 ### Rewrites and how do they work
 
-- The ```Rewrites``` are used to rewrite the request url and/or inject get parameters for a specific request url path.
-- All ```Rewrites``` are evaluated on the request in the order they have been added to the server.
-- The ```Rewrite``` will change the request url only if the request url (excluding get parameters) is fully match
-  the rewrite url, and when the optional ```Filter``` callback return true.
-- Setting a ```Filter``` to the ```Rewrite``` enables to control when to apply the rewrite, decision can be based on
+- The `Rewrites` are used to rewrite the request url and/or inject get parameters for a specific request url path.
+- All `Rewrites` are evaluated on the request in the order they have been added to the server.
+- The `Rewrite` will change the request url only if the request url (excluding get parameters) is fully match
+  the rewrite url, and when the optional `Filter` callback return true.
+- Setting a `Filter` to the `Rewrite` enables to control when to apply the rewrite, decision can be based on
   request url, http version, request host/port/target host, get parameters or the request client's localIP or remoteIP.
-- The ```Rewrite``` can specify a target url with optional get parameters, e.g. ```/to-url?with=params```
+- The `Rewrite` can specify a target url with optional get parameters, e.g. `/to-url?with=params`
 
 ### Handlers and how do they work
 
-- The ```Handlers``` are used for executing specific actions to particular requests
-- One ```Handler``` instance can be attached to any request and lives together with the server
-- Setting a ```Filter``` to the ```Handler``` enables to control when to apply the handler, decision can be based on
+- The `Handlers` are used for executing specific actions to particular requests
+- One `Handler` instance can be attached to any request and lives together with the server
+- Setting a `Filter` to the `Handler` enables to control when to apply the handler, decision can be based on
   request url, http version, request host/port/target host, get parameters or the request client's localIP or remoteIP.
-- The ```canHandle``` method is used for handler specific control on whether the requests can be handled
-  and for declaring any interesting headers that the ```Request``` should parse. Decision can be based on request
+- The `canHandle` method is used for handler specific control on whether the requests can be handled
+  and for declaring any interesting headers that the `Request` should parse. Decision can be based on request
   method, request url, http version, request host/port/target host and get parameters
-- Once a ```Handler``` is attached to given ```Request``` (```canHandle``` returned true)
-  that ```Handler``` takes care to receive any file/data upload and attach a ```Response```
-  once the ```Request``` has been fully parsed
-- ```Handlers``` are evaluated in the order they are attached to the server. The ```canHandle``` is called only
-  if the ```Filter``` that was set to the ```Handler``` return true.
-- The first ```Handler``` that can handle the request is selected, not further ```Filter``` and ```canHandle``` are called.
+- Once a `Handler` is attached to given `Request` (`canHandle` returned true)
+  that `Handler` takes care to receive any file/data upload and attach a `Response`
+  once the `Request` has been fully parsed
+- `Handlers` are evaluated in the order they are attached to the server. The `canHandle` is called only
+  if the `Filter` that was set to the `Handler` return true.
+- The first `Handler` that can handle the request is selected, not further `Filter` and `canHandle` are called.
 
 ### Responses and how do they work
 
-- The ```Response``` objects are used to send the response data back to the client
-- The ```Response``` object lives with the ```Request``` and is freed on end or disconnect
+- The `Response` objects are used to send the response data back to the client
+- The `Response` object lives with the `Request` and is freed on end or disconnect
 - Different techniques are used depending on the response type to send the data in packets
   returning back almost immediately and sending the next packet when this one is received.
   Any time in between is spent to run the user loop and handle other network packets
@@ -277,7 +276,7 @@ These files must be copied into the directory:
 - AsyncWebServer_Teensy41 contains simple template processing engine.
 - Template processing can be added to most response types.
 - Currently it supports only replacing template placeholders with actual values. No conditional processing, cycles, etc.
-- Placeholders are delimited with ```%``` symbols. Like this: ```%TEMPLATE_PLACEHOLDER%```.
+- Placeholders are delimited with `%` symbols. Like this: `%TEMPLATE_PLACEHOLDER%`.
 - It works by extracting placeholder name from response text and passing it to user provided function which should return actual value to be used instead of placeholder.
 - Since it's user provided function, it is possible for library users to implement conditional processing and cycles themselves.
 - Since it's impossible to know the actual response size after template processing step in advance (and, therefore, to include it in response headers), the response becomes [chunked](#chunked-response).
@@ -1095,7 +1094,7 @@ if (!!window.EventSource)
 Server goes through handlers in same order as they were added. You can't simple add handler with same path to override them.
 To remove handler:
 
-```arduino
+```cpp
 // save callback for particular URL path
 auto handler = server.on("/some/path", [](AsyncWebServerRequest *request){
   //do something useful
@@ -1241,11 +1240,13 @@ For Arduino IDE create/update `platform.local.txt`:
 `Linux`: ~/.arduino15/packages/`{espxxxx}`/hardware/`{espxxxx}`/`{version}`/platform.local.txt
 
 Add/Update the following line:
+
 ```
   compiler.cpp.extra_flags=-DDASYNCWEBSERVER_REGEX
 ```
 
 For platformio modify `platformio.ini`:
+
 ```ini
 [env:myboard]
 build_flags = 
@@ -1273,13 +1274,14 @@ build_flags =
 11. [**MQTT_ThingStream**](examples/MQTT_ThingStream)
 12. [WebClient](examples/WebClient)
 13. [WebClientRepeating](examples/WebClientRepeating)
+14. [Async_AdvancedWebServer_favicon](examples/Async_AdvancedWebServer_favicon) **New**
 
 ---
 ---
 
 ### Example [Async_AdvancedWebServer](examples/Async_AdvancedWebServer)
 
-https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/d09281ae572db571fa5e53e624ca19f16462f892/examples/Async_AdvancedWebServer/Async_AdvancedWebServer.ino#L41-L237
+https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/2f63465d2f291b79812346ba6de8aa147b43d064/examples/Async_AdvancedWebServer/Async_AdvancedWebServer.ino#L41-L237
 
 
 You can access the Async Advanced WebServer @ the server IP
@@ -1288,10 +1290,16 @@ You can access the Async Advanced WebServer @ the server IP
     <img src="https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/main/pics/Async_AdvancedWebServer.png">
 </p>
 
+or using [Async_AdvancedWebServer_favicon](examples/Async_AdvancedWebServer_favicon) with `favicon`
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/main/pics/Async_AdvancedWebServer_favicon.png">
+</p>
+
 ---
 ---
 
-### Debug Termimal Output Samples
+### Debug Terminal Output Samples
 
 #### 1. Async_AdvancedWebServer on Teensy4.1 QNEthernet
 
@@ -1300,7 +1308,7 @@ Following are debug terminal output and screen shots when running example [Async
 
 ```
 Start Async_AdvancedWebServer on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
+AsyncWebServer_Teensy41 v1.5.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 HTTP EthernetWebServer is @ IP : 192.168.2.107
 ```
@@ -1318,7 +1326,7 @@ Following is debug terminal output when running example [WebClient](examples/Web
 
 ```
 Start WebClient on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
+AsyncWebServer_Teensy41 v1.5.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 
 Starting connection to server...
@@ -1389,7 +1397,7 @@ Following is debug terminal output when running example [MQTTClient_Auth](exampl
 
 ```
 Start MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
+AsyncWebServer_Teensy41 v1.5.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 Attempting MQTT connection to broker.emqx.io...connected
 Message Send : MQTT_Pub => Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
@@ -1409,7 +1417,7 @@ Following is debug terminal output when running example [MQTTClient_Basic](examp
 
 ```
 Start MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
+AsyncWebServer_Teensy41 v1.5.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 Attempting MQTT connection to broker.emqx.io...connected
 Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
@@ -1436,7 +1444,7 @@ Following is debug terminal output when running example [MQTT_ThingStream](examp
 
 ```
 Start MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.4.1
+AsyncWebServer_Teensy41 v1.5.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 ***************************************
 Teensy41_Pub
@@ -1503,7 +1511,8 @@ Submit issues to: [AsyncWebServer_Teensy41 issues](https://github.com/khoih-prog
  3. Add debugging features.
  4. Add Authentication support (MD5, SHA1).
  5. Add Table-of-Contents and Version String
- 
+ 6. Fix issue with slow browsers or network. Check [Target stops responding after variable time when using Firefox on Windows 10 #3](https://github.com/khoih-prog/AsyncWebServer_RP2040W/issues/3)
+ 7. Add functions and example `Async_AdvancedWebServer_favicon` to support `favicon.ico`
 
 ---
 ---

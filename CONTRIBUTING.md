@@ -15,8 +15,8 @@ If you don't find anything, please [open a new issue](https://github.com/khoih-p
 Please ensure to specify the following:
 
 * Arduino IDE version (e.g. 1.8.19) or Platform.io version
-* `Teensyduino` Core Version (e.g. `Teensyduino core v1.56`)
-* `QNEthernet` library version (e.g. `QNEthernet v0.13.0`)
+* `Teensyduino` Core Version (e.g. `Teensyduino core v1.57`)
+* `QNEthernet` library version (e.g. `QNEthernet v0.15.0`)
 * Board type and relevant info
 * Contextual information (e.g. what you were trying to achieve)
 * Simplest possible steps to reproduce
@@ -29,13 +29,13 @@ Please ensure to specify the following:
 
 ```
 Arduino IDE version: 1.8.19
-Teensyduino core v1.56
-Teensy 4.1 using QNEthernet v0.13.0
+Teensyduino core v1.57
+Teensy 4.1 using QNEthernet v0.15.0
 OS: Ubuntu 20.04 LTS
-Linux xy-Inspiron-3593 5.13.0-35-generic #40~20.04.1-Ubuntu SMP Mon Mar 7 09:18:32 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+Linux xy-Inspiron-3593 5.15.0-48-generic #54~20.04.1-Ubuntu SMP Thu Sep 1 16:17:26 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 
 Context:
-I encountered an endless loop while trying to connect to Local WiFi.
+I encountered an endless loop while using this library
 
 Steps to reproduce:
 1. ...

@@ -51,7 +51,11 @@ AsyncWebServer::AsyncWebServer(uint16_t port)
     if (c == NULL)
       return;
 
-    c->setRxTimeout(3);
+    // KH set no RxTimeout for slower Firefox / network
+    //c->setRxTimeout(3);
+    c->setRxTimeout(0);
+    //////
+    
     AsyncWebServerRequest *r = new AsyncWebServerRequest((AsyncWebServer*)s, c);
 
     if (r == NULL)

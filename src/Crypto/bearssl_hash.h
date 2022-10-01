@@ -1315,7 +1315,7 @@ void br_ghash_pclmul(void *y, const void *h, const void *data, size_t len);
  *
  * \return  the `pclmul` GHASH implementation, or `0`.
  */
-br_ghash br_ghash_pclmul_get(void);
+br_ghash br_ghash_pclmul_get();
 
 /**
  * \brief GHASH implementation using the POWER8 opcodes.
@@ -1341,7 +1341,7 @@ void br_ghash_pwr8(void *y, const void *h, const void *data, size_t len);
  *
  * \return  the `pwr8` GHASH implementation, or `0`.
  */
-br_ghash br_ghash_pwr8_get(void);
+br_ghash br_ghash_pwr8_get();
 
 #ifdef __cplusplus
 }

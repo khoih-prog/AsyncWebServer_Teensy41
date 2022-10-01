@@ -1025,6 +1025,17 @@ AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(int code, const St
   return new AsyncBasicResponse(code, contentType, content);
 }
 
+/////////////////////////////////////////////////
+
+// KH add for favicon
+AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(int code, const String& contentType, const uint8_t * content, size_t len, 
+                                                              AwsTemplateProcessor callback)
+{
+  return new AsyncProgmemResponse(code, contentType, content, len, callback);
+}
+
+/////////////////////////////////////////////////
+
 AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(Stream &stream, const String& contentType, size_t len, AwsTemplateProcessor callback)
 {
   return new AsyncStreamResponse(stream, contentType, len, callback);

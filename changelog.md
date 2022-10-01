@@ -13,12 +13,18 @@
 
 * [Table of contents](#table-of-contents)
 * [Changelog](#changelog)
+  * [Releases v1.5.0](#releases-v150)
   * [Releases v1.4.1](#releases-v141)
 
 ---
 ---
 
 ## Changelog
+
+### Releases v1.5.0
+
+1. Fix issue with slow browsers or network. Check [Target stops responding after variable time when using Firefox on Windows 10 #3](https://github.com/khoih-prog/AsyncWebServer_RP2040W/issues/3)
+2. Add functions and example `Async_AdvancedWebServer_favicon` to support `favicon.ico`
 
 ### Releases v1.4.1
 
