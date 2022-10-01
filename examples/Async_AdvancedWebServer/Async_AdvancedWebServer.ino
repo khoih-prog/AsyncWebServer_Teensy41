@@ -135,7 +135,7 @@ void drawGraph(AsyncWebServerRequest *request)
 {
   String out;
 
-  out.reserve(3000);
+  out.reserve(4000);
   char temp[70];
   
   out += "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n";
@@ -156,13 +156,13 @@ void drawGraph(AsyncWebServerRequest *request)
 }
 
 
-void setup(void)
+void setup()
 {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
 
   Serial.begin(115200);
-  while (!Serial);
+  while (!Serial && millis() < 5000);
 
   delay(200);
 
@@ -232,6 +232,6 @@ void setup(void)
   Serial.println(Ethernet.localIP());
 }
 
-void loop(void)
+void loop()
 {
 }

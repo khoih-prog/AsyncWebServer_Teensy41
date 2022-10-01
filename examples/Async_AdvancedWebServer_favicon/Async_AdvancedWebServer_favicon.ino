@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
-  Async_HelloServer.h - Dead simple AsyncWebServer for Teensy41 QNEthernet
-  
+  Async_AdvancedWebServer.ino
+
   For Teensy41 with QNEthernet
   
   AsyncWebServer_Teensy41 is a library for the Teensy41 with QNEthernet
@@ -8,7 +8,36 @@
   Based on and modified from ESPAsyncWebServer (https://github.com/me-no-dev/ESPAsyncWebServer)
   Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Teensy41
   Licensed under GPLv3 license
+  
+  Copyright (c) 2015, Majenko Technologies
+  All rights reserved.
+  
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+  
+  Redistributions in binary form must reproduce the above copyright notice, this
+  list of conditions and the following disclaimer in the documentation and/or
+  other materials provided with the distribution.
+  
+  Neither the name of Majenko Technologies nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************************************************************/
+
 
 #if !( defined(CORE_TEENSY) && defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41) )
   #error Only Teensy 4.1 supported
@@ -39,17 +68,54 @@
 #include "QNEthernet.h"       // https://github.com/ssilverman/QNEthernet
 using namespace qindesign::network;
 
+#include "favicon.h"
 #include <AsyncWebServer_Teensy41.h>
 
 AsyncWebServer    server(80);
 
+int reqCount = 0;                // number of requests received
+
 const int led = 13;
+
+#define BUFFER_SIZE         512
+char temp[BUFFER_SIZE];
 
 void handleRoot(AsyncWebServerRequest *request)
 {
   digitalWrite(led, 1);
-  request->send(200, "text/plain", String("Hello from AsyncWebServer_Teensy41 on ") + BOARD_NAME );
+
+  int sec = millis() / 1000;
+  int min = sec / 60;
+  int hr = min / 60;
+  int day = hr / 24;
+
+  snprintf(temp, BUFFER_SIZE - 1,
+           "<html>\
+<head>\
+<meta http-equiv='refresh' content='5'/>\
+<title>AsyncWebServer-%s</title>\
+<style>\
+body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
+</style>\
+</head>\
+<body>\
+<h2>AsyncWebServer_Teensy41!</h2>\
+<h3>running on %s</h3>\
+<p>Uptime: %d d %02d:%02d:%02d</p>\
+<img src=\"/test.svg\" />\
+</body>\
+</html>", BOARD_NAME, BOARD_NAME, day, hr % 24, min % 60, sec % 60);
+
+  request->send(200, "text/html", temp);
+
   digitalWrite(led, 0);
+}
+void drawFavicon(AsyncWebServerRequest *request)
+{
+  AsyncWebServerResponse *response = request->beginResponse(200, "image/x-icon", favicon_ico_gz, favicon_ico_gz_len);
+  
+  response->addHeader("Content-Encoding", "gzip");
+  request->send(response);
 }
 
 void handleNotFound(AsyncWebServerRequest *request)
@@ -58,7 +124,6 @@ void handleNotFound(AsyncWebServerRequest *request)
   String message = "File Not Found\n\n";
 
   message += "URI: ";
-  //message += server.uri();
   message += request->url();
   message += "\nMethod: ";
   message += (request->method() == HTTP_GET) ? "GET" : "POST";
@@ -75,6 +140,31 @@ void handleNotFound(AsyncWebServerRequest *request)
   digitalWrite(led, 0);
 }
 
+void drawGraph(AsyncWebServerRequest *request)
+{
+  String out;
+
+  out.reserve(4000);
+  char temp[70];
+  
+  out += "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n";
+  out += "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"2\" stroke=\"rgb(0, 0, 0)\" />\n";
+  out += "<g stroke=\"blue\">\n";
+  int y = rand() % 130;
+
+  for (int x = 10; x < 300; x += 10)
+  {
+    int y2 = rand() % 130;
+    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
+    out += temp;
+    y = y2;
+  }
+  out += "</g>\n</svg>\n";
+
+  request->send(200, "image/svg+xml", out);
+}
+
+
 void setup()
 {
   pinMode(led, OUTPUT);
@@ -85,7 +175,7 @@ void setup()
 
   delay(200);
 
-  Serial.print("\nStart Async_HelloServer on "); Serial.print(BOARD_NAME);
+  Serial.print("\nStart Async_AdvancedWebServer on "); Serial.print(BOARD_NAME);
   Serial.print(" with "); Serial.println(SHIELD_TYPE);
   Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
 
@@ -127,9 +217,20 @@ void setup()
 #else  
   delay(2000);
 #endif
+
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request)
   {
     handleRoot(request);
+  });
+
+  server.on("/test.svg", HTTP_GET, [](AsyncWebServerRequest * request)
+  {
+    drawGraph(request);
+  });
+
+  server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest * request) 
+  {
+    drawFavicon(request);
   });
 
   server.on("/inline", [](AsyncWebServerRequest * request)
