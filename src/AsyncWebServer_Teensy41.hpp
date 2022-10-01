@@ -16,24 +16,25 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
   You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.  
  
-  Version: 1.4.1
+  Version: 1.5.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.4.1   K Hoang      18/03/2022 Initial coding for Teensy 4.1 using built-in QNEthernet.
                                   Bump up version to v1.4.1 to sync with AsyncWebServer_STM32 v1.4.1
+  1.5.0   K Hoang      01/10/2022 Fix issue with slow browsers or network. Add function and example to support favicon.ico                           
  *****************************************************************************************************************************/
 
 #ifndef _ASYNC_WEBSERVER_TEENSY41_HPP_
 #define _ASYNC_WEBSERVER_TEENSY41_HPP_
 
-#define ASYNC_WEBSERVER_TEENSY41_VERSION           "AsyncWebServer_Teensy41 v1.4.1"
+#define ASYNC_WEBSERVER_TEENSY41_VERSION           "AsyncWebServer_Teensy41 v1.5.0"
 
 #define ASYNC_WEBSERVER_TEENSY41_VERSION_MAJOR     1
-#define ASYNC_WEBSERVER_TEENSY41_VERSION_MINOR     4
-#define ASYNC_WEBSERVER_TEENSY41_VERSION_PATCH     1
+#define ASYNC_WEBSERVER_TEENSY41_VERSION_MINOR     5
+#define ASYNC_WEBSERVER_TEENSY41_VERSION_PATCH     0
 
-#define ASYNC_WEBSERVER_TEENSY41_VERSION_INT       1004001
+#define ASYNC_WEBSERVER_TEENSY41_VERSION_INT       1005000
 
 #ifndef BOARD_NAME
 	#define BOARD_NAME			"Teensy 4.1"
