@@ -90,6 +90,7 @@
   * [11. **MQTT_ThingStream**](examples/MQTT_ThingStream)
   * [12. WebClient](examples/WebClient) 
   * [13. WebClientRepeating](examples/WebClientRepeating)
+  * [14. Async_AdvancedWebServer_favicon](examples/Async_AdvancedWebServer_favicon) **New**
 * [Example Async_AdvancedWebServer](#example-Async_AdvancedWebServer)
 * [Debug Terminal Output Samples](#debug-Terminal-output-samples)
   * [1. Async_AdvancedWebServer on Teensy4.1 QNEthernet](#1-Async_AdvancedWebServer-on-Teensy41-QNEthernet)
@@ -150,7 +151,7 @@ to apply the better and faster **asynchronous** feature of the **powerful** [ESP
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Teensy core v1.57+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1.  [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/cores.svg)](https://github.com/PaulStoffregen/cores/releases/latest)
- 3. [`QNEthernet Library version v0.15.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet. [![GitHub release](https://img.shields.io/github/release/ssilverman/QNEthernet.svg)](https://github.com/ssilverman/QNEthernet/releases/latest)
+ 3. [`QNEthernet Library version v0.15.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet
  4. [`Teensy41_AsyncTCP library v1.0.0+`](https://github.com/khoih-prog/Teensy41_AsyncTCP) to use **Teensy 4.1 using QNEthernet Library**. [![GitHub release](https://img.shields.io/github/release/khoih-prog/Teensy41_AsyncTCP.svg)](https://github.com/khoih-prog/Teensy41_AsyncTCP/releases/latest)
 
 ---
@@ -1120,8 +1121,7 @@ server.reset();
 
 ## Setting up the server
 
-https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/d09281ae572db571fa5e53e624ca19f16462f892/examples/Async_HelloServer/Async_HelloServer.ino#L13-L150
-
+https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/4db0fcafc96fa8d483f20a120187f17eb90275cb/examples/Async_HelloServer/Async_HelloServer.ino#L13-L150
 
 ---
 
