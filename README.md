@@ -14,6 +14,7 @@
 ## Table of contents
 
 * [Table of contents](#table-of-contents)
+* [Important Note from v1.6.0](#Important-Note-from-v160)
 * [Why do we need this AsyncWebServer_Teensy41 library](#why-do-we-need-this-AsyncWebServer_Teensy41-library)
   * [Features](#features)
   * [Why Async is better](#why-async-is-better)
@@ -91,6 +92,8 @@
   * [12. WebClient](examples/WebClient) 
   * [13. WebClientRepeating](examples/WebClientRepeating)
   * [14. Async_AdvancedWebServer_favicon](examples/Async_AdvancedWebServer_favicon) **New**
+  * [15. WebClientRepeating](examples/WebClientRepeating)
+  * [16. Async_AdvancedWebServer_MemoryIssues_SendArduinoString](examples/Async_AdvancedWebServer_MemoryIssues_SendArduinoString) **New**
 * [Example Async_AdvancedWebServer](#example-Async_AdvancedWebServer)
 * [Debug Terminal Output Samples](#debug-Terminal-output-samples)
   * [1. Async_AdvancedWebServer on Teensy4.1 QNEthernet](#1-Async_AdvancedWebServer-on-Teensy41-QNEthernet)
@@ -98,6 +101,7 @@
   * [3. MQTTClient_Auth on Teensy4.1 QNEthernet](#3-MQTTClient_Auth-on-Teensy41-QNEthernet)
   * [4. MQTTClient_Basic on Teensy4.1 QNEthernet](#4-MQTTClient_Basic-on-Teensy41-QNEthernet)
   * [5. MQTT_ThingStream on Teensy4.1 QNEthernet](#5-MQTT_ThingStream-on-Teensy41-QNEthernet)
+  * [6. Async_AdvancedWebServer_MemoryIssues_Send_CString on Teensy4.1 QNEthernet](#6-Async_AdvancedWebServer_MemoryIssues_Send_CString-on-Teensy41-QNEthernet)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Issues](#issues)
@@ -107,6 +111,80 @@
 * [Contributing](#contributing)
 * [License](#license)
 * [Copyright](#copyright)
+
+---
+---
+
+
+### Important Note from v1.6.0
+
+The new `v1.6.0+` has added a new and powerful feature to permit using `CString` to save heap to send `very large data`.
+
+Check the `marvelleous` PRs of **@salasidis** in [Portenta_H7_AsyncWebServer library](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer)
+- [request->send(200, textPlainStr, jsonChartDataCharStr); - Without using String Class - to save heap #8](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer/pull/8)
+- [All memmove() removed - string no longer destroyed #11](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer/pull/11)
+
+and these new examples
+
+1. [Async_AdvancedWebServer_MemoryIssues_Send_CString](https://github.com/khoih-prog/AsyncWebServer_Teensy41/tree/main/examples/Async_AdvancedWebServer_MemoryIssues_Send_CString)
+2. [Async_AdvancedWebServer_MemoryIssues_SendArduinoString](https://github.com/khoih-prog/AsyncWebServer_Teensy41/tree/main/examples/Async_AdvancedWebServer_MemoryIssues_SendArduinoString)
+
+If using Arduino String, to send a buffer around 11 KBytes, the used `Max Heap` is around **65,536 bytes**
+
+If using CString in regular memory, with the larger 31 KBytes, the used `Max Heap` is around **61,440 bytes**
+
+This is very critical in use-cases where sending `very large data` is necessary, without `heap-allocation-error`.
+
+
+1. The traditional function used to send `Arduino String` is
+
+https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/7d53ac39c280dcf1f8a9510909fcdd0fdd30af3a/src/AsyncWebServer_Teensy41.hpp#L423
+
+```cpp
+void send(int code, const String& contentType = String(), const String& content = String());
+```
+
+such as
+
+```cpp
+request->send(200, textPlainStr, ArduinoStr);
+```
+The required additional HEAP is about **2 times of the String size**
+
+
+2. To use `CString` with copying while sending. Use function
+
+https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/7d53ac39c280dcf1f8a9510909fcdd0fdd30af3a/src/AsyncWebServer_Teensy41.hpp#L424
+
+```cpp
+void send(int code, const String& contentType, const char *content, bool nonCopyingSend = true);    // RSMOD
+```
+
+such as 
+
+```cpp
+request->send(200, textPlainStr, cStr);
+```
+
+The required additional HEAP is also about **2 times of the CString size** because of `unnecessary copies` of the CString in HEAP. Avoid this `unefficient` way.
+
+
+3. To use `CString` without copying while sending. Use function
+
+https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/7d53ac39c280dcf1f8a9510909fcdd0fdd30af3a/src/AsyncWebServer_Teensy41.hpp#L424
+
+```cpp
+void send(int code, const String& contentType, const char *content, bool nonCopyingSend = true);    // RSMOD
+```
+
+such as 
+
+```cpp
+request->send(200, textPlainStr, cStr, false);
+```
+
+The required additional HEAP is about **1 times of the CString size**. This way is the best and **most efficient way** to use by avoiding of `unnecessary copies` of the CString in HEAP
+
 
 ---
 ---
@@ -152,7 +230,7 @@ to apply the better and faster **asynchronous** feature of the **powerful** [ESP
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Teensy core v1.57+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1.  [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/cores.svg)](https://github.com/PaulStoffregen/cores/releases/latest)
  3. [`QNEthernet Library version v0.15.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet
- 4. [`Teensy41_AsyncTCP library v1.0.0+`](https://github.com/khoih-prog/Teensy41_AsyncTCP) to use **Teensy 4.1 using QNEthernet Library**. [![GitHub release](https://img.shields.io/github/release/khoih-prog/Teensy41_AsyncTCP.svg)](https://github.com/khoih-prog/Teensy41_AsyncTCP/releases/latest)
+ 4. [`Teensy41_AsyncTCP library v1.1.0+`](https://github.com/khoih-prog/Teensy41_AsyncTCP) to use **Teensy 4.1 using QNEthernet Library**. [![GitHub release](https://img.shields.io/github/release/khoih-prog/Teensy41_AsyncTCP.svg)](https://github.com/khoih-prog/Teensy41_AsyncTCP/releases/latest)
 
 ---
 
@@ -207,7 +285,7 @@ These files must be copied into the directory:
 ## Important things to remember
 
 - This is fully asynchronous server and as such does not run on the loop thread.
-- You can not use yield() or delay() or any function that uses them inside the callbacks
+- You can not use `yield()` or `delay()` or any function that uses them inside the callbacks
 - The server is smart enough to know when to close the connection and free resources
 - You can not send more than one response to a single request
 
@@ -1006,7 +1084,7 @@ void sendDataWs(AsyncWebSocketClient * client)
 
 ### Limiting the number of web socket clients
 
-Browsers sometimes do not correctly close the websocket connection, even when the close() function is called in javascript.  This will eventually exhaust the web server's resources and will cause the server to crash.  Periodically calling the cleanClients() function from the main loop() function limits the number of clients by closing the oldest client when the maximum number of clients has been exceeded.  This can called be every cycle, however, if you wish to use less power, then calling as infrequently as once per second is sufficient.
+Browsers sometimes do not correctly close the websocket connection, even when the `close()` function is called in javascript.  This will eventually exhaust the web server's resources and will cause the server to crash.  Periodically calling the `cleanClients()` function from the main `loop()` function limits the number of clients by closing the oldest client when the maximum number of clients has been exceeded.  This can called be every cycle, however, if you wish to use less power, then calling as infrequently as once per second is sufficient.
 
 ```cpp
 void loop(){
@@ -1018,8 +1096,8 @@ void loop(){
 
 ## Async Event Source Plugin
 
-The server includes EventSource (Server-Sent Events) plugin which can be used to send short text events to the browser.
-Difference between EventSource and WebSockets is that EventSource is single direction, text-only protocol.
+The server includes `EventSource` (Server-Sent Events) plugin which can be used to send short text events to the browser.
+Difference between `EventSource` and `WebSockets` is that `EventSource` is single direction, text-only protocol.
 
 ### Setup Event Source on the server
 
@@ -1275,14 +1353,16 @@ build_flags =
 12. [WebClient](examples/WebClient)
 13. [WebClientRepeating](examples/WebClientRepeating)
 14. [Async_AdvancedWebServer_favicon](examples/Async_AdvancedWebServer_favicon) **New**
+15. [Async_AdvancedWebServer_MemoryIssues_SendArduinoString](examples/Async_AdvancedWebServer_MemoryIssues_SendArduinoString) **New**
+16. [Async_AdvancedWebServer_MemoryIssues_Send_CString](examples/Async_AdvancedWebServer_MemoryIssues_Send_CString) **New**
+
 
 ---
 ---
 
 ### Example [Async_AdvancedWebServer](examples/Async_AdvancedWebServer)
 
-https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/2f63465d2f291b79812346ba6de8aa147b43d064/examples/Async_AdvancedWebServer/Async_AdvancedWebServer.ino#L41-L237
-
+https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/6bb431b7e1e423a41c2965ff82d18b03b39ad65a/examples/Async_AdvancedWebServer/Async_AdvancedWebServer.ino#L41-L237
 
 You can access the Async Advanced WebServer @ the server IP
 
@@ -1308,7 +1388,7 @@ Following are debug terminal output and screen shots when running example [Async
 
 ```
 Start Async_AdvancedWebServer on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.5.0
+AsyncWebServer_Teensy41 v1.6.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 HTTP EthernetWebServer is @ IP : 192.168.2.107
 ```
@@ -1326,7 +1406,7 @@ Following is debug terminal output when running example [WebClient](examples/Web
 
 ```
 Start WebClient on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.5.0
+AsyncWebServer_Teensy41 v1.6.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 
 Starting connection to server...
@@ -1397,7 +1477,7 @@ Following is debug terminal output when running example [MQTTClient_Auth](exampl
 
 ```
 Start MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.5.0
+AsyncWebServer_Teensy41 v1.6.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 Attempting MQTT connection to broker.emqx.io...connected
 Message Send : MQTT_Pub => Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
@@ -1417,7 +1497,7 @@ Following is debug terminal output when running example [MQTTClient_Basic](examp
 
 ```
 Start MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.5.0
+AsyncWebServer_Teensy41 v1.6.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 Attempting MQTT connection to broker.emqx.io...connected
 Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
@@ -1444,7 +1524,7 @@ Following is debug terminal output when running example [MQTT_ThingStream](examp
 
 ```
 Start MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.5.0
+AsyncWebServer_Teensy41 v1.6.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 ***************************************
 Teensy41_Pub
@@ -1464,6 +1544,72 @@ MQTT Message receive [Teensy41_Pub] Hello from MQTT_ThingStream on TEENSY 4.1 wi
 MQTT Message Send : Teensy41_Pub => Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
 MQTT Message receive [Teensy41_Pub] Hello from MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
 ```
+
+
+---
+
+#### 6. Async_AdvancedWebServer_MemoryIssues_Send_CString on Teensy4.1 QNEthernet
+
+Following is the debug terminal and screen shot when running example [Async_AdvancedWebServer_MemoryIssues_Send_CString](examples/Async_AdvancedWebServer_MemoryIssues_Send_CString), on `ESP8266_NODEMCU_ESP12E with ESP8266_W5500 Ethernet`, to demonstrate the new and powerful `HEAP-saving` feature
+
+
+##### Using CString  ===> smaller heap (61,440 bytes) for 40,000-byte buffer
+
+```
+Start Async_AdvancedWebServer_MemoryIssues_Send_CString on TEENSY 4.1 with Teensy4.1 QNEthernet
+AsyncWebServer_Teensy41 v1.6.0
+
+HEAP DATA - Start =>  Free heap: 483328  Used heap: 0
+Initialize Ethernet using DHCP => Connected! IP address:192.168.2.83
+HTTP EthernetWebServer is @ IP : 192.168.2.83
+
+HEAP DATA - Pre Create Arduino String  Free heap: 442368  Used heap: 40960
+.
+HEAP DATA - Pre Send  Free heap: 438272  Used heap: 45056
+
+HEAP DATA - Post Send  Free heap: 421888  Used heap: 61440
+......
+Out String Length=31243
+.....
+```
+
+While using `Arduino String`, the HEAP usage is very large
+
+
+#### Async_AdvancedWebServer_MemoryIssues_SendArduinoString  ===> larger heap (65,536 bytes) while buffer len is only 12K Bytes
+
+
+```
+Start Async_AdvancedWebServer_MemoryIssues_SendArduinoString on TEENSY 4.1 with Teensy4.1 QNEthernet
+AsyncWebServer_Teensy41 v1.5.0
+
+HEAP DATA - Start =>  Free heap: 483328  Used heap: 0
+Initialize Ethernet using DHCP => Connected! IP address:192.168.2.83
+HTTP EthernetWebServer is @ IP : 192.168.2.83
+.
+HEAP DATA - Pre Send  Free heap: 438272  Used heap: 45056
+
+HEAP DATA - Post Send  Free heap: 417792  Used heap: 65536
+......
+Out String Length=11191
+... ...
+Out String Length=11233
+....... 
+Out String Length=11192
+.......
+Out String Length=11204
+... ...
+Out String Length=11214
+```
+
+
+You can access the Async Advanced WebServers at the displayed server IP, e.g. `192.168.2.83`
+
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/main/pics/Async_AdvancedWebServer_MemoryIssues_Send_CString.png">
+</p>
+
 
 ---
 ---
@@ -1513,7 +1659,8 @@ Submit issues to: [AsyncWebServer_Teensy41 issues](https://github.com/khoih-prog
  5. Add Table-of-Contents and Version String
  6. Fix issue with slow browsers or network. Check [Target stops responding after variable time when using Firefox on Windows 10 #3](https://github.com/khoih-prog/AsyncWebServer_RP2040W/issues/3)
  7. Add functions and example `Async_AdvancedWebServer_favicon` to support `favicon.ico`
-
+ 8. Support using `CString` to save heap to send `very large data`. Check [request->send(200, textPlainStr, jsonChartDataCharStr); - Without using String Class - to save heap #8](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer/pull/8)
+ 
 ---
 ---
 
@@ -1521,11 +1668,14 @@ Submit issues to: [AsyncWebServer_Teensy41 issues](https://github.com/khoih-prog
 ### Contributions and Thanks
 
 1. Based on and modified from [Hristo Gochkov's ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer). Many thanks to [Hristo Gochkov](https://github.com/me-no-dev) for great [ESPAsyncWebServer Library](https://github.com/me-no-dev/ESPAsyncWebServer)
-
+2. Thanks to [salasidis](https://github.com/salasidis) aka [rs77can](https://forum.arduino.cc/u/rs77can) to discuss and make the following `marvellous` PRs in [Portenta_H7_AsyncWebServer library](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer)
+- [request->send(200, textPlainStr, jsonChartDataCharStr); - Without using String Class - to save heap #8](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer/pull/8), leading to `v1.6.0` to support using `CString` to save heap to send `very large data`
+- [All memmove() removed - string no longer destroyed #11](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer/pull/11), leading to `v1.6.0` to remove `memmove()` and not to destroy String anymore
 
 <table>
   <tr>
     <td align="center"><a href="https://github.com/me-no-dev"><img src="https://github.com/me-no-dev.png" width="100px;" alt="me-no-dev"/><br /><sub><b>⭐️⭐️ Hristo Gochkov</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/salasidis"><img src="https://github.com/salasidis.png" width="100px;" alt="salasidis"/><br /><sub><b>⭐️ salasidis</b></sub></a><br /></td>
   </tr>
 </table>
 
@@ -1551,6 +1701,7 @@ If you want to contribute to this project:
 ## Copyright
 
 - Copyright 2016- Hristo Gochkov
+
 - Copyright 2022- Khoi Hoang
 
 
