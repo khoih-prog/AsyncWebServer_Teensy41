@@ -20,17 +20,18 @@
   #error Only ESP8266
 #endif  
 
-#define _AWS_ETHERNET_LOGLEVEL_              2
+#define _AWS_ETHERNET_LOGLEVEL_               1
 
 //////////////////////////////////////////////////////////
 
-#define USING_W5500         true
+#define USING_W5500         false
 #define USING_W5100         false
-#define USING_ENC28J60      false
+#define USING_ENC28J60      true
 
 #include <SPI.h>
 
-#define CSPIN       16      // 5
+// Using GPIO4, GPIO16, or GPIO5
+#define CSPIN       4   //16      // 5
 
 #if USING_W5500
   #include "W5500lwIP.h"

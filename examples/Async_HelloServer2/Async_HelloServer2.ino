@@ -1,59 +1,31 @@
 /****************************************************************************************************************************
-  Async_HelloServer.ino - Dead simple AsyncWebServer for Teensy41 QNEthernet
+  Async_HelloServer.ino
   
-  For Teensy41 with QNEthernet
-  
-  AsyncWebServer_Teensy41 is a library for the Teensy41 with QNEthernet
+  For ESP8266 using W5x00/ENC8266 Ethernet
+   
+  AsyncWebServer_Ethernet is a library for the Ethernet with lwIP_5100, lwIP_5500 or lwIP_enc28j60 library
   
   Based on and modified from ESPAsyncWebServer (https://github.com/me-no-dev/ESPAsyncWebServer)
-  Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Teensy41
+  Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Ethernet
   Licensed under GPLv3 license
  *****************************************************************************************************************************/
-#if !( defined(CORE_TEENSY) && defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41) )
-  #error Only Teensy 4.1 supported
-#endif
 
-// Debug Level from 0 to 4
-#define _TEENSY41_ASYNC_TCP_LOGLEVEL_       1
-#define _AWS_TEENSY41_LOGLEVEL_             1
+#include "defines.h"
 
-#define SHIELD_TYPE     "Teensy4.1 QNEthernet"
-
-#if (_AWS_TEENSY41_LOGLEVEL_ > 3)
-  #warning Using QNEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
-#endif
-
-#define USING_DHCP            true
-//#define USING_DHCP            false
-
-#if !USING_DHCP
-  // Set the static IP address to use if the DHCP fails to assign
-  IPAddress myIP(192, 168, 2, 222);
-  IPAddress myNetmask(255, 255, 255, 0);
-  IPAddress myGW(192, 168, 2, 1);
-  //IPAddress mydnsServer(192, 168, 2, 1);
-  IPAddress mydnsServer(8, 8, 8, 8);
-#endif
-
-#include "QNEthernet.h"       // https://github.com/ssilverman/QNEthernet
-using namespace qindesign::network;
-
-#include <AsyncWebServer_Teensy41.h>
+#include <AsyncWebServer_Ethernet.h>
 
 AsyncWebServer    server(80);
 
-const int led = 13;
-
 void handleRoot(AsyncWebServerRequest *request)
 {
-  digitalWrite(led, 1);
-  request->send(200, "text/plain", String("Hello from AsyncWebServer_Teensy41 on ") + BOARD_NAME );
-  digitalWrite(led, 0);
+  digitalWrite(LED_BUILTIN, LED_ON);
+  request->send(200, "text/plain", String("Hello from AsyncWebServer_Ethernet on ") + BOARD_NAME );
+  digitalWrite(LED_BUILTIN, LED_OFF);
 }
 
 void handleNotFound(AsyncWebServerRequest *request)
 {
-  digitalWrite(led, 1);
+  digitalWrite(LED_BUILTIN, LED_ON);
   String message = "File Not Found\n\n";
 
   message += "URI: ";
@@ -71,13 +43,57 @@ void handleNotFound(AsyncWebServerRequest *request)
   }
 
   request->send(404, "text/plain", message);
-  digitalWrite(led, 0);
+  digitalWrite(LED_BUILTIN, LED_OFF);
+}
+
+void initEthernet()
+{
+  SPI.begin();
+  SPI.setClockDivider(SPI_CLOCK_DIV4);
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setDataMode(SPI_MODE0);
+
+#if !USING_DHCP
+  eth.config(localIP, gateway, netMask, gateway);
+#endif
+  
+  eth.setDefault();
+  
+  if (!eth.begin()) 
+  {
+    Serial.println("No Ethernet hardware ... Stop here");
+    
+    while (true) 
+    {
+      delay(1000);
+    }
+  } 
+  else 
+  {
+    Serial.print("Connecting to network : ");
+    
+    while (!eth.connected()) 
+    {
+      Serial.print(".");
+      delay(1000);
+    }
+  }
+ 
+  Serial.println();
+
+#if USING_DHCP  
+  Serial.print("Ethernet DHCP IP address: ");
+#else
+  Serial.print("Ethernet Static IP address: ");
+#endif
+  
+  Serial.println(eth.localIP());
 }
 
 void setup()
 {
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LED_OFF);
 
   Serial.begin(115200);
   while (!Serial && millis() < 5000);
@@ -86,47 +102,10 @@ void setup()
 
   Serial.print("\nStart Async_HelloServer2 on "); Serial.print(BOARD_NAME);
   Serial.print(" with "); Serial.println(SHIELD_TYPE);
-  Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
+  Serial.println(ASYNC_WEBSERVER_ETHERNET_VERSION);
 
-  delay(500);
-
-#if USING_DHCP
-  // Start the Ethernet connection, using DHCP
-  Serial.print("Initialize Ethernet using DHCP => ");
-  Ethernet.begin();
-#else
-  // Start the Ethernet connection, using static IP
-  Serial.print("Initialize Ethernet using static IP => ");
-  Ethernet.begin(myIP, myNetmask, myGW);
-  Ethernet.setDNSServerIP(mydnsServer);
-#endif
-
-  if (!Ethernet.waitForLocalIP(5000))
-  {
-    Serial.println(F("Failed to configure Ethernet"));
-
-    if (!Ethernet.linkStatus())
-    {
-      Serial.println(F("Ethernet cable is not connected."));
-    }
-
-    // Stay here forever
-    while (true)
-    {
-      delay(1);
-    }
-  }
-  else
-  {
-    Serial.print(F("Connected! IP address:")); Serial.println(Ethernet.localIP());
-  }
-
-#if USING_DHCP
-  delay(1000);
-#else  
-  delay(2000);
-#endif
-
+  initEthernet();
+  
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request)
   {
     handleRoot(request);
@@ -165,7 +144,7 @@ void setup()
   server.begin();
 
   Serial.print("HTTP EthernetWebServer started @ IP : ");
-  Serial.println(Ethernet.localIP());
+  Serial.println(eth.localIP());
 }
 
 void loop()

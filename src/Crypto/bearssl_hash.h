@@ -27,7 +27,7 @@
 #ifndef BR_BEARSSL_HASH_H__
 #define BR_BEARSSL_HASH_H__
 
-#include "AsyncWebServer_Teensy41_Debug.h"
+#include "AsyncWebServer_Ethernet_Debug.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -1315,7 +1315,7 @@ void br_ghash_pclmul(void *y, const void *h, const void *data, size_t len);
  *
  * \return  the `pclmul` GHASH implementation, or `0`.
  */
-br_ghash br_ghash_pclmul_get();
+br_ghash br_ghash_pclmul_get(void);
 
 /**
  * \brief GHASH implementation using the POWER8 opcodes.
@@ -1341,7 +1341,7 @@ void br_ghash_pwr8(void *y, const void *h, const void *data, size_t len);
  *
  * \return  the `pwr8` GHASH implementation, or `0`.
  */
-br_ghash br_ghash_pwr8_get();
+br_ghash br_ghash_pwr8_get(void);
 
 #ifdef __cplusplus
 }

@@ -38,7 +38,7 @@
 #ifndef LWIP_INCLUDED_POLARSSL_SHA1_H
 #define LWIP_INCLUDED_POLARSSL_SHA1_H
 
-#include "AsyncWebServer_Teensy41_Debug.h"
+#include "AsyncWebServer_Ethernet_Debug.h"
 
 #ifdef SHA1_BUFFER_SIZE
   #undef SHA1_BUFFER_SIZE

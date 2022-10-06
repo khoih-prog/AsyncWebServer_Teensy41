@@ -20,7 +20,7 @@
   #error Only ESP8266
 #endif  
 
-#define _AWS_ETHERNET_LOGLEVEL_              2
+#define _AWS_ETHERNET_LOGLEVEL_               1
 
 //////////////////////////////////////////////////////////
 

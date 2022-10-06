@@ -27,7 +27,7 @@
 #ifndef HASH_H_
 #define HASH_H_
 
-#include "AsyncWebServer_Teensy41_Debug.h"
+#include "AsyncWebServer_Ethernet_Debug.h"
 
 #ifdef HASH_BUFFER_SIZE
   #undef HASH_BUFFER_SIZE

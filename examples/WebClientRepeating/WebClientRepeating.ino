@@ -1,24 +1,26 @@
 /****************************************************************************************************************************
-  WebClientRepeating.ino - Dead simple AsyncWebServer for Teensy41 QNEthernet
+  WebClientRepeating.ino
   
-  For Teensy41 with QNEthernet
-  
-  AsyncWebServer_Teensy41 is a library for the Teensy41 with QNEthernet
+  For ESP8266 using W5x00/ENC8266 Ethernet
+   
+  AsyncWebServer_Ethernet is a library for the Ethernet with lwIP_5100, lwIP_5500 or lwIP_enc28j60 library
   
   Based on and modified from ESPAsyncWebServer (https://github.com/me-no-dev/ESPAsyncWebServer)
-  Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Teensy41
+  Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Ethernet
   Licensed under GPLv3 license
  *****************************************************************************************************************************/
 
 #include "defines.h"
 
-char server[] = "arduino.cc";
+#include <AsyncWebServer_Ethernet.h>
+
+char server[] = "arduino.tips";
 
 unsigned long lastConnectionTime = 0;         // last time you connected to the server, in milliseconds
-const unsigned long postingInterval = 10000L; // delay between updates, in milliseconds
+const unsigned long postingInterval = 60000L; // delay between updates, in milliseconds
 
 // Initialize the Web client object
-EthernetClient client;
+TCPClient client;
 
 // this method makes a HTTP connection to the server
 void httpRequest()
@@ -36,7 +38,7 @@ void httpRequest()
 
     // send the HTTP PUT request
     client.println(F("GET /asciilogo.txt HTTP/1.1"));
-    client.println(F("Host: arduino.cc"));
+    client.println(F("Host: arduino.tips"));
     client.println(F("Connection: close"));
     client.println();
 
@@ -50,54 +52,64 @@ void httpRequest()
   }
 }
 
+void initEthernet()
+{
+  SPI.begin();
+  SPI.setClockDivider(SPI_CLOCK_DIV4);
+  SPI.setBitOrder(MSBFIRST);
+  SPI.setDataMode(SPI_MODE0);
+
+#if !USING_DHCP
+  eth.config(localIP, gateway, netMask, gateway);
+#endif
+  
+  eth.setDefault();
+  
+  if (!eth.begin()) 
+  {
+    Serial.println("No Ethernet hardware ... Stop here");
+    
+    while (true) 
+    {
+      delay(1000);
+    }
+  } 
+  else 
+  {
+    Serial.print("Connecting to network : ");
+    
+    while (!eth.connected()) 
+    {
+      Serial.print(".");
+      delay(1000);
+    }
+  }
+ 
+  Serial.println();
+
+#if USING_DHCP  
+  Serial.print("Ethernet DHCP IP address: ");
+#else
+  Serial.print("Ethernet Static IP address: ");
+#endif
+  
+  Serial.println(eth.localIP());
+}
+
 void setup()
 {
-  // Open serial communications and wait for port to open:
   Serial.begin(115200);
   while (!Serial && millis() < 5000);
 
+  delay(200);
+
   Serial.print("\nStart WebClientRepeating on "); Serial.print(BOARD_NAME);
   Serial.print(" with "); Serial.println(SHIELD_TYPE);
-  Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
+  Serial.println(ASYNC_WEBSERVER_ETHERNET_VERSION);
 
-  delay(500);
+  initEthernet();
 
-#if USING_DHCP
-  // Start the Ethernet connection, using DHCP
-  Serial.print("Initialize Ethernet using DHCP => ");
-  Ethernet.begin();
-#else
-  // Start the Ethernet connection, using static IP
-  Serial.print("Initialize Ethernet using static IP => ");
-  Ethernet.begin(myIP, myNetmask, myGW);
-  Ethernet.setDNSServerIP(mydnsServer);
-#endif
-
-  if (!Ethernet.waitForLocalIP(5000))
-  {
-    Serial.println(F("Failed to configure Ethernet"));
-
-    if (!Ethernet.linkStatus())
-    {
-      Serial.println(F("Ethernet cable is not connected."));
-    }
-
-    // Stay here forever
-    while (true)
-    {
-      delay(1);
-    }
-  }
-  else
-  {
-    Serial.print(F("Connected! IP address:")); Serial.println(Ethernet.localIP());
-  }
-
-#if USING_DHCP
-  delay(1000);
-#else  
   delay(2000);
-#endif
 }
 
 void loop()

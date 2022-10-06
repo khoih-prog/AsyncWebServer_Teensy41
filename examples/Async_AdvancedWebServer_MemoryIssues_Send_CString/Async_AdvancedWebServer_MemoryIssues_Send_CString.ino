@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
-  Async_AdvancedWebServer.ino
-  
+  Async_AdvancedWebServer_MemoryIssues_Send_CString.ino
+
   For ESP8266 using W5x00/ENC8266 Ethernet
    
   AsyncWebServer_Ethernet is a library for the Ethernet with lwIP_5100, lwIP_5500 or lwIP_enc28j60 library
@@ -42,17 +42,22 @@
 
 #include <AsyncWebServer_Ethernet.h>
 
+char *cStr;
+
+// In bytes
+#define CSTRING_SIZE                    12000
+
 AsyncWebServer    server(80);
 
 int reqCount = 0;                // number of requests received
+
+#define BUFFER_SIZE         768 // a little larger in case required for header shift (destructive send)
+char temp[BUFFER_SIZE];
 
 void handleRoot(AsyncWebServerRequest *request)
 {
   digitalWrite(LED_BUILTIN, LED_ON);
 
-#define BUFFER_SIZE     400
-
-  char temp[BUFFER_SIZE];
   int sec = millis() / 1000;
   int min = sec / 60;
   int hr = min / 60;
@@ -102,28 +107,69 @@ void handleNotFound(AsyncWebServerRequest *request)
   digitalWrite(LED_BUILTIN, LED_OFF);
 }
 
-void drawGraph(AsyncWebServerRequest *request)
+void PrintHeapData(String hIn)
 {
-  String out;
+  // cores/esp8266/Esp.cpp
+  static uint32_t maxFreeHeap = 0xFFFFFFFF;
 
-  out.reserve(3000);
-  char temp[70];
+  // Get once at the beginning for comparison only
+  static uint32_t totalHeap = ESP.getFreeHeap();
+
+  uint32_t freeHeap  = ESP.getFreeHeap();
   
-  out += "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"310\" height=\"150\">\n";
-  out += "<rect width=\"310\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"2\" stroke=\"rgb(0, 0, 0)\" />\n";
-  out += "<g stroke=\"blue\">\n";
+  // Print and update only when larger heap
+  if (maxFreeHeap > freeHeap)
+  {
+    maxFreeHeap = freeHeap;
+  
+    Serial.print("\nHEAP DATA - ");
+    Serial.print(hIn);
+    
+    Serial.print("  Free heap: ");
+    Serial.print(freeHeap);
+    Serial.print("  Used heap: ");
+    Serial.println(totalHeap - freeHeap);
+  }
+}
+
+void PrintStringSize(const char* cStr)
+{ 
+  Serial.print("\nOut String Length=");
+  Serial.println(strlen(cStr));
+}
+
+void drawGraph(AsyncWebServerRequest *request) 
+{
+  char temp[80];
+
+  cStr[0] = '\0';
+
+  strcat(cStr, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"1810\" height=\"150\">\n");
+  strcat(cStr, "<rect width=\"1510\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"2\" stroke=\"rgb(0, 0, 0)\" />\n");
+  strcat(cStr, "<g stroke=\"blue\">\n");
   int y = rand() % 130;
 
-  for (int x = 10; x < 300; x += 10)
+  for (int x = 10; x < 1500; x += 10)
   {
     int y2 = rand() % 130;
     sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
-    out += temp;
+    strcat(cStr, temp);
     y = y2;
   }
-  out += "</g>\n</svg>\n";
+  
+  strcat(cStr, "</g>\n</svg>\n");
 
-  request->send(200, "image/svg+xml", out);
+  PrintHeapData("Pre Send");
+
+  // Print only when cStr length too large and corrupting memory
+  if ( (strlen(cStr) >= CSTRING_SIZE))
+  {
+    PrintStringSize(cStr);
+  }
+
+  request->send(200, "image/svg+xml", cStr, false);
+
+  PrintHeapData("Post Send");
 }
 
 void initEthernet()
@@ -180,12 +226,27 @@ void setup()
 
   delay(200);
 
-  Serial.print("\nStart Async_AdvancedWebServer on "); Serial.print(BOARD_NAME);
+  Serial.print("\nStart Async_AdvancedWebServer_MemoryIssues_Send_CString on "); Serial.print(BOARD_NAME);
   Serial.print(" with "); Serial.println(SHIELD_TYPE);
   Serial.println(ASYNC_WEBSERVER_ETHERNET_VERSION);
 
+  PrintHeapData("Start =>");
+
+  cStr = (char *) malloc(CSTRING_SIZE);           // make a little larger than required
+
+  if (cStr == NULL) 
+  {
+    Serial.println("Unable top Allocate RAM");
+    
+    for(;;);
+  }
+
+  ///////////////////////////////////
+
   initEthernet();
-  
+
+  ///////////////////////////////////
+ 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request)
   {
     handleRoot(request);
@@ -207,8 +268,44 @@ void setup()
 
   Serial.print(F("HTTP EthernetWebServer is @ IP : "));
   Serial.println(eth.localIP());
+
+  PrintHeapData("Pre Create Arduino String");
+
+}
+
+void heartBeatPrint()
+{
+  static int num = 1;
+
+  Serial.print(F("."));
+
+  if (num == 80)
+  {
+    //Serial.println();
+    PrintStringSize(cStr);
+    num = 1;
+  }
+  else if (num++ % 10 == 0)
+  {
+    Serial.print(F(" "));
+  }
+}
+
+void check_status()
+{
+  static unsigned long checkstatus_timeout = 0;
+
+#define STATUS_CHECK_INTERVAL     10000L
+
+  // Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
+  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
+  {
+    heartBeatPrint();
+    checkstatus_timeout = millis() + STATUS_CHECK_INTERVAL;
+  }
 }
 
 void loop()
 {
+  check_status();
 }
