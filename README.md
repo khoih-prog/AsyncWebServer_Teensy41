@@ -92,8 +92,8 @@
   * [12. WebClient](examples/WebClient) 
   * [13. WebClientRepeating](examples/WebClientRepeating)
   * [14. Async_AdvancedWebServer_favicon](examples/Async_AdvancedWebServer_favicon) **New**
-  * [15. WebClientRepeating](examples/WebClientRepeating)
-  * [16. Async_AdvancedWebServer_MemoryIssues_SendArduinoString](examples/Async_AdvancedWebServer_MemoryIssues_SendArduinoString) **New**
+  * [15. Async_AdvancedWebServer_MemoryIssues_SendArduinoString](examples/Async_AdvancedWebServer_MemoryIssues_SendArduinoString) **New**
+  * [16. Async_AdvancedWebServer_MemoryIssues_Send_CString](examples/Async_AdvancedWebServer_MemoryIssues_Send_CString) **New**
 * [Example Async_AdvancedWebServer](#example-Async_AdvancedWebServer)
 * [Debug Terminal Output Samples](#debug-Terminal-output-samples)
   * [1. Async_AdvancedWebServer on Teensy4.1 QNEthernet](#1-Async_AdvancedWebServer-on-Teensy41-QNEthernet)
