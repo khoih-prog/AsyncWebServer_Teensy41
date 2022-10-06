@@ -4,12 +4,12 @@
   This is part of the libb64 project, and has been placed in the public domain.
   For details, see http://sourceforge.net/projects/libb64
 
-  For ESP8266 using W5x00/ENC8266 Ethernet
+  For Teensy41 with QNEthernet
    
-  AsyncWebServer_Ethernet is a library for the Ethernet with lwIP_5100, lwIP_5500 or lwIP_enc28j60 library
+  AsyncWebServer_Teensy41 is a library for the Teensy41 with QNEthernet
   
   Based on and modified from ESPAsyncWebServer (https://github.com/me-no-dev/ESPAsyncWebServer)
-  Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Ethernet
+  Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Teensy41
   
   Copyright (c) 2016 Hristo Gochkov. All rights reserved.
   This file is part of the esp8266 core for Arduino environment.
@@ -18,7 +18,7 @@
   This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
   You should have received a copy of the GNU General Public License along with this program.
-  If not, see <https://www.gnu.org/licenses/>
+  If not, see <https://www.gnu.org/licenses/>.
  *****************************************************************************************************************************/
 
 #pragma once

@@ -38,7 +38,7 @@
 #ifndef LWIP_INCLUDED_POLARSSL_MD5_H
 #define LWIP_INCLUDED_POLARSSL_MD5_H
 
-#include "AsyncWebServer_Ethernet_Debug.h"
+#include "AsyncWebServer_Teensy41_Debug.h"
 
 /**
  * \brief          MD5 context structure

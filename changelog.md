@@ -1,16 +1,19 @@
-# AsyncWebServer_Ethernet
+# AsyncWebServer_Teensy41
 
-[![arduino-library-badge](https://www.ardu-badge.com/badge/AsyncWebServer_Ethernet.svg?)](https://www.ardu-badge.com/AsyncWebServer_Ethernet)
-[![GitHub release](https://img.shields.io/github/release/khoih-prog/AsyncWebServer_Ethernet.svg)](https://github.com/khoih-prog/AsyncWebServer_Ethernet/releases)
+[![arduino-library-badge](https://www.ardu-badge.com/badge/AsyncWebServer_Teensy41.svg?)](https://www.ardu-badge.com/AsyncWebServer_Teensy41)
+[![GitHub release](https://img.shields.io/github/release/khoih-prog/AsyncWebServer_Teensy41.svg)](https://github.com/khoih-prog/AsyncWebServer_Teensy41/releases)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/master/LICENSE)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
-[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/AsyncWebServer_Ethernet.svg)](http://github.com/khoih-prog/AsyncWebServer_Ethernet/issues)
+[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/AsyncWebServer_Teensy41.svg)](http://github.com/khoih-prog/AsyncWebServer_Teensy41/issues)
 
 ---
 ---
 
 ## Table of contents
 
+* [Table of contents](#table-of-contents)
 * [Changelog](#changelog)
+  * [Releases v1.6.0](#releases-v160)
   * [Releases v1.5.0](#releases-v150)
   * [Releases v1.4.1](#releases-v141)
 
@@ -19,16 +22,20 @@
 
 ## Changelog
 
-#### Releases v1.5.0
+### Releases v1.6.0
 
 1. Support using `CString` to save heap to send `very large data`. Check [request->send(200, textPlainStr, jsonChartDataCharStr); - Without using String Class - to save heap #8](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer/pull/8) and [All memmove() removed - string no longer destroyed #11](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer/pull/11)
 2. Add multiple examples to demo the new feature
 
-#### Releases v1.4.1
+### Releases v1.5.0
 
-1. Initial coding to port [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) to ESP8266 boards using W5x00 / ENC28J60 Ethernet.
-2. Add more examples.
-3. Add debugging features.
-4. Bump up to v1.4.1 to sync with [AsyncWebServer_WT32_ETH01 v1.4.1](https://github.com/khoih-prog/AsyncWebServer_WT32_ETH01).
+1. Fix issue with slow browsers or network. Check [Target stops responding after variable time when using Firefox on Windows 10 #3](https://github.com/khoih-prog/AsyncWebServer_RP2040W/issues/3)
+2. Add functions and example `Async_AdvancedWebServer_favicon` to support `favicon.ico`
+
+### Releases v1.4.1
+
+1. Initial porting and coding for **Teensy 4.1 using built-in QNEthernet**
+2. Bump up version to v1.4.1 to sync with [AsyncWebServer_STM32](https://github.com/khoih-prog/AsyncWebServer_STM32) v1.4.1
+
 
 

@@ -14,18 +14,22 @@
   as published bythe Free Software Foundation, either version 3 of the License, or (at your option) any later version.
   This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-  You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.  
+  You should have received a copy of the GNU General Public License along with this program.
+  If not, see <https://www.gnu.org/licenses/>.  
  
-  Version: 1.5.0
+  Version: 1.6.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.4.1   K Hoang      18/03/2022 Initial coding for Teensy 4.1 using built-in QNEthernet.
                                   Bump up version to v1.4.1 to sync with AsyncWebServer_STM32 v1.4.1
   1.5.0   K Hoang      01/10/2022 Fix issue with slow browsers or network. Add function and example to support favicon.ico  
+  1.6.0   K Hoang      06/10/2022 Option to use non-destroyed cString instead of String to save Heap
  *****************************************************************************************************************************/
 
-#define _AWS_TEENSY41_LOGLEVEL_     1
+#if !defined(_AWS_TEENSY41_LOGLEVEL_)
+  #define _AWS_TEENSY41_LOGLEVEL_     1
+#endif
 
 #include "AsyncWebServer_Teensy41_Debug.h"
 
@@ -36,6 +40,8 @@
 #include "Crypto/md5.h"
 #include "Crypto/bearssl_hash.h"
 #include "Crypto/Hash.h"
+
+/////////////////////////////////////////////////
 
 // Basic Auth hash = base64("username:password")
 
@@ -73,6 +79,7 @@ bool checkBasicAuthentication(const char * hash, const char * username, const ch
     LOGDEBUG("checkBasicAuthentication: NULL encoded");
   
     delete[] toencode;
+    
     return false;
   }
   
@@ -84,6 +91,7 @@ bool checkBasicAuthentication(const char * hash, const char * username, const ch
     
     delete[] toencode;
     delete[] encoded;
+    
     return true;
   }
   
@@ -91,8 +99,11 @@ bool checkBasicAuthentication(const char * hash, const char * username, const ch
   
   delete[] toencode;
   delete[] encoded;
+  
   return false;
 }
+
+/////////////////////////////////////////////////
 
 static bool getMD5(uint8_t * data, uint16_t len, char * output) 
 { 
@@ -130,6 +141,8 @@ static bool getMD5(uint8_t * data, uint16_t len, char * output)
   return true;
 }
 
+/////////////////////////////////////////////////
+
 static String genRandomMD5() 
 {
   // For Teensy41
@@ -148,6 +161,8 @@ static String genRandomMD5()
   return res;
 }
 
+/////////////////////////////////////////////////
+
 static String stringMD5(const String& in) 
 {
   char * out = (char*) malloc(33);
@@ -162,6 +177,8 @@ static String stringMD5(const String& in)
   
   return res;
 }
+
+/////////////////////////////////////////////////
 
 String generateDigestHash(const char * username, const char * password, const char * realm) 
 {
@@ -192,6 +209,8 @@ String generateDigestHash(const char * username, const char * password, const ch
   return res;
 }
 
+/////////////////////////////////////////////////
+
 String requestDigestAuthentication(const char * realm) 
 {
   String header = "realm=\"";
@@ -211,6 +230,8 @@ String requestDigestAuthentication(const char * realm)
   
   return header;
 }
+
+/////////////////////////////////////////////////
 
 bool checkDigestAuthentication(const char * header, const char * method, const char * username, const char * password, 
                                 const char * realm, bool passwordIsHash, const char * nonce, const char * opaque, const char * uri) 

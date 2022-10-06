@@ -14,23 +14,29 @@
   as published bythe Free Software Foundation, either version 3 of the License, or (at your option) any later version.
   This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-  You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.  
+  You should have received a copy of the GNU General Public License along with this program.
+  If not, see <https://www.gnu.org/licenses/>.  
  
-  Version: 1.5.0
+  Version: 1.6.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.4.1   K Hoang      18/03/2022 Initial coding for Teensy 4.1 using built-in QNEthernet.
                                   Bump up version to v1.4.1 to sync with AsyncWebServer_STM32 v1.4.1
   1.5.0   K Hoang      01/10/2022 Fix issue with slow browsers or network. Add function and example to support favicon.ico  
+  1.6.0   K Hoang      06/10/2022 Option to use non-destroyed cString instead of String to save Heap
  *****************************************************************************************************************************/
 
-#define _AWS_TEENSY41_LOGLEVEL_     1
+#if !defined(_AWS_TEENSY41_LOGLEVEL_)
+  #define _AWS_TEENSY41_LOGLEVEL_     1
+#endif
 
 #include "AsyncWebServer_Teensy41_Debug.h"
 
 #include "AsyncWebServer_Teensy41.hpp"
 #include "AsyncWebHandlerImpl_Teensy41.h"
+
+/////////////////////////////////////////////////
 
 AsyncStaticWebHandler::AsyncStaticWebHandler(const char* uri, /*FS& fs,*/ const char* path, const char* cache_control)
   : _uri(uri), _path(path), _cache_control(cache_control), _last_modified(""), _callback(nullptr)
@@ -59,11 +65,15 @@ AsyncStaticWebHandler::AsyncStaticWebHandler(const char* uri, /*FS& fs,*/ const 
   _gzipStats = 0xF8;
 }
 
+/////////////////////////////////////////////////
+
 AsyncStaticWebHandler& AsyncStaticWebHandler::setIsDir(bool isDir)
 {
   _isDir = isDir;
   return *this;
 }
+
+/////////////////////////////////////////////////
 
 AsyncStaticWebHandler& AsyncStaticWebHandler::setCacheControl(const char* cache_control)
 {
@@ -72,12 +82,16 @@ AsyncStaticWebHandler& AsyncStaticWebHandler::setCacheControl(const char* cache_
   return *this;
 }
 
+/////////////////////////////////////////////////
+
 AsyncStaticWebHandler& AsyncStaticWebHandler::setLastModified(const char* last_modified)
 {
   _last_modified = String(last_modified);
 
   return *this;
 }
+
+/////////////////////////////////////////////////
 
 AsyncStaticWebHandler& AsyncStaticWebHandler::setLastModified(struct tm* last_modified)
 {
@@ -88,11 +102,15 @@ AsyncStaticWebHandler& AsyncStaticWebHandler::setLastModified(struct tm* last_mo
   return setLastModified((const char *)result);
 }
 
+/////////////////////////////////////////////////
+
 // For Teensy41
 AsyncStaticWebHandler& AsyncStaticWebHandler::setLastModified(time_t last_modified)
 {
   return setLastModified((struct tm *)gmtime(&last_modified));
 }
+
+/////////////////////////////////////////////////
 
 AsyncStaticWebHandler& AsyncStaticWebHandler::setLastModified()
 {
@@ -103,6 +121,8 @@ AsyncStaticWebHandler& AsyncStaticWebHandler::setLastModified()
 
   return setLastModified(last_modified);
 }
+
+/////////////////////////////////////////////////
 
 bool AsyncStaticWebHandler::canHandle(AsyncWebServerRequest *request)
 {
@@ -117,8 +137,12 @@ bool AsyncStaticWebHandler::canHandle(AsyncWebServerRequest *request)
   return false;
 }
 
+/////////////////////////////////////////////////
+
 // For Teensy41
 #define FILE_IS_REAL(f) (f == true)
+
+/////////////////////////////////////////////////
 
 uint8_t AsyncStaticWebHandler::_countBits(const uint8_t value) const
 {

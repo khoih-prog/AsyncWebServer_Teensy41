@@ -1,73 +1,50 @@
 /****************************************************************************************************************************
   defines.h
   
-  For ESP8266 using W5x00/ENC8266 Ethernet
-   
-  AsyncWebServer_Ethernet is a library for the Ethernet with lwIP_5100, lwIP_5500 or lwIP_enc28j60 library
+  Dead simple AsyncWebServer for Teensy41 QNEthernet
+  
+  For Teensy41 with QNEthernet
+  
+  AsyncWebServer_Teensy41 is a library for the Teensy41 with QNEthernet
   
   Based on and modified from ESPAsyncWebServer (https://github.com/me-no-dev/ESPAsyncWebServer)
-  Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Ethernet
+  Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Teensy41
   Licensed under GPLv3 license
- ***************************************************************************************************************************************/
+ *****************************************************************************************************************************/
+
 
 #ifndef defines_h
 #define defines_h
 
-#if defined(ESP8266)
-  #define LED_ON      LOW
-  #define LED_OFF     HIGH
-#else
-  #error Only ESP8266
-#endif  
-
-#define _AWS_ETHERNET_LOGLEVEL_              2
-
-//////////////////////////////////////////////////////////
-
-#define USING_W5500         true
-#define USING_W5100         false
-#define USING_ENC28J60      false
-
-#include <SPI.h>
-
-#define CSPIN       16      // 5
-
-#if USING_W5500
-  #include "W5500lwIP.h"
-  #define SHIELD_TYPE       "ESP8266_W5500 Ethernet"
-  
-  Wiznet5500lwIP eth(CSPIN); 
-   
-#elif USING_W5100
-  #include <W5100lwIP.h>
-  #define SHIELD_TYPE       "ESP8266_W5100 Ethernet"
-  
-  Wiznet5100lwIP eth(CSPIN);
-
-#elif USING_ENC28J60
-  #include <ENC28J60lwIP.h>
-  #define SHIELD_TYPE       "ESP8266_ENC28J60 Ethernet"
-  
-  ENC28J60lwIP eth(CSPIN);
-#else
-  // default if none selected
-  #include "W5500lwIP.h"
-
-  Wiznet5500lwIP eth(CSPIN);
+#if !( defined(CORE_TEENSY) && defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41) )
+  #error Only Teensy 4.1 supported
 #endif
 
-#include <WiFiClient.h> // WiFiClient (-> TCPClient)
+// Debug Level from 0 to 4
+#define _TEENSY41_ASYNC_TCP_LOGLEVEL_       1
+#define _AWS_TEENSY41_LOGLEVEL_             1
 
-using TCPClient = WiFiClient;
+#define SHIELD_TYPE     "Teensy4.1 QNEthernet"
 
-//////////////////////////////////////////////////////////
+#if (_AWS_TEENSY41_LOGLEVEL_ > 3)
+  #warning Using QNEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
+#endif
 
-#define USING_DHCP        true
+#define USING_DHCP            true
+//#define USING_DHCP            false
 
 #if !USING_DHCP
-  IPAddress localIP(192, 168, 2, 222);
-  IPAddress gateway(192, 168, 2, 1);
-  IPAddress netMask(255, 255, 255, 0);
+  // Set the static IP address to use if the DHCP fails to assign
+  IPAddress myIP(192, 168, 2, 222);
+  IPAddress myNetmask(255, 255, 255, 0);
+  IPAddress myGW(192, 168, 2, 1);
+  //IPAddress mydnsServer(192, 168, 2, 1);
+  IPAddress mydnsServer(8, 8, 8, 8);
 #endif
+
+#include "QNEthernet.h"       // https://github.com/ssilverman/QNEthernet
+using namespace qindesign::network;
+
+#include <AsyncWebServer_Teensy41.h>
 
 #endif    //defines_h

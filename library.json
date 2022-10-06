@@ -1,8 +1,8 @@
 {
-  "name":"AsyncWebServer_Ethernet",
-  "version": "1.5.0",
-  "description":"Asynchronous HTTP and WebSocket Server Library for ESP8266 using W5x00 or ENC28J60 Ethernet. This is Asynchronous HTTP and WebSocket Server Library for ESP8266 using W5x00 or ENC28J60 Ethernet with lwIP_5100, lwIP_5500 or lwIP_enc28j60 library. Now supporting using CString to save heap to send very large data",
-  "keywords":"http, async, async-webserver, websocket, webserver, esp8266, w5x00, enc28j60",
+  "name":"AsyncWebServer_Teensy41",
+  "version": "1.6.0",
+  "description":"Asynchronous HTTP and WebSocket Server Library for Teensy 4.1 using QNEthernet. This library is one of the current or future Async libraries to support Teensy 4.1 using QNEthernet, such as AsyncHTTPRequest_Generic, AsyncHTTPSRequest_Generic, AsyncMQTT_Generic, Teensy41_AsyncWebServer, Teensy41_AsyncUDP, Teensy41_AsyncDNSServer, AsyncWebServer_Teensy41_SSL, etc. Now supporting using CString to save heap to send very large data",
+  "keywords":"async, tcp, http, websocket, webserver, async-tcp, async-http, async-webserver, async-websocket, teensy, teensy41, teensy-41, qnethernet, lwip",
   "authors": 
   [
     {
@@ -12,27 +12,35 @@
     {
       "name":  "Khoi Hoang",
       "url":   "https://github.com/khoih-prog",
-      "email": "khoih.prog@gmail.com",
+      "email": "khoih-dot-prog@gmail.com",
       "maintainer": true
-    }  
+    }
   ],
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/khoih-prog/AsyncWebServer_Ethernet"
+    "url": "https://github.com/khoih-prog/AsyncWebServer_Teensy41.git"
   },
   "dependencies": 
   [
     {
-      "owner": "me-no-dev",
-      "name": "ESPAsyncTCP",
-      "version": ">=1.2.2",
-      "platforms": ["espressif8266"]
+      "owner": "khoih-prog",
+      "name": "Teensy41_AsyncTCP",
+      "version": ">=1.1.0",
+      "platforms": ["teensy", "avr"]
     }
   ],
-  "license": "LGPL-3.0",
-  "frameworks": "arduino",
-  "platforms": ["espressif8266"],
+  "homepage": "https://github.com/khoih-prog/AsyncWebServer_Teensy41",
+  "export": {
+    "exclude": [
+      "linux",
+      "extras",
+      "tests"
+    ]
+  },
+  "license": "GPL-3.0",
+  "frameworks": "*",
+  "platforms": ["teensy", "avr"],
   "examples": "examples/*/*/*.ino",
-  "headers": "AsyncWebServer_Ethernet.h"
+  "headers": ["AsyncWebServer_Teensy41.h", "AsyncWebServer_Teensy41.hpp"]
 }

@@ -14,15 +14,17 @@
   as published bythe Free Software Foundation, either version 3 of the License, or (at your option) any later version.
   This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-  You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.  
+  You should have received a copy of the GNU General Public License along with this program.
+  If not, see <https://www.gnu.org/licenses/>.  
  
-  Version: 1.5.0
+  Version: 1.6.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.4.1   K Hoang      18/03/2022 Initial coding for Teensy 4.1 using built-in QNEthernet.
                                   Bump up version to v1.4.1 to sync with AsyncWebServer_STM32 v1.4.1
   1.5.0   K Hoang      01/10/2022 Fix issue with slow browsers or network. Add function and example to support favicon.ico  
+  1.6.0   K Hoang      06/10/2022 Option to use non-destroyed cString instead of String to save Heap
  *****************************************************************************************************************************/
 
 #pragma once
@@ -37,25 +39,39 @@
 #endif
 
 #include <vector>
+
 // It is possible to restore these defines, but one can use _min and _max instead. Or std::min, std::max.
 
+/////////////////////////////////////////////////
 
 class AsyncBasicResponse: public AsyncWebServerResponse
 {
   private:
     String _content;
+    
+    char *_contentCstr;      // RSMOD
+    String _partialHeader;
 
   public:
     AsyncBasicResponse(int code, const String& contentType = String(), const String& content = String());
+    
+    AsyncBasicResponse(int code, const String& contentType, const char *content = nullptr);     // RSMOD
+    
     void _respond(AsyncWebServerRequest *request);
 
     size_t _ack(AsyncWebServerRequest *request, size_t len, uint32_t time);
 
-    bool _sourceValid() const
+    /////////////////////////////////////////////////
+    
+    inline bool _sourceValid() const 
     {
       return true;
     }
+
+    /////////////////////////////////////////////////
 };
+
+/////////////////////////////////////////////////
 
 class AsyncAbstractResponse: public AsyncWebServerResponse
 {
@@ -77,22 +93,34 @@ class AsyncAbstractResponse: public AsyncWebServerResponse
     void _respond(AsyncWebServerRequest *request);
     size_t _ack(AsyncWebServerRequest *request, size_t len, uint32_t time);
 
-    bool _sourceValid() const
+    /////////////////////////////////////////////////
+    
+    inline bool _sourceValid() const 
     {
       return false;
     }
 
-    virtual size_t _fillBuffer(uint8_t *buf __attribute__((unused)), size_t maxLen __attribute__((unused)))
+    /////////////////////////////////////////////////
+    
+    virtual size_t _fillBuffer(uint8_t *buf __attribute__((unused)), size_t maxLen __attribute__((unused))) 
     {
       return 0;
     }
+
+    /////////////////////////////////////////////////
 };
+
+/////////////////////////////////////////////////
 
 #ifndef TEMPLATE_PLACEHOLDER
   #define TEMPLATE_PLACEHOLDER '%'
 #endif
 
+/////////////////////////////////////////////////
+
 #define TEMPLATE_PARAM_NAME_LENGTH 32
+
+/////////////////////////////////////////////////
 
 class AsyncStreamResponse: public AsyncAbstractResponse
 {
@@ -102,13 +130,19 @@ class AsyncStreamResponse: public AsyncAbstractResponse
   public:
     AsyncStreamResponse(Stream &stream, const String& contentType, size_t len, AwsTemplateProcessor callback = nullptr);
 
-    bool _sourceValid() const
+    /////////////////////////////////////////////////
+    
+    inline bool _sourceValid() const 
     {
       return !!(_content);
     }
 
+    /////////////////////////////////////////////////
+
     virtual size_t _fillBuffer(uint8_t *buf, size_t maxLen) override;
 };
+
+/////////////////////////////////////////////////
 
 class AsyncCallbackResponse: public AsyncAbstractResponse
 {
@@ -119,13 +153,19 @@ class AsyncCallbackResponse: public AsyncAbstractResponse
   public:
     AsyncCallbackResponse(const String& contentType, size_t len, AwsResponseFiller callback, AwsTemplateProcessor templateCallback = nullptr);
 
-    bool _sourceValid() const
+    /////////////////////////////////////////////////
+    
+    inline bool _sourceValid() const 
     {
       return !!(_content);
     }
 
+    /////////////////////////////////////////////////
+
     virtual size_t _fillBuffer(uint8_t *buf, size_t maxLen) override;
 };
+
+/////////////////////////////////////////////////
 
 class AsyncChunkedResponse: public AsyncAbstractResponse
 {
@@ -136,15 +176,23 @@ class AsyncChunkedResponse: public AsyncAbstractResponse
   public:
     AsyncChunkedResponse(const String& contentType, AwsResponseFiller callback, AwsTemplateProcessor templateCallback = nullptr);
 
-    bool _sourceValid() const
+    /////////////////////////////////////////////////
+    
+    inline bool _sourceValid() const 
     {
       return !!(_content);
     }
 
+    /////////////////////////////////////////////////
+
     virtual size_t _fillBuffer(uint8_t *buf, size_t maxLen) override;
 };
 
+/////////////////////////////////////////////////
+
 class cbuf;
+
+/////////////////////////////////////////////////
 
 class AsyncProgmemResponse: public AsyncAbstractResponse 
 {
@@ -154,9 +202,20 @@ class AsyncProgmemResponse: public AsyncAbstractResponse
     
   public:
     AsyncProgmemResponse(int code, const String& contentType, const uint8_t * content, size_t len, AwsTemplateProcessor callback=nullptr);
-    bool _sourceValid() const { return true; }
+    
+    /////////////////////////////////////////////////
+    
+    inline bool _sourceValid() const 
+    {
+      return (_state < RESPONSE_END);
+    }
+
+    /////////////////////////////////////////////////
+    
     virtual size_t _fillBuffer(uint8_t *buf, size_t maxLen) override;
 };
+
+/////////////////////////////////////////////////
 
 class AsyncResponseStream: public AsyncAbstractResponse, public Print
 {
@@ -167,15 +226,21 @@ class AsyncResponseStream: public AsyncAbstractResponse, public Print
     AsyncResponseStream(const String& contentType, size_t bufferSize);
     ~AsyncResponseStream();
 
-    bool _sourceValid() const
+    /////////////////////////////////////////////////
+    
+    inline bool _sourceValid() const 
     {
       return (_state < RESPONSE_END);
     }
+
+    /////////////////////////////////////////////////
 
     virtual size_t _fillBuffer(uint8_t *buf, size_t maxLen) override;
     size_t write(const uint8_t *data, size_t len);
     size_t write(uint8_t data);
     using Print::write;
 };
+
+/////////////////////////////////////////////////
 
 #endif /* ASYNCWEBSERVERRESPONSEIMPL_TEENSY41_H_ */
