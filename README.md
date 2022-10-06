@@ -1550,7 +1550,7 @@ MQTT Message receive [Teensy41_Pub] Hello from MQTT_ThingStream on TEENSY 4.1 wi
 
 #### 6. Async_AdvancedWebServer_MemoryIssues_Send_CString on Teensy4.1 QNEthernet
 
-Following is the debug terminal and screen shot when running example [Async_AdvancedWebServer_MemoryIssues_Send_CString](examples/Async_AdvancedWebServer_MemoryIssues_Send_CString), on `ESP8266_NODEMCU_ESP12E with ESP8266_W5500 Ethernet`, to demonstrate the new and powerful `HEAP-saving` feature
+Following is the debug terminal and screen shot when running example [Async_AdvancedWebServer_MemoryIssues_Send_CString](examples/Async_AdvancedWebServer_MemoryIssues_Send_CString), on `Teensy4.1 QNEthernet`, to demonstrate the new and powerful `HEAP-saving` feature
 
 
 ##### Using CString  ===> smaller heap (61,440 bytes) for 40,000-byte buffer
