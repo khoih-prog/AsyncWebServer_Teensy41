@@ -1,30 +1,31 @@
 /****************************************************************************************************************************
   AsyncWebResponses_Teensy41.cpp - Dead simple AsyncWebServer for Teensy41 QNEthernet
-  
+
   For Teensy41 with QNEthernet
-   
+
   AsyncWebServer_Teensy41 is a library for the Teensy41 with QNEthernet
-  
+
   Based on and modified from ESPAsyncWebServer (https://github.com/me-no-dev/ESPAsyncWebServer)
   Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Teensy41
-  
+
   Copyright (c) 2016 Hristo Gochkov. All rights reserved.
   This file is part of the esp8266 core for Arduino environment.
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License 
+  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
   as published bythe Free Software Foundation, either version 3 of the License, or (at your option) any later version.
   This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
   You should have received a copy of the GNU General Public License along with this program.
-  If not, see <https://www.gnu.org/licenses/>.  
- 
-  Version: 1.6.0
+  If not, see <https://www.gnu.org/licenses/>.
+
+  Version: 1.6.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.4.1   K Hoang      18/03/2022 Initial coding for Teensy 4.1 using built-in QNEthernet.
                                   Bump up version to v1.4.1 to sync with AsyncWebServer_STM32 v1.4.1
-  1.5.0   K Hoang      01/10/2022 Fix issue with slow browsers or network. Add function and example to support favicon.ico  
+  1.5.0   K Hoang      01/10/2022 Fix issue with slow browsers or network. Add function and example to support favicon.ico
   1.6.0   K Hoang      06/10/2022 Option to use non-destroyed cString instead of String to save Heap
+  1.6.1   K Hoang      10/11/2022 Add examples to demo how to use beginChunkedResponse() to send in chunks
  *****************************************************************************************************************************/
 
 #if !defined(_AWS_TEENSY41_LOGLEVEL_)
@@ -60,49 +61,130 @@ void* memchr(void* ptr, int ch, size_t count)
  * */
 const char* AsyncWebServerResponse::_responseCodeToString(int code)
 {
-  switch (code) 
+  switch (code)
   {
-    case 100: return "Continue";
-    case 101: return "Switching Protocols";
-    case 200: return "OK";
-    case 201: return "Created";
-    case 202: return "Accepted";
-    case 203: return "Non-Authoritative Information";
-    case 204: return "No Content";
-    case 205: return "Reset Content";
-    case 206: return "Partial Content";
-    case 300: return "Multiple Choices";
-    case 301: return "Moved Permanently";
-    case 302: return "Found";
-    case 303: return "See Other";
-    case 304: return "Not Modified";
-    case 305: return "Use Proxy";
-    case 307: return "Temporary Redirect";
-    case 400: return "Bad Request";
-    case 401: return "Unauthorized";
-    case 402: return "Payment Required";
-    case 403: return "Forbidden";
-    case 404: return "Not Found";
-    case 405: return "Method Not Allowed";
-    case 406: return "Not Acceptable";
-    case 407: return "Proxy Authentication Required";
-    case 408: return "Request Time-out";
-    case 409: return "Conflict";
-    case 410: return "Gone";
-    case 411: return "Length Required";
-    case 412: return "Precondition Failed";
-    case 413: return "Request Entity Too Large";
-    case 414: return "Request-URI Too Large";
-    case 415: return "Unsupported Media Type";
-    case 416: return "Requested range not satisfiable";
-    case 417: return "Expectation Failed";
-    case 500: return "Internal Server Error";
-    case 501: return "Not Implemented";
-    case 502: return "Bad Gateway";
-    case 503: return "Service Unavailable";
-    case 504: return "Gateway Time-out";
-    case 505: return "HTTP Version not supported";
-    default:  return "";
+    case 100:
+      return "Continue";
+
+    case 101:
+      return "Switching Protocols";
+
+    case 200:
+      return "OK";
+
+    case 201:
+      return "Created";
+
+    case 202:
+      return "Accepted";
+
+    case 203:
+      return "Non-Authoritative Information";
+
+    case 204:
+      return "No Content";
+
+    case 205:
+      return "Reset Content";
+
+    case 206:
+      return "Partial Content";
+
+    case 300:
+      return "Multiple Choices";
+
+    case 301:
+      return "Moved Permanently";
+
+    case 302:
+      return "Found";
+
+    case 303:
+      return "See Other";
+
+    case 304:
+      return "Not Modified";
+
+    case 305:
+      return "Use Proxy";
+
+    case 307:
+      return "Temporary Redirect";
+
+    case 400:
+      return "Bad Request";
+
+    case 401:
+      return "Unauthorized";
+
+    case 402:
+      return "Payment Required";
+
+    case 403:
+      return "Forbidden";
+
+    case 404:
+      return "Not Found";
+
+    case 405:
+      return "Method Not Allowed";
+
+    case 406:
+      return "Not Acceptable";
+
+    case 407:
+      return "Proxy Authentication Required";
+
+    case 408:
+      return "Request Time-out";
+
+    case 409:
+      return "Conflict";
+
+    case 410:
+      return "Gone";
+
+    case 411:
+      return "Length Required";
+
+    case 412:
+      return "Precondition Failed";
+
+    case 413:
+      return "Request Entity Too Large";
+
+    case 414:
+      return "Request-URI Too Large";
+
+    case 415:
+      return "Unsupported Media Type";
+
+    case 416:
+      return "Requested range not satisfiable";
+
+    case 417:
+      return "Expectation Failed";
+
+    case 500:
+      return "Internal Server Error";
+
+    case 501:
+      return "Not Implemented";
+
+    case 502:
+      return "Bad Gateway";
+
+    case 503:
+      return "Service Unavailable";
+
+    case 504:
+      return "Gateway Time-out";
+
+    case 505:
+      return "HTTP Version not supported";
+
+    default:
+      return "";
   }
 }
 
@@ -250,7 +332,7 @@ size_t AsyncWebServerResponse::_ack(AsyncWebServerRequest *request, size_t len, 
   AWS_TEENSY41_UNUSED(request);
   AWS_TEENSY41_UNUSED(len);
   AWS_TEENSY41_UNUSED(time);
-  
+
   return 0;
 }
 
@@ -292,15 +374,16 @@ AsyncBasicResponse::AsyncBasicResponse(int code, const String& contentType, cons
 {
   _code = code;
   _content = content;
-  
+
   _contentCstr = nullptr;        // RSMOD
-  
+
   _contentType = contentType;
   _partialHeader = String();
 
   if (_content.length())
   {
     _contentLength = _content.length();
+
     if (!_contentType.length())
       _contentType = "text/plain";
   }
@@ -333,7 +416,8 @@ void AsyncBasicResponse::_respond(AsyncWebServerRequest *request)
 
     if (_contentCstr)
     {
-      _content = String(_contentCstr);    // short _contentCstr - so just send as Arduino String - not much of a penalty - fall into below
+      _content = String(
+                   _contentCstr);    // short _contentCstr - so just send as Arduino String - not much of a penalty - fall into below
     }
 
     out += _content;
@@ -417,7 +501,7 @@ void AsyncBasicResponse::_respond(AsyncWebServerRequest *request)
       _content = out + _content;
       _contentLength += outLen;
     }
-    
+
     _state = RESPONSE_CONTENT;
   }
 
@@ -506,7 +590,7 @@ size_t AsyncBasicResponse::_ack(AsyncWebServerRequest *request, size_t len, uint
         s[space] = '\0';
         out = String(s);
         _contentCstr += space;
-        
+
         free(s);
       }
       else
@@ -675,7 +759,7 @@ size_t AsyncAbstractResponse::_ack(AsyncWebServerRequest *request, size_t len, u
       if (readLen == RESPONSE_TRY_AGAIN)
       {
         free(buf);
-        
+
         return 0;
       }
 
@@ -692,7 +776,7 @@ size_t AsyncAbstractResponse::_ack(AsyncWebServerRequest *request, size_t len, u
       _writtenLength += request->client()->write((const char*)buf, outLen);
     }
 
-    if (_chunked) 
+    if (_chunked)
     {
       _sentLength += readLen;
     }
@@ -759,11 +843,11 @@ size_t AsyncAbstractResponse::_fillBufferAndProcessTemplates(uint8_t* data, size
   // Search for template placeholders
   uint8_t* pTemplateStart = data;
 
-  while ((pTemplateStart < &data[len]) && (pTemplateStart = (uint8_t*) memchr(pTemplateStart, TEMPLATE_PLACEHOLDER, 
+  while ((pTemplateStart < &data[len]) && (pTemplateStart = (uint8_t*) memchr(pTemplateStart, TEMPLATE_PLACEHOLDER,
                                                                               &data[len - 1] - pTemplateStart + 1)))
   {
     // data[0] ... data[len - 1]
-    uint8_t* pTemplateEnd = (pTemplateStart < &data[len - 1]) ? (uint8_t*) memchr(pTemplateStart + 1, TEMPLATE_PLACEHOLDER, 
+    uint8_t* pTemplateEnd = (pTemplateStart < &data[len - 1]) ? (uint8_t*) memchr(pTemplateStart + 1, TEMPLATE_PLACEHOLDER,
                                                                                   &data[len - 1] - pTemplateStart) : nullptr;
 
     // temporary buffer to hold parameter name
@@ -795,8 +879,8 @@ size_t AsyncAbstractResponse::_fillBufferAndProcessTemplates(uint8_t* data, size
     {
       // closing placeholder not found, check if it's in the remaining file data
       memcpy(buf, pTemplateStart + 1, &data[len - 1] - pTemplateStart);
-      const size_t readFromCacheOrContent = _readDataFromCacheOrContent(buf + (&data[len - 1] - pTemplateStart), 
-                                                 TEMPLATE_PARAM_NAME_LENGTH + 2 - (&data[len - 1] - pTemplateStart + 1));
+      const size_t readFromCacheOrContent = _readDataFromCacheOrContent(buf + (&data[len - 1] - pTemplateStart),
+                                                                        TEMPLATE_PARAM_NAME_LENGTH + 2 - (&data[len - 1] - pTemplateStart + 1));
 
       if (readFromCacheOrContent)
       {
@@ -814,8 +898,8 @@ size_t AsyncAbstractResponse::_fillBufferAndProcessTemplates(uint8_t* data, size
         else // closing placeholder not found in file data, store found percent symbol as is and advance to the next position
         {
           // but first, store read file data in cache
-          _cache.insert(_cache.begin(), buf + (&data[len - 1] - pTemplateStart), 
-                         buf + (&data[len - 1] - pTemplateStart) + readFromCacheOrContent);
+          _cache.insert(_cache.begin(), buf + (&data[len - 1] - pTemplateStart),
+                        buf + (&data[len - 1] - pTemplateStart) + readFromCacheOrContent);
           ++pTemplateStart;
         }
       }
@@ -839,7 +923,8 @@ size_t AsyncAbstractResponse::_fillBufferAndProcessTemplates(uint8_t* data, size
       // make room for param value
 
       // 1. move extra data to cache if parameter value is longer than placeholder AND if there is no room to store
-      if ((pTemplateEnd + 1 < pTemplateStart + numBytesCopied) && (originalLen - (pTemplateStart + numBytesCopied - pTemplateEnd - 1) < len))
+      if ((pTemplateEnd + 1 < pTemplateStart + numBytesCopied)
+          && (originalLen - (pTemplateStart + numBytesCopied - pTemplateEnd - 1) < len))
       {
         _cache.insert(_cache.begin(), &data[originalLen - (pTemplateStart + numBytesCopied - pTemplateEnd - 1)], &data[len]);
 
@@ -889,7 +974,8 @@ size_t AsyncAbstractResponse::_fillBufferAndProcessTemplates(uint8_t* data, size
    Stream Response
  * */
 
-AsyncStreamResponse::AsyncStreamResponse(Stream &stream, const String& contentType, size_t len, AwsTemplateProcessor callback): AsyncAbstractResponse(callback)
+AsyncStreamResponse::AsyncStreamResponse(Stream &stream, const String& contentType, size_t len,
+                                         AwsTemplateProcessor callback): AsyncAbstractResponse(callback)
 {
   _code = 200;
   _content = &stream;
@@ -918,7 +1004,8 @@ size_t AsyncStreamResponse::_fillBuffer(uint8_t *data, size_t len)
    Callback Response
  * */
 
-AsyncCallbackResponse::AsyncCallbackResponse(const String& contentType, size_t len, AwsResponseFiller callback, AwsTemplateProcessor templateCallback)
+AsyncCallbackResponse::AsyncCallbackResponse(const String& contentType, size_t len, AwsResponseFiller callback,
+                                             AwsTemplateProcessor templateCallback)
   : AsyncAbstractResponse(templateCallback)
 {
   _code = 200;
@@ -953,7 +1040,8 @@ size_t AsyncCallbackResponse::_fillBuffer(uint8_t *data, size_t len)
    Chunked Response
  * */
 
-AsyncChunkedResponse::AsyncChunkedResponse(const String& contentType, AwsResponseFiller callback, AwsTemplateProcessor processorCallback): AsyncAbstractResponse(processorCallback)
+AsyncChunkedResponse::AsyncChunkedResponse(const String& contentType, AwsResponseFiller callback,
+                                           AwsTemplateProcessor processorCallback): AsyncAbstractResponse(processorCallback)
 {
   _code = 200;
   _content = callback;
@@ -982,10 +1070,10 @@ size_t AsyncChunkedResponse::_fillBuffer(uint8_t *data, size_t len)
 /////////////////////////////////////////////////
 
 /*
- * Progmem Response
+   Progmem Response
  * */
-AsyncProgmemResponse::AsyncProgmemResponse(int code, const String& contentType, const uint8_t * content, 
-                                          size_t len, AwsTemplateProcessor callback): AsyncAbstractResponse(callback) 
+AsyncProgmemResponse::AsyncProgmemResponse(int code, const String& contentType, const uint8_t * content,
+                                           size_t len, AwsTemplateProcessor callback): AsyncAbstractResponse(callback)
 {
   _code = code;
   _content = content;
@@ -996,21 +1084,21 @@ AsyncProgmemResponse::AsyncProgmemResponse(int code, const String& contentType, 
 
 /////////////////////////////////////////////////
 
-size_t AsyncProgmemResponse::_fillBuffer(uint8_t *data, size_t len) 
+size_t AsyncProgmemResponse::_fillBuffer(uint8_t *data, size_t len)
 {
   size_t left = _contentLength - _readLength;
-  
-  if (left > len) 
+
+  if (left > len)
   {
     memcpy_P(data, _content + _readLength, len);
     _readLength += len;
-    
+
     return len;
   }
-  
+
   memcpy_P(data, _content + _readLength, left);
   _readLength += left;
-  
+
   return left;
 }
 

@@ -1,30 +1,31 @@
 /****************************************************************************************************************************
   AsyncWebRequest_Teensy41.cpp - Dead simple AsyncWebServer for Teensy41 QNEthernet
-  
+
   For Teensy41 with QNEthernet
-   
+
   AsyncWebServer_Teensy41 is a library for the Teensy41 with QNEthernet
-  
+
   Based on and modified from ESPAsyncWebServer (https://github.com/me-no-dev/ESPAsyncWebServer)
   Built by Khoi Hoang https://github.com/khoih-prog/AsyncWebServer_Teensy41
-  
+
   Copyright (c) 2016 Hristo Gochkov. All rights reserved.
   This file is part of the esp8266 core for Arduino environment.
-  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License 
+  This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License
   as published bythe Free Software Foundation, either version 3 of the License, or (at your option) any later version.
   This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
   You should have received a copy of the GNU General Public License along with this program.
-  If not, see <https://www.gnu.org/licenses/>.  
- 
-  Version: 1.6.0
+  If not, see <https://www.gnu.org/licenses/>.
+
+  Version: 1.6.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.4.1   K Hoang      18/03/2022 Initial coding for Teensy 4.1 using built-in QNEthernet.
                                   Bump up version to v1.4.1 to sync with AsyncWebServer_STM32 v1.4.1
-  1.5.0   K Hoang      01/10/2022 Fix issue with slow browsers or network. Add function and example to support favicon.ico  
+  1.5.0   K Hoang      01/10/2022 Fix issue with slow browsers or network. Add function and example to support favicon.ico
   1.6.0   K Hoang      06/10/2022 Option to use non-destroyed cString instead of String to save Heap
+  1.6.1   K Hoang      10/11/2022 Add examples to demo how to use beginChunkedResponse() to send in chunks
  *****************************************************************************************************************************/
 
 #if !defined(_AWS_TEENSY41_LOGLEVEL_)
@@ -253,7 +254,8 @@ void AsyncWebServerRequest::_onData(void *buf, size_t len)
         if (_handler)
           _handler->handleRequest(this);
 
-        else send(501);
+        else
+          send(501);
       }
     }
 
@@ -639,19 +641,19 @@ void AsyncWebServerRequest::_parseMultipartPostByte(uint8_t data, bool last)
     if (_parsedLength < 2 && data != '-')
     {
       _multiParseState = PARSE_ERROR;
-      
+
       return;
     }
     else if (_parsedLength - 2 < _boundary.length() && _boundary.c_str()[_parsedLength - 2] != data)
     {
       _multiParseState = PARSE_ERROR;
-      
+
       return;
     }
     else if (_parsedLength - 2 == _boundary.length() && data != '\r')
     {
       _multiParseState = PARSE_ERROR;
-      
+
       return;
     }
     else if (_parsedLength - 3 == _boundary.length())
@@ -659,7 +661,7 @@ void AsyncWebServerRequest::_parseMultipartPostByte(uint8_t data, bool last)
       if (data != '\n')
       {
         _multiParseState = PARSE_ERROR;
-        
+
         return;
       }
 
@@ -811,6 +813,7 @@ void AsyncWebServerRequest::_parseMultipartPostByte(uint8_t data, bool last)
     else if (_boundaryPosition == _boundary.length() - 1)
     {
       _multiParseState = DASH3_OR_RETURN2;
+
       if (!_itemIsFile)
       {
         _addParam(new AsyncWebParameter(_itemName, _itemValue, true));
@@ -840,7 +843,8 @@ void AsyncWebServerRequest::_parseMultipartPostByte(uint8_t data, bool last)
   {
     if (data == '-' && (_contentLength - _parsedLength - 4) != 0)
     {
-      LOGDEBUG1("ERROR: The parser got to the end of the POST but is expecting more bytes =", (_contentLength - _parsedLength - 4));
+      LOGDEBUG1("ERROR: The parser got to the end of the POST but is expecting more bytes =",
+                (_contentLength - _parsedLength - 4));
       LOGDEBUG("Drop an issue so we can have more info on the matter!");
       _contentLength = _parsedLength + 4;//lets close the request gracefully
     }
@@ -1081,7 +1085,8 @@ void AsyncWebServerRequest::send(AsyncWebServerResponse *response)
 
 /////////////////////////////////////////////////
 
-AsyncWebServerResponse * AsyncWebServerRequest::beginResponse_P(int code, const String& contentType, const uint8_t * content, size_t len,
+AsyncWebServerResponse * AsyncWebServerRequest::beginResponse_P(int code, const String& contentType,
+                                                                const uint8_t * content, size_t len,
                                                                 AwsTemplateProcessor callback)
 {
   return new AsyncProgmemResponse(code, contentType, content, len, callback);
@@ -1089,7 +1094,7 @@ AsyncWebServerResponse * AsyncWebServerRequest::beginResponse_P(int code, const 
 
 /////////////////////////////////////////////////
 
-AsyncWebServerResponse * AsyncWebServerRequest::beginResponse_P(int code, const String& contentType, PGM_P content, 
+AsyncWebServerResponse * AsyncWebServerRequest::beginResponse_P(int code, const String& contentType, PGM_P content,
                                                                 AwsTemplateProcessor callback)
 {
   return beginResponse_P(code, contentType, (const uint8_t *)content, strlen_P(content), callback);
@@ -1105,7 +1110,8 @@ AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(int code, const St
 }
 /////////////////////////////////////////////////
 
-AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(int code, const String& contentType, const String& content)
+AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(int code, const String& contentType,
+                                                              const String& content)
 {
   return new AsyncBasicResponse(code, contentType, content);
 }
@@ -1113,7 +1119,8 @@ AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(int code, const St
 /////////////////////////////////////////////////
 
 // KH add for favicon
-AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(int code, const String& contentType, const uint8_t * content, size_t len, 
+AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(int code, const String& contentType,
+                                                              const uint8_t * content, size_t len,
                                                               AwsTemplateProcessor callback)
 {
   return new AsyncProgmemResponse(code, contentType, content, len, callback);
@@ -1121,7 +1128,7 @@ AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(int code, const St
 
 /////////////////////////////////////////////////
 
-AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(Stream &stream, const String& contentType, size_t len, 
+AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(Stream &stream, const String& contentType, size_t len,
                                                               AwsTemplateProcessor callback)
 {
   return new AsyncStreamResponse(stream, contentType, len, callback);
@@ -1129,7 +1136,8 @@ AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(Stream &stream, co
 
 /////////////////////////////////////////////////
 
-AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(const String& contentType, size_t len, AwsResponseFiller callback,
+AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(const String& contentType, size_t len,
+                                                              AwsResponseFiller callback,
                                                               AwsTemplateProcessor templateCallback)
 {
   return new AsyncCallbackResponse(contentType, len, callback, templateCallback);
@@ -1137,7 +1145,8 @@ AsyncWebServerResponse * AsyncWebServerRequest::beginResponse(const String& cont
 
 /////////////////////////////////////////////////
 
-AsyncWebServerResponse * AsyncWebServerRequest::beginChunkedResponse(const String& contentType, AwsResponseFiller callback,
+AsyncWebServerResponse * AsyncWebServerRequest::beginChunkedResponse(const String& contentType,
+                                                                     AwsResponseFiller callback,
                                                                      AwsTemplateProcessor templateCallback)
 {
   if (_version)
@@ -1176,7 +1185,7 @@ void AsyncWebServerRequest::send(int code, const String& contentType, const Stri
 
 /////////////////////////////////////////////////
 
-void AsyncWebServerRequest::send(Stream &stream, const String& contentType, size_t len, 
+void AsyncWebServerRequest::send(Stream &stream, const String& contentType, size_t len,
                                  AwsTemplateProcessor callback)
 {
   send(beginResponse(stream, contentType, len, callback));
@@ -1184,7 +1193,7 @@ void AsyncWebServerRequest::send(Stream &stream, const String& contentType, size
 
 /////////////////////////////////////////////////
 
-void AsyncWebServerRequest::send(const String& contentType, size_t len, AwsResponseFiller callback, 
+void AsyncWebServerRequest::send(const String& contentType, size_t len, AwsResponseFiller callback,
                                  AwsTemplateProcessor templateCallback)
 {
   send(beginResponse(contentType, len, callback, templateCallback));
@@ -1192,7 +1201,7 @@ void AsyncWebServerRequest::send(const String& contentType, size_t len, AwsRespo
 
 /////////////////////////////////////////////////
 
-void AsyncWebServerRequest::sendChunked(const String& contentType, AwsResponseFiller callback, 
+void AsyncWebServerRequest::sendChunked(const String& contentType, AwsResponseFiller callback,
                                         AwsTemplateProcessor templateCallback)
 {
   send(beginChunkedResponse(contentType, callback, templateCallback));
@@ -1209,7 +1218,8 @@ void AsyncWebServerRequest::redirect(const String& url)
 
 /////////////////////////////////////////////////
 
-bool AsyncWebServerRequest::authenticate(const char * username, const char * password, const char * realm, bool passwordIsHash)
+bool AsyncWebServerRequest::authenticate(const char * username, const char * password, const char * realm,
+                                         bool passwordIsHash)
 {
   LOGDEBUG1("AsyncWebServerRequest::authenticate: auth-len =", _authorization.length());
 
@@ -1219,7 +1229,8 @@ bool AsyncWebServerRequest::authenticate(const char * username, const char * pas
     {
       LOGDEBUG("AsyncWebServerRequest::authenticate: _isDigest");
 
-      return checkDigestAuthentication(_authorization.c_str(), methodToString(), username, password, realm, passwordIsHash, NULL, NULL, NULL);
+      return checkDigestAuthentication(_authorization.c_str(), methodToString(), username, password, realm, passwordIsHash,
+                                       NULL, NULL, NULL);
     }
     else if (!passwordIsHash)
     {
@@ -1265,7 +1276,7 @@ bool AsyncWebServerRequest::authenticate(const char * hash)
     String realm = hStr.substring(0, separator);
     hStr = hStr.substring(separator + 1);
 
-    return checkDigestAuthentication(_authorization.c_str(), methodToString(), username.c_str(), hStr.c_str(), 
+    return checkDigestAuthentication(_authorization.c_str(), methodToString(), username.c_str(), hStr.c_str(),
                                      realm.c_str(), true, NULL, NULL, NULL);
   }
 
@@ -1447,14 +1458,19 @@ const char *AsyncWebServerRequest::requestedConnTypeToString() const
   {
     case RCT_NOT_USED:
       return "RCT_NOT_USED";
+
     case RCT_DEFAULT:
       return "RCT_DEFAULT";
+
     case RCT_HTTP:
       return "RCT_HTTP";
+
     case RCT_WS:
       return "RCT_WS";
+
     case RCT_EVENT:
       return "RCT_EVENT";
+
     default:
       return "ERROR";
   }
