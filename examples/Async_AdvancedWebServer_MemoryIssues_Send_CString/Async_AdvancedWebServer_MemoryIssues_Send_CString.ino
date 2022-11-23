@@ -39,7 +39,7 @@
  *****************************************************************************************************************************/
 
 #if !( defined(CORE_TEENSY) && defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41) )
-	#error Only Teensy 4.1 supported
+  #error Only Teensy 4.1 supported
 #endif
 
 // Debug Level from 0 to 4
@@ -49,19 +49,19 @@
 #define SHIELD_TYPE     "Teensy4.1 QNEthernet"
 
 #if (_AWS_TEENSY41_LOGLEVEL_ > 3)
-	#warning Using QNEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
+  #warning Using QNEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
 #endif
 
 #define USING_DHCP            true
 //#define USING_DHCP            false
 
 #if !USING_DHCP
-	// Set the static IP address to use if the DHCP fails to assign
-	IPAddress myIP(192, 168, 2, 222);
-	IPAddress myNetmask(255, 255, 255, 0);
-	IPAddress myGW(192, 168, 2, 1);
-	//IPAddress mydnsServer(192, 168, 2, 1);
-	IPAddress mydnsServer(8, 8, 8, 8);
+  // Set the static IP address to use if the DHCP fails to assign
+  IPAddress myIP(192, 168, 2, 222);
+  IPAddress myNetmask(255, 255, 255, 0);
+  IPAddress myGW(192, 168, 2, 1);
+  //IPAddress mydnsServer(192, 168, 2, 1);
+  IPAddress mydnsServer(8, 8, 8, 8);
 #endif
 
 #include "QNEthernet.h"       // https://github.com/ssilverman/QNEthernet
@@ -85,15 +85,15 @@ char temp[BUFFER_SIZE];
 
 void handleRoot(AsyncWebServerRequest *request)
 {
-	digitalWrite(led, 1);
+  digitalWrite(led, 1);
 
-	int sec = millis() / 1000;
-	int min = sec / 60;
-	int hr = min / 60;
-	int day = hr / 24;
+  int sec = millis() / 1000;
+  int min = sec / 60;
+  int hr = min / 60;
+  int day = hr / 24;
 
-	snprintf(temp, BUFFER_SIZE - 1,
-	         "<html>\
+  snprintf(temp, BUFFER_SIZE - 1,
+           "<html>\
 <head>\
 <meta http-equiv='refresh' content='5'/>\
 <title>AsyncWebServer-%s</title>\
@@ -109,31 +109,31 @@ body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Col
 </body>\
 </html>", BOARD_NAME, BOARD_NAME, day, hr % 24, min % 60, sec % 60);
 
-	request->send(200, "text/html", temp);
+  request->send(200, "text/html", temp);
 
-	digitalWrite(led, 0);
+  digitalWrite(led, 0);
 }
 
 void handleNotFound(AsyncWebServerRequest *request)
 {
-	digitalWrite(led, 1);
-	String message = "File Not Found\n\n";
+  digitalWrite(led, 1);
+  String message = "File Not Found\n\n";
 
-	message += "URI: ";
-	message += request->url();
-	message += "\nMethod: ";
-	message += (request->method() == HTTP_GET) ? "GET" : "POST";
-	message += "\nArguments: ";
-	message += request->args();
-	message += "\n";
+  message += "URI: ";
+  message += request->url();
+  message += "\nMethod: ";
+  message += (request->method() == HTTP_GET) ? "GET" : "POST";
+  message += "\nArguments: ";
+  message += request->args();
+  message += "\n";
 
-	for (uint8_t i = 0; i < request->args(); i++)
-	{
-		message += " " + request->argName(i) + ": " + request->arg(i) + "\n";
-	}
+  for (uint8_t i = 0; i < request->args(); i++)
+  {
+    message += " " + request->argName(i) + ": " + request->arg(i) + "\n";
+  }
 
-	request->send(404, "text/plain", message);
-	digitalWrite(led, 0);
+  request->send(404, "text/plain", message);
+  digitalWrite(led, 0);
 }
 
 extern unsigned long _heap_start;
@@ -142,210 +142,211 @@ extern char *__brkval;
 
 int freeHeapSize()
 {
-	return ( (char *)&_heap_end - __brkval);
+  return ( (char *)&_heap_end - __brkval);
 }
 
 void PrintHeapData(String hIn)
 {
-	static uint32_t maxFreeHeap = 0xFFFFFFFF;
+  static uint32_t maxFreeHeap = 0xFFFFFFFF;
 
-	// Get once at the beginning for comparison only
-	static uint32_t totalHeap = freeHeapSize();
+  // Get once at the beginning for comparison only
+  static uint32_t totalHeap = freeHeapSize();
 
-	uint32_t freeHeap  = freeHeapSize();
+  uint32_t freeHeap  = freeHeapSize();
 
-	// Print and update only when larger heap
-	if (maxFreeHeap > freeHeap)
-	{
-		maxFreeHeap = freeHeap;
+  // Print and update only when larger heap
+  if (maxFreeHeap > freeHeap)
+  {
+    maxFreeHeap = freeHeap;
 
-		Serial.print("\nHEAP DATA - ");
-		Serial.print(hIn);
+    Serial.print("\nHEAP DATA - ");
+    Serial.print(hIn);
 
-		Serial.print("  Free heap: ");
-		Serial.print(freeHeap);
-		Serial.print("  Used heap: ");
-		Serial.println(totalHeap - freeHeap);
-	}
+    Serial.print("  Free heap: ");
+    Serial.print(freeHeap);
+    Serial.print("  Used heap: ");
+    Serial.println(totalHeap - freeHeap);
+  }
 }
 
 void PrintStringSize(const char* cStr)
 {
-	static uint32_t count = 0;
+  static uint32_t count = 0;
 
-	// Print only when cStr length too large and corrupting memory or every (12 * 5) s
-	if ( (strlen(cStr) >= CSTRING_SIZE) || (++count > 12) )
-	{
-		Serial.print("\nOut String Length=");
-		Serial.println(strlen(cStr));
+  // Print only when cStr length too large and corrupting memory or every (12 * 5) s
+  if ( (strlen(cStr) >= CSTRING_SIZE) || (++count > 12) )
+  {
+    Serial.print("\nOut String Length=");
+    Serial.println(strlen(cStr));
 
-		count = 0;
-	}
+    count = 0;
+  }
 }
 
 void drawGraph(AsyncWebServerRequest *request)
 {
-	char temp[80];
+  char temp[80];
 
-	cStr[0] = '\0';
+  cStr[0] = '\0';
 
-	strcat(cStr, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"1810\" height=\"150\">\n");
-	strcat(cStr, "<rect width=\"1810\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"2\" stroke=\"rgb(0, 0, 0)\" />\n");
-	strcat(cStr, "<g stroke=\"blue\">\n");
-	int y = rand() % 130;
+  strcat(cStr, "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"1810\" height=\"150\">\n");
+  strcat(cStr,
+         "<rect width=\"1810\" height=\"150\" fill=\"rgb(250, 230, 210)\" stroke-width=\"2\" stroke=\"rgb(0, 0, 0)\" />\n");
+  strcat(cStr, "<g stroke=\"blue\">\n");
+  int y = rand() % 130;
 
-	//for (int x = 10; x < 1800; x += 10)
-	for (int x = 10; x < 5000; x += 10)
-	{
-		int y2 = rand() % 130;
-		sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
-		strcat(cStr, temp);
-		y = y2;
-	}
+  //for (int x = 10; x < 1800; x += 10)
+  for (int x = 10; x < 5000; x += 10)
+  {
+    int y2 = rand() % 130;
+    sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"2\" />\n", x, 140 - y, x + 10, 140 - y2);
+    strcat(cStr, temp);
+    y = y2;
+  }
 
-	strcat(cStr, "</g>\n</svg>\n");
+  strcat(cStr, "</g>\n</svg>\n");
 
-	PrintHeapData("Pre Send");
+  PrintHeapData("Pre Send");
 
-	PrintStringSize(cStr);
+  PrintStringSize(cStr);
 
-	request->send(200, "image/svg+xml", cStr, false);
+  request->send(200, "image/svg+xml", cStr, false);
 
-	// Won't work if using this because of heap memory
-	//request->send(200, "image/svg+xml", cStr);
+  // Won't work if using this because of heap memory
+  //request->send(200, "image/svg+xml", cStr);
 
-	PrintHeapData("Post Send");
+  PrintHeapData("Post Send");
 }
 
 void setup()
 {
-	pinMode(led, OUTPUT);
-	digitalWrite(led, 0);
+  pinMode(led, OUTPUT);
+  digitalWrite(led, 0);
 
-	Serial.begin(115200);
+  Serial.begin(115200);
 
-	while (!Serial && millis() < 5000);
+  while (!Serial && millis() < 5000);
 
-	delay(200);
+  delay(200);
 
-	Serial.print("\nStart Async_AdvancedWebServer_MemoryIssues_Send_CString on ");
-	Serial.print(BOARD_NAME);
-	Serial.print(" with ");
-	Serial.println(SHIELD_TYPE);
-	Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
+  Serial.print("\nStart Async_AdvancedWebServer_MemoryIssues_Send_CString on ");
+  Serial.print(BOARD_NAME);
+  Serial.print(" with ");
+  Serial.println(SHIELD_TYPE);
+  Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
 
-	PrintHeapData("Start =>");
+  PrintHeapData("Start =>");
 
-	cStr = (char *) malloc(CSTRING_SIZE);           // make a little larger than required
+  cStr = (char *) malloc(CSTRING_SIZE);           // make a little larger than required
 
-	if (cStr == NULL)
-	{
-		Serial.println("Unable top Allocate RAM");
+  if (cStr == NULL)
+  {
+    Serial.println("Unable top Allocate RAM");
 
-		for (;;);
-	}
+    for (;;);
+  }
 
-	///////////////////////////////////
-
-#if USING_DHCP
-	// Start the Ethernet connection, using DHCP
-	Serial.print("Initialize Ethernet using DHCP => ");
-	Ethernet.begin();
-#else
-	// Start the Ethernet connection, using static IP
-	Serial.print("Initialize Ethernet using static IP => ");
-	Ethernet.begin(myIP, myNetmask, myGW);
-	Ethernet.setDNSServerIP(mydnsServer);
-#endif
-
-	if (!Ethernet.waitForLocalIP(5000))
-	{
-		Serial.println(F("Failed to configure Ethernet"));
-
-		if (!Ethernet.linkStatus())
-		{
-			Serial.println(F("Ethernet cable is not connected."));
-		}
-
-		// Stay here forever
-		while (true)
-		{
-			delay(1);
-		}
-	}
-	else
-	{
-		Serial.print(F("Connected! IP address:"));
-		Serial.println(Ethernet.localIP());
-	}
+  ///////////////////////////////////
 
 #if USING_DHCP
-	delay(1000);
+  // Start the Ethernet connection, using DHCP
+  Serial.print("Initialize Ethernet using DHCP => ");
+  Ethernet.begin();
 #else
-	delay(2000);
+  // Start the Ethernet connection, using static IP
+  Serial.print("Initialize Ethernet using static IP => ");
+  Ethernet.begin(myIP, myNetmask, myGW);
+  Ethernet.setDNSServerIP(mydnsServer);
 #endif
 
-	///////////////////////////////////
+  if (!Ethernet.waitForLocalIP(5000))
+  {
+    Serial.println(F("Failed to configure Ethernet"));
 
-	server.on("/", HTTP_GET, [](AsyncWebServerRequest * request)
-	{
-		handleRoot(request);
-	});
+    if (!Ethernet.linkStatus())
+    {
+      Serial.println(F("Ethernet cable is not connected."));
+    }
 
-	server.on("/test.svg", HTTP_GET, [](AsyncWebServerRequest * request)
-	{
-		drawGraph(request);
-	});
+    // Stay here forever
+    while (true)
+    {
+      delay(1);
+    }
+  }
+  else
+  {
+    Serial.print(F("Connected! IP address:"));
+    Serial.println(Ethernet.localIP());
+  }
 
-	server.on("/inline", [](AsyncWebServerRequest * request)
-	{
-		request->send(200, "text/plain", "This works as well");
-	});
+#if USING_DHCP
+  delay(1000);
+#else
+  delay(2000);
+#endif
 
-	server.onNotFound(handleNotFound);
+  ///////////////////////////////////
 
-	server.begin();
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request)
+  {
+    handleRoot(request);
+  });
 
-	Serial.print(F("HTTP EthernetWebServer is @ IP : "));
-	Serial.println(Ethernet.localIP());
+  server.on("/test.svg", HTTP_GET, [](AsyncWebServerRequest * request)
+  {
+    drawGraph(request);
+  });
 
-	PrintHeapData("Pre Create Arduino String");
+  server.on("/inline", [](AsyncWebServerRequest * request)
+  {
+    request->send(200, "text/plain", "This works as well");
+  });
+
+  server.onNotFound(handleNotFound);
+
+  server.begin();
+
+  Serial.print(F("HTTP EthernetWebServer is @ IP : "));
+  Serial.println(Ethernet.localIP());
+
+  PrintHeapData("Pre Create Arduino String");
 
 }
 
 void heartBeatPrint()
 {
-	static int num = 1;
+  static int num = 1;
 
-	Serial.print(F("."));
+  Serial.print(F("."));
 
-	if (num == 80)
-	{
-		//Serial.println();
-		PrintStringSize(cStr);
-		num = 1;
-	}
-	else if (num++ % 10 == 0)
-	{
-		Serial.print(F(" "));
-	}
+  if (num == 80)
+  {
+    //Serial.println();
+    PrintStringSize(cStr);
+    num = 1;
+  }
+  else if (num++ % 10 == 0)
+  {
+    Serial.print(F(" "));
+  }
 }
 
 void check_status()
 {
-	static unsigned long checkstatus_timeout = 0;
+  static unsigned long checkstatus_timeout = 0;
 
 #define STATUS_CHECK_INTERVAL     10000L
 
-	// Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
-	if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
-	{
-		heartBeatPrint();
-		checkstatus_timeout = millis() + STATUS_CHECK_INTERVAL;
-	}
+  // Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
+  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
+  {
+    heartBeatPrint();
+    checkstatus_timeout = millis() + STATUS_CHECK_INTERVAL;
+  }
 }
 
 void loop()
 {
-	check_status();
+  check_status();
 }

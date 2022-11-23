@@ -42,16 +42,16 @@ const char *subTopic  = "MQTT_Sub";               // Topic to subcribe to
 
 void callback(char* topic, byte* payload, unsigned int length)
 {
-	Serial.print("Message arrived [");
-	Serial.print(topic);
-	Serial.print("] ");
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
 
-	for (unsigned int i = 0; i < length; i++)
-	{
-		Serial.print((char)payload[i]);
-	}
+  for (unsigned int i = 0; i < length; i++)
+  {
+    Serial.print((char)payload[i]);
+  }
 
-	Serial.println();
+  Serial.println();
 }
 
 EthernetClient  ethClient;
@@ -62,98 +62,98 @@ const char *pubData = data.c_str();
 
 void reconnect()
 {
-	// Loop until we're reconnected
-	while (!client.connected())
-	{
-		Serial.print("Attempting MQTT connection to ");
-		Serial.print(mqttServer);
+  // Loop until we're reconnected
+  while (!client.connected())
+  {
+    Serial.print("Attempting MQTT connection to ");
+    Serial.print(mqttServer);
 
-		// Attempt to connect
-		if (client.connect(ID, "try", "try"))
-		{
-			Serial.println("...connected");
+    // Attempt to connect
+    if (client.connect(ID, "try", "try"))
+    {
+      Serial.println("...connected");
 
-			// Once connected, publish an announcement...
-			client.publish(TOPIC, data.c_str());
+      // Once connected, publish an announcement...
+      client.publish(TOPIC, data.c_str());
 
-			//Serial.println("Published connection message successfully!");
-			//Serial.print("Subcribed to: ");
-			//Serial.println(subTopic);
+      //Serial.println("Published connection message successfully!");
+      //Serial.print("Subcribed to: ");
+      //Serial.println(subTopic);
 
-			client.subscribe(subTopic);
-			// for loopback testing
-			client.subscribe(TOPIC);
-		}
-		else
-		{
-			Serial.print("...failed, rc=");
-			Serial.print(client.state());
-			Serial.println(" try again in 5 seconds");
+      client.subscribe(subTopic);
+      // for loopback testing
+      client.subscribe(TOPIC);
+    }
+    else
+    {
+      Serial.print("...failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
 
-			// Wait 5 seconds before retrying
-			delay(5000);
-		}
-	}
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
 }
 
 void setup()
 {
-	// Open serial communications and wait for port to open:
-	Serial.begin(115200);
+  // Open serial communications and wait for port to open:
+  Serial.begin(115200);
 
-	while (!Serial && millis() < 5000);
+  while (!Serial && millis() < 5000);
 
-	Serial.print("\nStart MQTTClient_Basic on ");
-	Serial.print(BOARD_NAME);
-	Serial.print(" with ");
-	Serial.println(SHIELD_TYPE);
-	Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
+  Serial.print("\nStart MQTTClient_Basic on ");
+  Serial.print(BOARD_NAME);
+  Serial.print(" with ");
+  Serial.println(SHIELD_TYPE);
+  Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
 
-	delay(500);
-
-#if USING_DHCP
-	// Start the Ethernet connection, using DHCP
-	Serial.print("Initialize Ethernet using DHCP => ");
-	Ethernet.begin();
-#else
-	// Start the Ethernet connection, using static IP
-	Serial.print("Initialize Ethernet using static IP => ");
-	Ethernet.begin(myIP, myNetmask, myGW);
-	Ethernet.setDNSServerIP(mydnsServer);
-#endif
-
-	if (!Ethernet.waitForLocalIP(5000))
-	{
-		Serial.println(F("Failed to configure Ethernet"));
-
-		if (!Ethernet.linkStatus())
-		{
-			Serial.println(F("Ethernet cable is not connected."));
-		}
-
-		// Stay here forever
-		while (true)
-		{
-			delay(1);
-		}
-	}
-	else
-	{
-		Serial.print(F("Connected! IP address:"));
-		Serial.println(Ethernet.localIP());
-	}
+  delay(500);
 
 #if USING_DHCP
-	delay(1000);
+  // Start the Ethernet connection, using DHCP
+  Serial.print("Initialize Ethernet using DHCP => ");
+  Ethernet.begin();
 #else
-	delay(2000);
+  // Start the Ethernet connection, using static IP
+  Serial.print("Initialize Ethernet using static IP => ");
+  Ethernet.begin(myIP, myNetmask, myGW);
+  Ethernet.setDNSServerIP(mydnsServer);
 #endif
 
-	client.setServer(mqttServer, 1883);
-	client.setCallback(callback);
+  if (!Ethernet.waitForLocalIP(5000))
+  {
+    Serial.println(F("Failed to configure Ethernet"));
 
-	// Allow the hardware to sort itself out
-	delay(1500);
+    if (!Ethernet.linkStatus())
+    {
+      Serial.println(F("Ethernet cable is not connected."));
+    }
+
+    // Stay here forever
+    while (true)
+    {
+      delay(1);
+    }
+  }
+  else
+  {
+    Serial.print(F("Connected! IP address:"));
+    Serial.println(Ethernet.localIP());
+  }
+
+#if USING_DHCP
+  delay(1000);
+#else
+  delay(2000);
+#endif
+
+  client.setServer(mqttServer, 1883);
+  client.setCallback(callback);
+
+  // Allow the hardware to sort itself out
+  delay(1500);
 }
 
 #define MQTT_PUBLISH_INTERVAL_MS       5000L
@@ -162,28 +162,28 @@ unsigned long lastMsg = 0;
 
 void loop()
 {
-	static unsigned long now;
+  static unsigned long now;
 
-	if (!client.connected())
-	{
-		reconnect();
-	}
+  if (!client.connected())
+  {
+    reconnect();
+  }
 
-	// Sending Data
-	now = millis();
+  // Sending Data
+  now = millis();
 
-	if (now - lastMsg > MQTT_PUBLISH_INTERVAL_MS)
-	{
-		lastMsg = now;
+  if (now - lastMsg > MQTT_PUBLISH_INTERVAL_MS)
+  {
+    lastMsg = now;
 
-		if (!client.publish(TOPIC, pubData))
-		{
-			Serial.println("Message failed to send.");
-		}
+    if (!client.publish(TOPIC, pubData))
+    {
+      Serial.println("Message failed to send.");
+    }
 
-		Serial.print("Message Send : " + String(TOPIC) + " => ");
-		Serial.println(data);
-	}
+    Serial.print("Message Send : " + String(TOPIC) + " => ");
+    Serial.println(data);
+  }
 
-	client.loop();
+  client.loop();
 }

@@ -84,7 +84,7 @@ char temp[BUFFER_SIZE];
 void handleRoot(AsyncWebServerRequest *request)
 {
   digitalWrite(led, 1);
-  
+
   int sec = millis() / 1000;
   int min = sec / 60;
   int hr = min / 60;
@@ -114,8 +114,8 @@ body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Col
 
 void handleNotFound(AsyncWebServerRequest *request)
 {
- digitalWrite(led, 1);
- String message = "File Not Found\n\n";
+  digitalWrite(led, 1);
+  String message = "File Not Found\n\n";
 
   message += "URI: ";
   message += request->url();
@@ -160,13 +160,14 @@ void drawGraph(AsyncWebServerRequest *request)
 
   LOGDEBUG1("Total length to send in chunks =", out.length());
 
-  AsyncWebServerResponse *response = request->beginChunkedResponse("image/svg+xml", [](uint8_t *buffer, size_t maxLen, size_t filledLength) -> size_t
+  AsyncWebServerResponse *response = request->beginChunkedResponse("image/svg+xml", [](uint8_t *buffer, size_t maxLen,
+                                                                                       size_t filledLength) -> size_t
   {
     size_t len = min(maxLen, out.length() - filledLength);
     memcpy(buffer, out.c_str() + filledLength, len);
 
     LOGDEBUG1("Bytes sent in chunk =", len);
-    
+
     return len;
   });
 
@@ -178,7 +179,7 @@ void setup()
 {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
-  
+
   Serial.begin(115200);
 
   while (!Serial && millis() < 5000);

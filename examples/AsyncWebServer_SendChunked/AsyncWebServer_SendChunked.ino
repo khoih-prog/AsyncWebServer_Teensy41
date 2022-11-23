@@ -118,18 +118,19 @@ void handleRoot(AsyncWebServerRequest *request)
     out += "</td><td>";
     out += "Teensy41_AsyncWebServer_SendChunked_ABCDEFGHIJKLMNOPQRSTUVWXYZ</td></tr>";
   }
-  
+
   out += "</table></body></html>\r\n";
 
   LOGDEBUG1("Total length to send in chunks =", out.length());
 
-  AsyncWebServerResponse *response = request->beginChunkedResponse("text/html", [](uint8_t *buffer, size_t maxLen, size_t filledLength) -> size_t
+  AsyncWebServerResponse *response = request->beginChunkedResponse("text/html", [](uint8_t *buffer, size_t maxLen,
+                                                                                   size_t filledLength) -> size_t
   {
     size_t len = min(maxLen, out.length() - filledLength);
     memcpy(buffer, out.c_str() + filledLength, len);
 
     LOGDEBUG1("Bytes sent in chunk =", len);
-    
+
     return len;
   });
 

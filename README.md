@@ -1,4 +1,4 @@
-# AsyncWebServer_Teensy41
+# AsyncWebServer_Teensy41 Library
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/AsyncWebServer_Teensy41.svg?)](https://www.ardu-badge.com/AsyncWebServer_Teensy41)
 [![GitHub release](https://img.shields.io/github/release/khoih-prog/AsyncWebServer_Teensy41.svg)](https://github.com/khoih-prog/AsyncWebServer_Teensy41/releases)
@@ -8,7 +8,8 @@
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
 <a href="https://profile-counter.glitch.me/khoih-prog/count.svg" title="Total khoih-prog Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog/count.svg" style="height: 30px;width: 200px;"></a>
-<a href="https://profile-counter.glitch.me/khoih-prog-AsyncWebServer_Teensy41/count.svg" title="Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog-AsyncWebServer_Teensy41/count.svg" style="height: 30px;width: 200px;"></a>
+<a href="https://profile-counter.glitch.me/khoih-prog-AsyncWebServer_Teensy41/count.svg" title="AsyncWebServer_Teensy41 Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog-AsyncWebServer_Teensy41/count.svg" style="height: 30px;width: 200px;"></a>
+
 
 ---
 ---
@@ -815,6 +816,7 @@ request->send(response);
 ---
 
 ## Param Rewrite With Matching
+
 It is possible to rewrite the request url with parameter matchg. Here is an example with one parameter:
 Rewrite for example "/radio/{frequence}" -> "/radio?f={frequence}"
 
@@ -1318,6 +1320,7 @@ For example we want a `sensorId` parameter in a route rule to match only a integ
       String sensorId = request->pathArg(0);
   });
 ```
+
 *NOTE*: All regex patterns starts with `^` and ends with `$`
 
 To enable the `Path variable` support, you have to define the buildflag `-DASYNCWEBSERVER_REGEX`.
@@ -1399,7 +1402,7 @@ or using [Async_AdvancedWebServer_favicon](examples/Async_AdvancedWebServer_favi
 Following are debug terminal output and screen shots when running example [Async_AdvancedWebServer](examples/Async_AdvancedWebServer) on Teensy4.1 using Built-in Ethernet and QNEthernet Library demonstrate the operation of AsyncWebServer.
 
 
-```
+```cpp
 Start Async_AdvancedWebServer on TEENSY 4.1 with Teensy4.1 QNEthernet
 AsyncWebServer_Teensy41 v1.6.1
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
@@ -1417,7 +1420,7 @@ HTTP EthernetWebServer is @ IP : 192.168.2.107
 Following is debug terminal output when running example [WebClient](examples/WebClient) on Teensy4.1 using Built-in Ethernet and QNEthernet Library.
 
 
-```
+```cpp
 Start WebClient on TEENSY 4.1 with Teensy4.1 QNEthernet
 AsyncWebServer_Teensy41 v1.6.1
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
@@ -1488,7 +1491,7 @@ Disconnecting from server...
 Following is debug terminal output when running example [MQTTClient_Auth](examples/MQTTClient_Auth) on Teensy4.1 using Built-in Ethernet and QNEthernet Library.
 
 
-```
+```cpp
 Start MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
 AsyncWebServer_Teensy41 v1.6.1
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
@@ -1508,7 +1511,7 @@ Message arrived [MQTT_Pub] Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4
 
 Following is debug terminal output when running example [MQTTClient_Basic](examples/MQTTClient_Basic) on Teensy4.1 using Built-in Ethernet and QNEthernet Library.
 
-```
+```cpp
 Start MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
 AsyncWebServer_Teensy41 v1.6.1
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
@@ -1535,7 +1538,7 @@ Message arrived [MQTT_Pub] Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy
 
 Following is debug terminal output when running example [MQTT_ThingStream](examples/MQTT_ThingStream) on Teensy4.1 using Built-in Ethernet and QNEthernet Library.
 
-```
+```cpp
 Start MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
 AsyncWebServer_Teensy41 v1.6.1
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
@@ -1568,7 +1571,7 @@ Following is the debug terminal and screen shot when running example [Async_Adva
 
 ##### Using CString  ===> smaller heap (61,440 bytes) for 40,000-byte buffer
 
-```
+```cpp
 Start Async_AdvancedWebServer_MemoryIssues_Send_CString on TEENSY 4.1 with Teensy4.1 QNEthernet
 AsyncWebServer_Teensy41 v1.6.1
 
@@ -1592,7 +1595,7 @@ While using `Arduino String`, the HEAP usage is very large
 #### Async_AdvancedWebServer_MemoryIssues_SendArduinoString  ===> larger heap (65,536 bytes) while buffer len is only 12K Bytes
 
 
-```
+```cpp
 Start Async_AdvancedWebServer_MemoryIssues_SendArduinoString on TEENSY 4.1 with Teensy4.1 QNEthernet
 AsyncWebServer_Teensy41 v1.6.1
 
@@ -1632,7 +1635,7 @@ You can access the Async Advanced WebServers at the displayed server IP, e.g. `1
 Following is debug terminal output when running example [Async_AdvancedWebServer_SendChunked](examples/Async_AdvancedWebServer_SendChunked) on `Teensy4.1` using Built-in Ethernet and `QNEthernet` Library, to demo how to use `beginChunkedResponse()` to send large `html` in chunks
 
 
-```
+```cpp
 Start Async_AdvancedWebServer_SendChunked on TEENSY 4.1 with Teensy4.1 QNEthernet
 AsyncWebServer_Teensy41 v1.6.1
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.92
@@ -1701,7 +1704,7 @@ You can access the Async Advanced WebServers @ the server IP
 Following is debug terminal output when running example [AsyncWebServer_SendChunked](examples/AsyncWebServer_SendChunked) on `Teensy4.1` using Built-in Ethernet and `QNEthernet` Library, to demo how to use `beginChunkedResponse()` to send large `html` in chunks
 
 
-```
+```cpp
 Start AsyncWebServer_SendChunked on TEENSY 4.1 with Teensy4.1 QNEthernet
 AsyncWebServer_Teensy41 v1.6.1
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.92
@@ -1842,9 +1845,9 @@ If you want to contribute to this project:
 
 ## Copyright
 
-- Copyright 2016- Hristo Gochkov
+- Copyright (c) 2016- Hristo Gochkov
 
-- Copyright 2022- Khoi Hoang
+- Copyright (c) 2022- Khoi Hoang
 
 
 

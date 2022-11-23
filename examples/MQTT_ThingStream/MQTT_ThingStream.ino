@@ -41,28 +41,28 @@ const char my_key[]   = "FIXME";
 
 #if USING_THINGSTREAM_IO
 
-	const char *MQTT_PREFIX_TOPIC   = "teensy41-sniffer/";
-	const char *MQTT_ANNOUNCE_TOPIC = "/status";
-	const char *MQTT_CONTROL_TOPIC  = "/control";
-	const char *MQTT_BLE_TOPIC      = "/ble";
+  const char *MQTT_PREFIX_TOPIC   = "teensy41-sniffer/";
+  const char *MQTT_ANNOUNCE_TOPIC = "/status";
+  const char *MQTT_CONTROL_TOPIC  = "/control";
+  const char *MQTT_BLE_TOPIC      = "/ble";
 
 
-	// GOT FROM ThingsStream!
-	const char *MQTT_SERVER     = "mqtt.thingstream.io";
-	const char *MQTT_USER       = "MQTT_USER";
-	const char *MQTT_PASS       = "MQTT_PASS";
-	const char *MQTT_CLIENT_ID  = "MQTT_CLIENT_ID";
+  // GOT FROM ThingsStream!
+  const char *MQTT_SERVER     = "mqtt.thingstream.io";
+  const char *MQTT_USER       = "MQTT_USER";
+  const char *MQTT_PASS       = "MQTT_PASS";
+  const char *MQTT_CLIENT_ID  = "MQTT_CLIENT_ID";
 
-	String topic    = MQTT_PREFIX_TOPIC + String("12345678") + MQTT_BLE_TOPIC;
-	String subTopic = MQTT_PREFIX_TOPIC + String("12345678") + MQTT_BLE_TOPIC;
+  String topic    = MQTT_PREFIX_TOPIC + String("12345678") + MQTT_BLE_TOPIC;
+  String subTopic = MQTT_PREFIX_TOPIC + String("12345678") + MQTT_BLE_TOPIC;
 
 #else
 
-	const char* MQTT_SERVER = "broker.emqx.io";        // Broker address
+  const char* MQTT_SERVER = "broker.emqx.io";        // Broker address
 
-	const char*  ID         = "MQTT_ThingStream";  // Name of our device, must be unique
-	String      topic       = "Teensy41_Pub";              // Topic to subcribe to
-	String      subTopic    = "Teensy41_Sub";              // Topic to subcribe to
+  const char*  ID         = "MQTT_ThingStream";  // Name of our device, must be unique
+  String      topic       = "Teensy41_Pub";              // Topic to subcribe to
+  String      subTopic    = "Teensy41_Sub";              // Topic to subcribe to
 
 #endif
 
@@ -88,156 +88,156 @@ const char *pubData = data.c_str();
 */
 void mqtt_receive_callback(char* topic, byte* payload, unsigned int length)
 {
-	Serial.print("MQTT Message receive [");
-	Serial.print(topic);
-	Serial.print("] ");
+  Serial.print("MQTT Message receive [");
+  Serial.print(topic);
+  Serial.print("] ");
 
-	for (unsigned int i = 0; i < length; i++)
-	{
-		Serial.print((char)payload[i]);
-	}
+  for (unsigned int i = 0; i < length; i++)
+  {
+    Serial.print((char)payload[i]);
+  }
 
-	Serial.println();
+  Serial.println();
 }
 
 void reconnect()
 {
-	// Loop until we're reconnected
-	while (!client.connected())
-	{
-		Serial.print("Attempting MQTT connection to ");
-		Serial.println(MQTT_SERVER);
+  // Loop until we're reconnected
+  while (!client.connected())
+  {
+    Serial.print("Attempting MQTT connection to ");
+    Serial.println(MQTT_SERVER);
 
-		// Attempt to connect
+    // Attempt to connect
 
 #if USING_THINGSTREAM_IO
-		int connect_status = client.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS, topic.c_str(), 2, false, "");
+    int connect_status = client.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASS, topic.c_str(), 2, false, "");
 #else
-		int connect_status = client.connect(ID);
+    int connect_status = client.connect(ID);
 #endif
 
-		if (connect_status)
-		{
-			Serial.println("...connected");
+    if (connect_status)
+    {
+      Serial.println("...connected");
 
-			// Once connected, publish an announcement...
-			client.publish(topic.c_str(), data.c_str());
+      // Once connected, publish an announcement...
+      client.publish(topic.c_str(), data.c_str());
 
-			Serial.println("Published connection message successfully!");
+      Serial.println("Published connection message successfully!");
 
-			Serial.print("Subcribed to: ");
-			Serial.println(subTopic);
+      Serial.print("Subcribed to: ");
+      Serial.println(subTopic);
 
-			// This is a workaround to address https://github.com/OPEnSLab-OSU/SSLClient/issues/9
-			//ethClientSSL.flush();
-			// ... and resubscribe
-			client.subscribe(subTopic.c_str());
-			// for loopback testing
-			client.subscribe(topic.c_str());
-			// This is a workaround to address https://github.com/OPEnSLab-OSU/SSLClient/issues/9
-			//ethClientSSL.flush();
-		}
-		else
-		{
-			Serial.print("failed, rc=");
-			Serial.print(client.state());
-			Serial.println(" try again in 5 seconds");
+      // This is a workaround to address https://github.com/OPEnSLab-OSU/SSLClient/issues/9
+      //ethClientSSL.flush();
+      // ... and resubscribe
+      client.subscribe(subTopic.c_str());
+      // for loopback testing
+      client.subscribe(topic.c_str());
+      // This is a workaround to address https://github.com/OPEnSLab-OSU/SSLClient/issues/9
+      //ethClientSSL.flush();
+    }
+    else
+    {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
 
-			// Wait 5 seconds before retrying
-			delay(5000);
-		}
-	}
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
 }
 
 void setup()
 {
-	// Open serial communications and wait for port to open:
-	Serial.begin(115200);
+  // Open serial communications and wait for port to open:
+  Serial.begin(115200);
 
-	while (!Serial && millis() < 5000);
+  while (!Serial && millis() < 5000);
 
-	Serial.print("\nStart MQTT_ThingStream on ");
-	Serial.print(BOARD_NAME);
-	Serial.print(" with ");
-	Serial.println(SHIELD_TYPE);
-	Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
+  Serial.print("\nStart MQTT_ThingStream on ");
+  Serial.print(BOARD_NAME);
+  Serial.print(" with ");
+  Serial.println(SHIELD_TYPE);
+  Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
 
-	delay(500);
-
-#if USING_DHCP
-	// Start the Ethernet connection, using DHCP
-	Serial.print("Initialize Ethernet using DHCP => ");
-	Ethernet.begin();
-#else
-	// Start the Ethernet connection, using static IP
-	Serial.print("Initialize Ethernet using static IP => ");
-	Ethernet.begin(myIP, myNetmask, myGW);
-	Ethernet.setDNSServerIP(mydnsServer);
-#endif
-
-	if (!Ethernet.waitForLocalIP(5000))
-	{
-		Serial.println(F("Failed to configure Ethernet"));
-
-		if (!Ethernet.linkStatus())
-		{
-			Serial.println(F("Ethernet cable is not connected."));
-		}
-
-		// Stay here forever
-		while (true)
-		{
-			delay(1);
-		}
-	}
-	else
-	{
-		Serial.print(F("Connected! IP address:"));
-		Serial.println(Ethernet.localIP());
-	}
+  delay(500);
 
 #if USING_DHCP
-	delay(1000);
+  // Start the Ethernet connection, using DHCP
+  Serial.print("Initialize Ethernet using DHCP => ");
+  Ethernet.begin();
 #else
-	delay(2000);
+  // Start the Ethernet connection, using static IP
+  Serial.print("Initialize Ethernet using static IP => ");
+  Ethernet.begin(myIP, myNetmask, myGW);
+  Ethernet.setDNSServerIP(mydnsServer);
 #endif
 
-	// Note - the default maximum packet size is 256 bytes. If the
-	// combined length of clientId, username and password exceed this use the
-	// following to increase the buffer size:
-	//client.setBufferSize(256);
+  if (!Ethernet.waitForLocalIP(5000))
+  {
+    Serial.println(F("Failed to configure Ethernet"));
 
-	Serial.println("***************************************");
-	Serial.println(topic);
-	Serial.println("***************************************");
+    if (!Ethernet.linkStatus())
+    {
+      Serial.println(F("Ethernet cable is not connected."));
+    }
+
+    // Stay here forever
+    while (true)
+    {
+      delay(1);
+    }
+  }
+  else
+  {
+    Serial.print(F("Connected! IP address:"));
+    Serial.println(Ethernet.localIP());
+  }
+
+#if USING_DHCP
+  delay(1000);
+#else
+  delay(2000);
+#endif
+
+  // Note - the default maximum packet size is 256 bytes. If the
+  // combined length of clientId, username and password exceed this use the
+  // following to increase the buffer size:
+  //client.setBufferSize(256);
+
+  Serial.println("***************************************");
+  Serial.println(topic);
+  Serial.println("***************************************");
 }
 
 #define MQTT_PUBLISH_INTERVAL_MS      5000L
 
 void loop()
 {
-	static unsigned long now;
+  static unsigned long now;
 
-	if (!client.connected())
-	{
-		reconnect();
-	}
+  if (!client.connected())
+  {
+    reconnect();
+  }
 
-	// Sending Data
-	now = millis();
+  // Sending Data
+  now = millis();
 
-	if (now - lastMsg > MQTT_PUBLISH_INTERVAL_MS)
-	{
-		lastMsg = now;
+  if (now - lastMsg > MQTT_PUBLISH_INTERVAL_MS)
+  {
+    lastMsg = now;
 
-		if (!client.publish(topic.c_str(), pubData))
-		{
-			Serial.println("Message failed to send.");
-		}
+    if (!client.publish(topic.c_str(), pubData))
+    {
+      Serial.println("Message failed to send.");
+    }
 
-		Serial.print("MQTT Message Send : " + topic + " => ");
-		Serial.println(data);
-	}
+    Serial.print("MQTT Message Send : " + topic + " => ");
+    Serial.println(data);
+  }
 
-	client.loop();
+  client.loop();
 }
