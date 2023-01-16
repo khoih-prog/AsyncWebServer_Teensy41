@@ -92,11 +92,12 @@
   * [11. **MQTT_ThingStream**](examples/MQTT_ThingStream)
   * [12. WebClient](examples/WebClient) 
   * [13. WebClientRepeating](examples/WebClientRepeating)
-  * [14. Async_AdvancedWebServer_favicon](examples/Async_AdvancedWebServer_favicon) **New**
-  * [15. Async_AdvancedWebServer_MemoryIssues_SendArduinoString](examples/Async_AdvancedWebServer_MemoryIssues_SendArduinoString) **New**
-  * [16. Async_AdvancedWebServer_MemoryIssues_Send_CString](examples/Async_AdvancedWebServer_MemoryIssues_Send_CString) **New**
-  * [17. Async_AdvancedWebServer_SendChunked](examples/Async_AdvancedWebServer_SendChunked) **New**
-  * [18. AsyncWebServer_SendChunked](examples/AsyncWebServer_SendChunked) **New**
+  * [14. Async_AdvancedWebServer_favicon](examples/Async_AdvancedWebServer_favicon)
+  * [15. Async_AdvancedWebServer_MemoryIssues_SendArduinoString](examples/Async_AdvancedWebServer_MemoryIssues_SendArduinoString)
+  * [16. Async_AdvancedWebServer_MemoryIssues_Send_CString](examples/Async_AdvancedWebServer_MemoryIssues_Send_CString)
+  * [17. Async_AdvancedWebServer_SendChunked](examples/Async_AdvancedWebServer_SendChunked)
+  * [18. AsyncWebServer_SendChunked](examples/AsyncWebServer_SendChunked)
+  * [19. Async_WebSocketsServer](examples/Async_WebSocketsServer) **New**
 * [Example Async_AdvancedWebServer](#example-Async_AdvancedWebServer)
 * [Debug Terminal Output Samples](#debug-Terminal-output-samples)
   * [1. Async_AdvancedWebServer on Teensy4.1 QNEthernet](#1-Async_AdvancedWebServer-on-Teensy41-QNEthernet)
@@ -1753,7 +1754,7 @@ AsyncWebServer is @ IP : 192.168.2.92
 
 ---
 
-#### 9. Async_WebSocketsServer on TEENSY 4.1 QNEthernet
+#### 9. Async_WebSocketsServer on Teensy4.1 QNEthernet
 
 
 Following is debug terminal output when running example [Async_WebSocketsServer](examples/Async_WebSocketsServer) on `Teensy4.1` using Built-in Ethernet and `QNEthernet` Library, to demo how to use to demo how to use `Async_WebSockets`. The Client is using [WSClient.py](https://github.com/khoih-prog/AsyncWebServer_Teensy41/blob/main/examples/Async_WebSocketsServer/WSClient_Python/WSClient.py)
