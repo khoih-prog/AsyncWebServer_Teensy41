@@ -6,7 +6,7 @@ const char webpageCont[] PROGMEM =
   R"=====(
 <!DOCTYPE HTML>
 <html>
-<title>RP2040W AsyncSocketServer</title>
+<title>Teensy4_1 AsyncSocketServer</title>
 
 <!---------------------------CSS-------------------------->
 
@@ -20,7 +20,7 @@ const char webpageCont[] PROGMEM =
 
 <body>
 
-    <h1>RP2040W AsyncSocketServer</h1>
+    <h1>Teensy4_1 AsyncSocketServer</h1>
         
 </body>
 
