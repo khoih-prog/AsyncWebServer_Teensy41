@@ -170,7 +170,7 @@ void setup()
 	delay(200);
 
 	Serial.print("\nStarting Async_WebSocketsServer on ");
-	Serial.println(BOARD_NAME);
+	Serial.print(BOARD_NAME);
 	Serial.print(" with ");
   Serial.println(SHIELD_TYPE);
   Serial.println(ASYNC_WEBSERVER_TEENSY41_VERSION);
