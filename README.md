@@ -173,7 +173,7 @@ such as
 request->send(200, textPlainStr, cStr);
 ```
 
-The required additional HEAP is also about **2 times of the CString size** because of `unnecessary copies` of the CString in HEAP. Avoid this `unefficient` way.
+The required additional HEAP is also about **2 times of the CString size** because of `unnecessary copies` of the CString in HEAP. Avoid this `inefficient` way.
 
 
 3. To use `CString` without copying while sending. Use function
@@ -817,8 +817,8 @@ request->send(response);
 
 ## Param Rewrite With Matching
 
-It is possible to rewrite the request url with parameter matchg. Here is an example with one parameter:
-Rewrite for example "/radio/{frequence}" -> "/radio?f={frequence}"
+It is possible to rewrite the request url with parameter matching. Here is an example with one parameter:
+Rewrite for example "/radio/{frequency}" -> "/radio?f={frequency}"
 
 ```cpp
 class OneParamRewrite : public AsyncWebRewrite
