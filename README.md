@@ -880,7 +880,7 @@ class OneParamRewrite : public AsyncWebRewrite
 Usage:
 
 ```cpp
-  server.addRewrite( new OneParamRewrite("/radio/{frequence}", "/radio?f={frequence}") );
+  server.addRewrite( new OneParamRewrite("/radio/{frequency}", "/radio?f={frequency}") );
 ```
 ---
 
