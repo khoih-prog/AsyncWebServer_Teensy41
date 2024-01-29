@@ -587,9 +587,10 @@ void AsyncWebServerRequest::_handleUploadByte(uint8_t data, bool last)
   if (last || _itemBufferIndex == 1460)
   {
     //check if authenticated before calling the upload
-    if (_handler)
+    if (_handler) 
+    {
       _handler->handleUpload(this, _itemFilename, _itemSize - _itemBufferIndex, _itemBuffer, _itemBufferIndex, false);
-
+    }
     _itemBufferIndex = 0;
   }
 }
