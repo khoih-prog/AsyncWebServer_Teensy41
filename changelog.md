@@ -28,6 +28,11 @@
 
 ## Changelog
 
+### Releases v?.?.?
+
+1. Fix file upload to Teensy 4.1 board based on suggestions made on the PJRC forum. Align signatures of file upload handlers.
+For more details, please see this post: [AsyncWebServer_Teensy41 bug onUpload](https://forum.pjrc.com/index.php?threads/asyncwebserver_teensy41-bug-onupload.72220).
+
 ### Releases v1.6.2
 
 1. Add examples [Async_WebSocketsServer](https://github.com/khoih-prog/AsyncWebServer_Teensy41/tree/main/examples/Async_WebSocketsServer) to demo how to use `Async_WebSockets`
