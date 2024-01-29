@@ -17,7 +17,7 @@
   You should have received a copy of the GNU General Public License along with this program.
   If not, see <https://www.gnu.org/licenses/>.  
  
-  Version: 1.6.2
+  Version: 1.7.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -26,7 +26,8 @@
   1.5.0   K Hoang      01/10/2022 Fix issue with slow browsers or network. Add function and example to support favicon.ico
   1.6.0   K Hoang      06/10/2022 Option to use non-destroyed cString instead of String to save Heap
   1.6.1   K Hoang      10/11/2022 Add examples to demo how to use beginChunkedResponse() to send in chunks
-  1.6.2   K Hoang      16/01/2023 Add examples Async_WebSocketsServer         
+  1.6.2   K Hoang      16/01/2023 Add examples Async_WebSocketsServer
+  1.7.0   K Hoang      29/01/2024 Fix file upload handler by adjusting function signatures
  *****************************************************************************************************************************/
 
 #ifndef _ASYNC_WEBSERVER_TEENSY41_HPP_
@@ -34,13 +35,13 @@
 
 /////////////////////////////////////////////////
 
-#define ASYNC_WEBSERVER_TEENSY41_VERSION           "AsyncWebServer_Teensy41 v1.6.2"
+#define ASYNC_WEBSERVER_TEENSY41_VERSION           "AsyncWebServer_Teensy41 v1.7.0"
 
 #define ASYNC_WEBSERVER_TEENSY41_VERSION_MAJOR     1
-#define ASYNC_WEBSERVER_TEENSY41_VERSION_MINOR     6
-#define ASYNC_WEBSERVER_TEENSY41_VERSION_PATCH     2
+#define ASYNC_WEBSERVER_TEENSY41_VERSION_MINOR     7
+#define ASYNC_WEBSERVER_TEENSY41_VERSION_PATCH     0
 
-#define ASYNC_WEBSERVER_TEENSY41_VERSION_INT       1006002
+#define ASYNC_WEBSERVER_TEENSY41_VERSION_INT       1007000
 
 /////////////////////////////////////////////////
 

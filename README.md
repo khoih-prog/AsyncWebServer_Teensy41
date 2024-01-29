@@ -236,7 +236,7 @@ to apply the better and faster **asynchronous** feature of the **powerful** [ESP
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Teensy core v1.57+`](https://github.com/PaulStoffregen/cores) for Teensy 4.1.  [![GitHub release](https://img.shields.io/github/release/PaulStoffregen/cores.svg)](https://github.com/PaulStoffregen/cores/releases/latest)
- 3. [`QNEthernet Library version v0.17.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet
+ 3. [`QNEthernet Library version v0.26.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet
  4. [`Teensy41_AsyncTCP library v1.1.0+`](https://github.com/khoih-prog/Teensy41_AsyncTCP) to use **Teensy 4.1 using QNEthernet Library**. [![GitHub release](https://img.shields.io/github/release/khoih-prog/Teensy41_AsyncTCP.svg)](https://github.com/khoih-prog/Teensy41_AsyncTCP/releases/latest)
 
 ---
@@ -1404,7 +1404,7 @@ Following are debug terminal output and screen shots when running example [Async
 
 ```cpp
 Start Async_AdvancedWebServer on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 HTTP EthernetWebServer is @ IP : 192.168.2.107
 ```
@@ -1422,7 +1422,7 @@ Following is debug terminal output when running example [WebClient](examples/Web
 
 ```cpp
 Start WebClient on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 
 Starting connection to server...
@@ -1493,7 +1493,7 @@ Following is debug terminal output when running example [MQTTClient_Auth](exampl
 
 ```cpp
 Start MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 Attempting MQTT connection to broker.emqx.io...connected
 Message Send : MQTT_Pub => Hello from MQTTClient_Auth on TEENSY 4.1 with Teensy4.1 QNEthernet
@@ -1513,7 +1513,7 @@ Following is debug terminal output when running example [MQTTClient_Basic](examp
 
 ```cpp
 Start MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 Attempting MQTT connection to broker.emqx.io...connected
 Message Send : MQTT_Pub => Hello from MQTTClient_Basic on TEENSY 4.1 with Teensy4.1 QNEthernet
@@ -1540,7 +1540,7 @@ Following is debug terminal output when running example [MQTT_ThingStream](examp
 
 ```cpp
 Start MQTT_ThingStream on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.107
 ***************************************
 Teensy41_Pub
@@ -1573,7 +1573,7 @@ Following is the debug terminal and screen shot when running example [Async_Adva
 
 ```cpp
 Start Async_AdvancedWebServer_MemoryIssues_Send_CString on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 
 HEAP DATA - Start =>  Free heap: 483328  Used heap: 0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.83
@@ -1597,7 +1597,7 @@ While using `Arduino String`, the HEAP usage is very large
 
 ```cpp
 Start Async_AdvancedWebServer_MemoryIssues_SendArduinoString on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 
 HEAP DATA - Start =>  Free heap: 483328  Used heap: 0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.83
@@ -1637,7 +1637,7 @@ Following is debug terminal output when running example [Async_AdvancedWebServer
 
 ```cpp
 Start Async_AdvancedWebServer_SendChunked on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.92
 AsyncWebServer is @ IP : 192.168.2.92
 .[AWS] Total length to send in chunks = 31235
@@ -1706,7 +1706,7 @@ Following is debug terminal output when running example [AsyncWebServer_SendChun
 
 ```cpp
 Start AsyncWebServer_SendChunked on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.92
 AsyncWebServer is @ IP : 192.168.2.92
 .[AWS] Total length to send in chunks = 46302
@@ -1762,7 +1762,7 @@ Following is debug terminal output when running example [Async_WebSocketsServer]
 
 ```cpp
 Starting Async_WebSocketsServer on TEENSY 4.1 with Teensy4.1 QNEthernet
-AsyncWebServer_Teensy41 v1.6.2
+AsyncWebServer_Teensy41 v1.7.0
 Initialize Ethernet using DHCP => Connected! IP address:192.168.2.119
 ws[Server: /ws][ClientID: 1] WSClient connected
 ws[Server: /ws][ClientID: 1] text-message[len: 13]: Hello, Server
@@ -1828,7 +1828,7 @@ Submit issues to: [AsyncWebServer_Teensy41 issues](https://github.com/khoih-prog
  9. Add examples [Async_AdvancedWebServer_SendChunked](https://github.com/khoih-prog/AsyncWebServer_RP2040W/tree/main/examples/Async_AdvancedWebServer_SendChunked) and [AsyncWebServer_SendChunked](https://github.com/khoih-prog/AsyncWebServer_RP2040W/tree/main/examples/AsyncWebServer_SendChunked) to demo how to use `beginChunkedResponse()` to send large `html` in chunks
 10. Use `allman astyle` and add `utils`
 11. Add examples [Async_WebSocketsServer](https://github.com/khoih-prog/AsyncWebServer_Teensy41/tree/main/examples/Async_WebSocketsServer) to demo how to use `Async_WebSockets`
-
+12. Fix `onUpload bug`. Check [AsyncWebServer_Teensy41 bug onUpload](https://forum.pjrc.com/index.php?threads/asyncwebserver_teensy41-bug-onupload.72220/)
 
 ---
 ---
@@ -1840,11 +1840,13 @@ Submit issues to: [AsyncWebServer_Teensy41 issues](https://github.com/khoih-prog
 2. Thanks to [salasidis](https://github.com/salasidis) aka [rs77can](https://forum.arduino.cc/u/rs77can) to discuss and make the following `marvellous` PRs in [Portenta_H7_AsyncWebServer library](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer)
 - [request->send(200, textPlainStr, jsonChartDataCharStr); - Without using String Class - to save heap #8](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer/pull/8), leading to `v1.6.0` to support using `CString` to save heap to send `very large data`
 - [All memmove() removed - string no longer destroyed #11](https://github.com/khoih-prog/Portenta_H7_AsyncWebServer/pull/11), leading to `v1.6.0` to remove `memmove()` and not to destroy String anymore
+3. Thanks to [E. van Putten](https://github.com/edwinvp) / [Shuptuu](https://forum.pjrc.com/index.php?members/shuptuu.48798/) to make the following PR in [Fix file upload handler by adjusting function signatures #9](https://github.com/khoih-prog/AsyncWebServer_Teensy41/pull/9) leading to `v1.7.0`
 
 <table>
   <tr>
     <td align="center"><a href="https://github.com/me-no-dev"><img src="https://github.com/me-no-dev.png" width="100px;" alt="me-no-dev"/><br /><sub><b>⭐️⭐️ Hristo Gochkov</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/salasidis"><img src="https://github.com/salasidis.png" width="100px;" alt="salasidis"/><br /><sub><b>⭐️ salasidis</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/edwinvp"><img src="https://github.com/edwinvp.png" width="100px;" alt="edwinvp"/><br /><sub><b>E. van Putten</b></sub></a><br /></td>
   </tr>
 </table>
 

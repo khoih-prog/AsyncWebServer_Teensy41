@@ -17,6 +17,7 @@
 
 * [Table of contents](#table-of-contents)
 * [Changelog](#changelog)
+  * [Releases v1.7.0](#releases-v170)
   * [Releases v1.6.2](#releases-v162)
   * [Releases v1.6.1](#releases-v161)
   * [Releases v1.6.0](#releases-v160)
