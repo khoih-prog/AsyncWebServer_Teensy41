@@ -28,7 +28,7 @@
 
 ## Changelog
 
-### Releases v?.?.?
+### Releases v1.7.0
 
 1. Fix file upload to Teensy 4.1 board based on suggestions made on the PJRC forum. Align signatures of file upload handlers.
 For more details, please see this post: [AsyncWebServer_Teensy41 bug onUpload](https://forum.pjrc.com/index.php?threads/asyncwebserver_teensy41-bug-onupload.72220).
