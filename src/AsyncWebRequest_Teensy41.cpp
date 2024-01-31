@@ -271,13 +271,18 @@ void AsyncWebServerRequest::_removeNotInterestingHeaders()
 {
   if (_interestingHeaders.containsIgnoreCase("ANY"))
     return; // nothing to do
-
-  for (const auto& header : _headers)
-  {
-    if (!_interestingHeaders.containsIgnoreCase(header->name().c_str()))
+    
+  bool removing = true;
+  while(removing) {
+    for (const auto& header : _headers)
     {
-      _headers.remove(header);
+      if (!_interestingHeaders.containsIgnoreCase(header->name().c_str()))
+      {
+        _headers.remove(header);
+        break; // break and restart the _headers iteration, if we keep iterating the linked List with a deleted element this may cause a Mem Access violation
+      }
     }
+    removing = false;
   }
 }
 
